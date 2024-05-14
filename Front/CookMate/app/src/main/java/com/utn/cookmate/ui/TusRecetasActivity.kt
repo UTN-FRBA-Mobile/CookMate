@@ -1,7 +1,9 @@
 package com.utn.cookmate.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import com.utn.cookmate.R
@@ -24,6 +26,13 @@ class TusRecetasActivity : AppCompatActivity() {
         // Crear un adaptador para la lista de recetas y asignarlo al ListView
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, obtenerNombresRecetas(recetas))
         listView.adapter = adapter
+
+        val botonBuscaReceta: Button = findViewById(R.id.botonBuscaReceta)
+        botonBuscaReceta.setOnClickListener {
+            // Intent para abrir la otra actividad (BuscaRecetaActivity)
+            val intent = Intent(this, BuscaRecetaActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun obtenerNombresRecetas(recetas: List<Receta>): List<String> {
