@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFD9EB"
+    tools:context=".ui.TusRecetasActivity">
+
+    <TextView
+        android:id="@+id/nombreReceta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="#FFD9EB"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:text="Tus Recetas"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp" />
+
+    <!-- Lista de Recetas -->
+    <ListView
+        android:id="@+id/listaRecetas"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/nombreReceta"
+        android:layout_marginTop="8dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="8dp" />
+
+</RelativeLayout>
