@@ -1,4 +1,6 @@
-package model.entity;
+package model;
+
+import model.entity.*;
 
 import java.io.*;
 import java.net.Socket;
