@@ -1,4 +1,9 @@
-package model.entity;
+package model;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import model.entity.Recipe;
+import model.entity.User;
 
 import java.io.*;
 import java.net.Socket;
@@ -25,7 +30,7 @@ public class ClientHandler implements Runnable {
                 case "obtenerRecetas":
                     // Lógica para obtener la lista de recetas del archivo JSON
                     List<Recipe> recetas = ArchivoJson.cargarRecetas();
-                    salidaObjetos.writeObject(recetas);
+                    salidaObjetos.writeObject(new Gson().toJsonTree(recetas, JsonArray.class));
                     break;
                 case "guardarReceta":
                     // Leer la receta a guardar desde el cliente

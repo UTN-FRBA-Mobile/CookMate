@@ -12,8 +12,8 @@ import java.net.Socket;
 import java.util.List;
 
 public class ClientSocket {
-    private static final String SERVIDOR_IP = "localhost"; // Dirección IP del servidor
-    private static final int PUERTO = 12345;
+    private static final String SERVIDOR_IP = "0.tcp.sa.ngrok.io"; // Dirección IP del servidor
+    private static final int PUERTO = 10223;
 
     public static void main(String[] args) {
         obtenerRecetas();

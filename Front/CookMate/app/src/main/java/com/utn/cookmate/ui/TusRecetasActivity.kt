@@ -8,19 +8,29 @@ import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import com.utn.cookmate.R
 import com.utn.cookmate.core.dominio.Receta
+import com.utn.cookmate.core.entity.Recipe
 import com.utn.cookmate.core.service.RecetasService
 import com.utn.cookmate.core.service.RecetasServiceMock
+import com.utn.cookmate.core.service.RecetasServiceSocket
+
 class TusRecetasActivity : AppCompatActivity() {
-    private val recetasService: RecetasService = RecetasServiceMock()
+    val recetasService: RecetasServiceSocket = RecetasServiceSocket()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tus_recetas)
 
         // Obtener las recetas mockeadas
-        val recetas = recetasService.obtenerRecetas()
+        recetasService.obtenerRecetas { recetas ->
+            // Aquí puedes usar las recetas obtenidas
+            mostrarRecetas(recetas)
+        }
 
-        // Obtener la referencia al ListView en el layout
+    }
+
+    private fun mostrarRecetas(recetas: List<Recipe>) {
+    // Obtener la referencia al ListView en el layout
         val listView: ListView = findViewById(R.id.listaRecetas)
 
         // Crear un adaptador para la lista de recetas y asignarlo al ListView
@@ -35,7 +45,7 @@ class TusRecetasActivity : AppCompatActivity() {
         }
     }
 
-    private fun obtenerNombresRecetas(recetas: List<Receta>): List<String> {
+    private fun obtenerNombresRecetas(recetas: List<Recipe>): List<String> {
         // Obtener los nombres de las recetas para mostrar en la lista
         return recetas.map { it.nombre }
     }

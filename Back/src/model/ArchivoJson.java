@@ -1,8 +1,11 @@
-package model.entity;
+package model;
 
 import application.DataInitializer;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import model.entity.Recipe;
+import model.entity.User;
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;

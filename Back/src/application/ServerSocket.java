@@ -1,12 +1,12 @@
 package application;
 
-import model.entity.ClientHandler;
+import model.ClientHandler;
 
 import java.io.*;
 import java.net.Socket;
 
 public class ServerSocket {
-    private static final int PUERTO = 12345;
+    private static final int PUERTO = 9090;
 
     public static void main(String[] args) {
         try (java.net.ServerSocket serverSocket = new java.net.ServerSocket(PUERTO)) {
