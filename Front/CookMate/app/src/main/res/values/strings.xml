@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">CookMate</string>
+    <string name="tus_recetas">Tus Recetas</string>
+    <string name="detalles_de_la_receta">Detalles de la Receta</string>
+    <string name="step_description">Paso %1$d: %2$s</string>
+    <string name="ingredient">%1$s: %2$s</string>
 </resources>

@@ -1,33 +1,40 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFD9EB"
+    android:background="@color/purple_700"
     tools:context=".ui.TusRecetasActivity">
 
     <TextView
         android:id="@+id/nombreReceta"
-        android:layout_width="wrap_content"
+        android:layout_width="183dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:background="#FFD9EB"
+        android:layout_marginTop="16dp"
+        android:background="@color/purple_200"
+        android:fontFamily="sans-serif"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
-        android:text="Tus Recetas"
+        android:shadowColor="#80000000"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="2"
+        android:text="@string/tus_recetas"
         android:textColor="@android:color/black"
-        android:textSize="18sp"
-        android:layout_marginTop="16dp" />
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <!-- Lista de Recetas -->
     <ListView
         android:id="@+id/listaRecetas"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_below="@id/nombreReceta"
+        android:layout_above="@id/botonBuscaReceta"
         android:layout_marginTop="8dp"
         android:divider="@android:color/transparent"
-        android:dividerHeight="8dp" />
+        android:dividerHeight="8dp"
+        android:listSelector="@drawable/background_item_lista" />
 
     <Button
         android:id="@+id/botonBuscaReceta"

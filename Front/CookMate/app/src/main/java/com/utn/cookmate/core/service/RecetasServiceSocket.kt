@@ -3,26 +3,31 @@ package com.utn.cookmate.core.service
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.utn.cookmate.core.entity.Recipe
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.net.Socket
+import kotlin.coroutines.CoroutineContext
 
-class RecetasServiceSocket() : RecetasService {
+class RecetasServiceSocket() : RecetasService, CoroutineScope {
 
-    private var socket: Socket? = null
+    private val job = Job()
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     override fun obtenerRecetas(callback: (List<Recipe>) -> Unit) {
-        GlobalScope.launch(Dispatchers.Main) {
+        launch {
             val recetas = withContext(Dispatchers.IO) {
-                // Realiza la operación de red aquí
                 val recetas = mutableListOf<Recipe>()
                 try {
                     val host = "0.tcp.sa.ngrok.io"
-                    val port = 19257
+                    val port = 17736
 
                     val socket = Socket(host, port)
                     val outputStream = ObjectOutputStream(socket.getOutputStream())
@@ -36,11 +41,9 @@ class RecetasServiceSocket() : RecetasService {
                     // Leer respuesta del servidor
                     val response = inputStream.readObject().toString()
                     println("response: $response")
-                    if (response != null) {
-                        // Procesar la lista de recetas
-                        val listType = object : TypeToken<List<Recipe>>() {}.type
-                        recetas.addAll(gson.fromJson(response, listType))
-                    }
+                    // Procesar la lista de recetas
+                    val listType = object : TypeToken<List<Recipe>>() {}.type
+                    recetas.addAll(gson.fromJson(response, listType))
 
                     // Cerrar conexiones
                     inputStream.close()
@@ -51,9 +54,11 @@ class RecetasServiceSocket() : RecetasService {
                 }
                 recetas
             }
-            // Llama al callback con el resultado
             callback(recetas)
         }
     }
 
+    fun clear() {
+        job.cancel()
+    }
 }

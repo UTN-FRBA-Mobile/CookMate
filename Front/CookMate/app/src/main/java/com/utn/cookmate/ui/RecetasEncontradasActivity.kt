@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.utn.cookmate.R
+import com.utn.cookmate.ui.adapter.AdapterRecetasEncontradas
 
 class RecetasEncontradasActivity : AppCompatActivity(), AdapterRecetasEncontradas.ItemClickListener {
 

@@ -14,9 +14,8 @@ public class ServerSocket {
 
             while (true) {
                 Socket socket = serverSocket.accept();
-                System.out.println("Cliente conectado desde " + socket.getInetAddress());
+                System.out.println("Cliente conectado desde " + socket.getInetAddress() + " o " + socket.getRemoteSocketAddress());
 
-                // Procesar la solicitud del cliente en un hilo separado
                 new Thread(new ClientHandler(socket)).start();
             }
         } catch (IOException e) {

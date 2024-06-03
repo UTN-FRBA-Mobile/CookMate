@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 public class Ingredient implements Serializable {
     String nombre;
-    int cantidad;
+    String cantidad;
 
-    public Ingredient(String nombre, int cantidad) {
+    public Ingredient(String nombre, String cantidad) {
         this.nombre = nombre;
         this.cantidad = cantidad;
     }
@@ -19,11 +19,11 @@ public class Ingredient implements Serializable {
         this.nombre = nombre;
     }
 
-    public int getCantidad() {
+    public String getCantidad() {
         return cantidad;
     }
 
-    public void setCantidad(int cantidad) {
+    public void setCantidad(String cantidad) {
         this.cantidad = cantidad;
     }
 }

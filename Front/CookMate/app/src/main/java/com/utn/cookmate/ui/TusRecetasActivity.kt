@@ -21,9 +21,7 @@ class TusRecetasActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tus_recetas)
 
-        // Obtener las recetas mockeadas
         recetasService.obtenerRecetas { recetas ->
-            // Aquí puedes usar las recetas obtenidas
             mostrarRecetas(recetas)
         }
 
@@ -46,7 +44,6 @@ class TusRecetasActivity : AppCompatActivity() {
     }
 
     private fun obtenerNombresRecetas(recetas: List<Recipe>): List<String> {
-        // Obtener los nombres de las recetas para mostrar en la lista
         return recetas.map { it.nombre }
     }
 }
