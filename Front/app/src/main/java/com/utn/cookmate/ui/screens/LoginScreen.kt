@@ -17,11 +17,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.utn.cookmate.R
 import com.utn.cookmate.data.UserDataUiEvents
-import com.utn.cookmate.ui.ButtonComponent
-import com.utn.cookmate.ui.FoodCard
-import com.utn.cookmate.ui.Server
+import com.utn.cookmate.connection.Server
+
 import com.utn.cookmate.ui.TextComponent
 import com.utn.cookmate.ui.TextFieldComponent
 import com.utn.cookmate.ui.TopBar
@@ -66,7 +64,7 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
                             println("${userInputViewModel.appStatus.value.nameEntered} and ${userInputViewModel.appStatus.value.passwordEntered}")
-                            if (userInputViewModel.appStatus.value.server.login()) {
+                            if (Server(userInputViewModel).login(userInputViewModel.appStatus.value.nameEntered,userInputViewModel.appStatus.value.passwordEntered)) {
                                 navController.navigate(Routes.MIS_RECETAS_SCREEN)
                             } else {
                                 navController.navigate(Routes.LOGIN_SCREEN)

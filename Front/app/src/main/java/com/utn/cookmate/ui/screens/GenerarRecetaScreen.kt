@@ -9,18 +9,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.utn.cookmate.data.UserDataUiEvents
-import com.utn.cookmate.ui.ButtonComponent
+import com.utn.cookmate.connection.Server
 import com.utn.cookmate.ui.TextComponent
 import com.utn.cookmate.ui.TextFieldComponent
-import com.utn.cookmate.ui.TopBar
 import com.utn.cookmate.ui.UserInputViewModel
 
 @Composable
@@ -51,7 +48,7 @@ fun GenerarRecetaScreen (userInputViewModel: UserInputViewModel, navController :
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
-                        userInputViewModel.appStatus.value.server.mockRecetasEncontradas()
+                        Server(userInputViewModel).mockRecetasEncontradas()
                         userInputViewModel.appStatus.value.ingredientesElegidos.clear()
                         println("Se buscan recetas con estos ingredientes")
                         navController.navigate(Routes.RECETAS_ENCONTRADAS_SCREEN)
