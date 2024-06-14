@@ -11,19 +11,32 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.gson.JsonObject
 import com.utn.cookmate.data.UserDataUiEvents
 import com.utn.cookmate.connection.Server
+import com.utn.cookmate.data.Ingrediente
+import com.utn.cookmate.data.Paso
+import com.utn.cookmate.data.Receta
 
 import com.utn.cookmate.ui.TextComponent
 import com.utn.cookmate.ui.TextFieldComponent
 import com.utn.cookmate.ui.TopBar
 import com.utn.cookmate.ui.UserInputViewModel
+import org.json.JSONArray
+import org.json.JSONObject
+import java.util.Base64
 
 @Composable
 fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavController) {
@@ -37,10 +50,10 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                     .padding(18.dp)
             ) {
                 TopBar("Hi there \uD83D\uDE0A")
-                TextComponent(textValue = "Nombre", textSize = 12.sp)
+                TextComponent(textValue = "Email", textSize = 12.sp)
                 TextFieldComponent(
-                    "Nombre",
-                    onTextChanged = { userInputViewModel.onEvent(UserDataUiEvents.UserNameEntered(it)) })
+                    "Email",
+                    onTextChanged = { userInputViewModel.onEvent(UserDataUiEvents.EmailEntered(it)) })
                 Spacer(modifier = Modifier.size(20.dp))
                 TextComponent(textValue = "Clave", textSize = 12.sp)
                 TextFieldComponent(
@@ -59,16 +72,52 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                 Spacer(modifier = Modifier.weight(1f))
 
                  */
+
+//                val originalResponse = remember { mutableStateOf(userInputViewModel.appStatus.value.response) }
+//                val theResponse by remember {
+//                    mutableStateOf(userInputViewModel.appStatus.value.response)
+//                }
+                if(userInputViewModel.appStatus.value.loginResponse.value == "LOGIN FAILED") {
+                    TextComponent(textValue = "Login fallido!", textSize = 12.sp)
+                } else if(userInputViewModel.appStatus.value.loginResponse.value != "") {
+                    userInputViewModel.appStatus.value.recetasGuardadas.clear()
+                    var recetasGuardadas : JSONArray = JSONArray(userInputViewModel.appStatus.value.loginResponse.value)
+                    for (i in 0 until recetasGuardadas.length()) {
+                        var listaDePasos : MutableList<Paso> = mutableListOf<Paso>()
+                        val item : JSONObject= recetasGuardadas.getJSONObject(i)
+                        val nombre = item.getString("nombre")
+                        val listaPasos = item.getJSONArray("pasos")
+                        for (j in 0 until listaPasos.length()) {
+                            val paso : JSONObject= listaPasos.getJSONObject(j)
+                            val numeroPaso = paso.getInt("numero")
+                            val descripcionPaso = paso.getString("descripcion")
+                            val base64ImagePaso = paso.getString("base64Image")
+                            val listaIngredientes = paso.getJSONArray("ingredientes")
+                            var listaDeIngredientes : MutableList<Ingrediente> = mutableListOf<Ingrediente>()
+                            for (k in 0 until listaIngredientes.length()) {
+                                val ingrediente : JSONObject= listaIngredientes.getJSONObject(k)
+                                val nombreIngrediente = ingrediente.getString("nombre")
+                                val cantidad = ingrediente.getInt("cantidad")
+                                val base64Image = ingrediente.getString("base64Image")
+                                var ingredienteObjeto : Ingrediente = Ingrediente(nombreIngrediente,cantidad,Base64.getDecoder().decode(base64Image))
+                                listaDeIngredientes.add(ingredienteObjeto)
+                            }
+                            var pasoObjeto : Paso = Paso(numeroPaso,descripcionPaso,Base64.getDecoder().decode(base64ImagePaso),listaDeIngredientes)
+                            listaDePasos.add(pasoObjeto)
+                        }
+                        var receta : Receta = Receta(nombre, listaDePasos, true)
+                        userInputViewModel.appStatus.value.recetasGuardadas.add(receta)
+                    }
+
+                    //userInputViewModel.appStatus.value.recetasGuardadas = parseado;
+                    navController.navigate(Routes.MIS_RECETAS_SCREEN)
+                }
                 if (userInputViewModel.isValidLoginState()) {
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
-                            println("${userInputViewModel.appStatus.value.nameEntered} and ${userInputViewModel.appStatus.value.passwordEntered}")
-                            if (Server(userInputViewModel).login(userInputViewModel.appStatus.value.nameEntered,userInputViewModel.appStatus.value.passwordEntered)) {
-                                navController.navigate(Routes.MIS_RECETAS_SCREEN)
-                            } else {
-                                navController.navigate(Routes.LOGIN_SCREEN)
-                            }
+                            println("${userInputViewModel.appStatus.value.emailEntered} and ${userInputViewModel.appStatus.value.passwordEntered}")
+                            Server(userInputViewModel).login(userInputViewModel.appStatus.value.emailEntered,userInputViewModel.appStatus.value.passwordEntered)
                         }
                     ) {
                         TextComponent(

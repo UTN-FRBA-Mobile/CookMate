@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.utn.cookmate.connection.Server
 import com.utn.cookmate.data.Receta
 import com.utn.cookmate.ui.RecetaCard
 import com.utn.cookmate.ui.RecetaEnLista
@@ -54,7 +55,7 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
                     )
                     Spacer(modifier = Modifier.weight(1f).clickable { println("click en receta")})
                     Text(
-                        modifier = Modifier.clickable { funGuardar(receta.id,userInputViewModel) },
+                        modifier = Modifier.clickable { funGuardar(receta.nombre,userInputViewModel) },
                         text = "\uD83D\uDDAA",
                         color = Color.Black,
                         fontSize = 20.sp,
@@ -67,10 +68,10 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
     }
 }
 
-fun funGuardar(idAGuardar:String,userInputViewModel: UserInputViewModel){
+fun funGuardar(nombreReceta:String,userInputViewModel: UserInputViewModel){
+    Server(userInputViewModel).addRecipeToUser(nombreReceta)
     for(receta in userInputViewModel.appStatus.value.recetasEncontradas){
-        println(receta.id + " vs " + idAGuardar)
-        if(receta.id.equals(idAGuardar)){
+        if(receta.nombre.equals(nombreReceta)){
             receta.guardada = true;
             userInputViewModel.appStatus.value.recetasEncontradas.add(receta)
             return;

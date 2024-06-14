@@ -1,6 +1,6 @@
 package com.utn.cookmate.data
 
-class Receta(var id: String, var nombre: String, var listaPasos: MutableList<String>, var guardada: Boolean = false) {
+class Receta(var nombre: String, var listaPasos: MutableList<Paso>, var guardada: Boolean = false) {
 
 
 }

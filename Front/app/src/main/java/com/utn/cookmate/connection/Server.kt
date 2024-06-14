@@ -1,5 +1,6 @@
 package com.utn.cookmate.connection
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.utn.cookmate.data.Receta
 import com.utn.cookmate.ui.UserInputViewModel
@@ -42,12 +43,12 @@ class Server(userInputViewModel : UserInputViewModel) {
     }
 
 
-    fun login(username:String, password:String) : Boolean{
+    fun login(email:String, password:String) : Boolean{
         var json = JsonObject()
         json.addProperty("action","login")
-        json.addProperty("username",username)
+        json.addProperty("email",email)
         json.addProperty("password",password)
-        var apiResponse = sendPost(json)
+        sendPost("login",json)
 //        val service = PostApi.instance
 //
 //        connect()
@@ -59,6 +60,39 @@ class Server(userInputViewModel : UserInputViewModel) {
         return true;
     }
 
+    fun searchRecipes() {
+        var json = JsonObject()
+        var array : JsonArray = JsonArray()
+        for(ingrediente in userInputViewModel.appStatus.value.ingredientesElegidos){
+            array.add(ingrediente)
+        }
+        json.addProperty("action","searchRecipes")
+        json.add("ingredientes",array)
+        sendPost("searchRecipes",json)
+    }
+
+    fun addRecipeToUser(nombreReceta:String) {
+        var json = JsonObject()
+        json.addProperty("action","addRecipeToUser")
+        json.addProperty("email",userInputViewModel.appStatus.value.emailEntered)
+        json.addProperty("nombreReceta",nombreReceta)
+        sendPost("addRecipeToUser",json)
+    }
+
+    fun removeRecipeFromUser(nombreReceta:String) {
+        var json = JsonObject()
+        json.addProperty("action","removeRecipeFromUser")
+        json.addProperty("email",userInputViewModel.appStatus.value.emailEntered)
+        json.addProperty("nombreReceta",nombreReceta)
+        sendPost("removeRecipeFromUser",json)
+    }
+
+    fun getAllIngredients(){
+        var json = JsonObject()
+        json.addProperty("action","getAllIngredients")
+        sendPost("getAllIngredients",json)
+    }
+/*
     fun mockRecetasEncontradas(): MutableList<Receta> {
         val list: MutableList<Receta> = mutableListOf()
         list.add(Receta("1","Pollo",mutableListOf<String>("Cortale las alas","Ahora metelo al horno")))
@@ -89,10 +123,10 @@ class Server(userInputViewModel : UserInputViewModel) {
         list.add(Receta("16","Empanadas",mutableListOf<String>("Rellena tapas de empanada","cocinalas"),true))
         return list;
     }
-
+*/
     val BASE_URL = "http://10.0.1.232:9099/asd"
 
-    fun sendPost(body:JsonObject) {
+    fun sendPost(action:String,body:JsonObject) {
         Thread(Runnable{
             val connection = URL(BASE_URL).openConnection() as HttpURLConnection
             connection.requestMethod = "POST"
@@ -118,7 +152,24 @@ class Server(userInputViewModel : UserInputViewModel) {
                 e.printStackTrace()
             }
             connection.disconnect()
-            userInputViewModel.appStatus.value.response = response.toString()
+            println("RESPONSEEEEEEEEEEEEEEEEEE: " + response.toString())
+
+//            userInputViewModel.appStatus.value.loginResponse.value = ""
+//            userInputViewModel.appStatus.value.addRecipeToUserResponse.value = ""
+//            userInputViewModel.appStatus.value.removeRecipeFromUserResponse.value = ""
+//            userInputViewModel.appStatus.value.searchRecipesResponse.value = ""
+//            userInputViewModel.appStatus.value.getAllIngredientsResponse.value = ""
+            if(action == "login"){
+                userInputViewModel.appStatus.value.loginResponse.value = response.toString()
+            } else if(action == "addRecipeToUser"){
+                userInputViewModel.appStatus.value.addRecipeToUserResponse.value = response.toString()
+            } else if(action == "removeRecipeFromUser"){
+                userInputViewModel.appStatus.value.removeRecipeFromUserResponse.value = response.toString()
+            } else if(action == "searchRecipes"){
+                userInputViewModel.appStatus.value.searchRecipesResponse.value = response.toString()
+            } else if(action == "getAllIngredients"){
+                userInputViewModel.appStatus.value.getAllIngredientsResponse.value = response.toString()
+            }
         }).start()
 
     }

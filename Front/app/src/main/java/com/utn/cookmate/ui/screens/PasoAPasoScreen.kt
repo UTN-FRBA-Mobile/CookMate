@@ -1,5 +1,7 @@
 package com.utn.cookmate.ui.screens
 
+import android.graphics.BitmapFactory
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,10 +19,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.utn.cookmate.data.Receta
+import com.utn.cookmate.ui.NormalBar
 import com.utn.cookmate.ui.RecetaEnLista
 import com.utn.cookmate.ui.TextComponent
 import com.utn.cookmate.ui.TopBar
@@ -32,7 +36,6 @@ fun PasoAPasoScreen (userInputViewModel: UserInputViewModel, navController : Nav
         modifier = Modifier.fillMaxSize()
     ) {
         val state = rememberScrollState()
-        LaunchedEffect(Unit) { state.animateScrollTo(100) }
         Column(modifier = Modifier
             .fillMaxSize()
             .padding(18.dp)
@@ -41,15 +44,14 @@ fun PasoAPasoScreen (userInputViewModel: UserInputViewModel, navController : Nav
             var recetaElegida = userInputViewModel.appStatus.value.recetaElegida;
             if (recetaElegida != null) {
                 TopBar(value = recetaElegida.nombre)
-                Spacer(modifier = Modifier.size(30.dp))
-                TextComponent("Paso " + userInputViewModel.appStatus.value.pasoActual, textSize = 20.sp)
+                Spacer(modifier = Modifier.size(20.dp))
                 Row(modifier = Modifier.fillMaxWidth()){
                         Button(
-                            enabled = userInputViewModel.appStatus.value.pasoActual != 1,
+                            enabled = userInputViewModel.appStatus.value.pasoActual.value != 1,
                             //modifier = Modifier.fillMaxWidth(),
                             onClick = {
-                                userInputViewModel.appStatus.value.pasoActual--;
-                                navController.navigate(Routes.PASO_A_PASO_SCREEN)
+                                userInputViewModel.appStatus.value.pasoActual.value--;
+                                //navController.navigate(Routes.PASO_A_PASO_SCREEN)
                             }
                         ) {
                             TextComponent(
@@ -59,11 +61,11 @@ fun PasoAPasoScreen (userInputViewModel: UserInputViewModel, navController : Nav
                             )
                         }
                         Button(
-                            enabled = userInputViewModel.appStatus.value.pasoActual != recetaElegida.listaPasos.size,
+                            enabled = userInputViewModel.appStatus.value.pasoActual.value != recetaElegida.listaPasos.size,
                             //modifier = Modifier.fillMaxWidth(),
                             onClick = {
-                                userInputViewModel.appStatus.value.pasoActual++;
-                                navController.navigate(Routes.PASO_A_PASO_SCREEN)
+                                userInputViewModel.appStatus.value.pasoActual.value++;
+                               // navController.navigate(Routes.PASO_A_PASO_SCREEN)
                             }
                         ) {
                             TextComponent(
@@ -73,9 +75,31 @@ fun PasoAPasoScreen (userInputViewModel: UserInputViewModel, navController : Nav
                             )
                         }
                 }
-                var paso = recetaElegida.listaPasos.get(userInputViewModel.appStatus.value.pasoActual - 1)
-                TextComponent(paso, textSize = 20.sp)
+                var paso = recetaElegida.listaPasos.get(userInputViewModel.appStatus.value.pasoActual.value - 1)
                 Spacer(modifier = Modifier.size(20.dp))
+                NormalBar("Paso " + userInputViewModel.appStatus.value.pasoActual.value)
+                Spacer(modifier = Modifier.size(15.dp))
+                TextComponent(paso.descripcion, textSize = 20.sp)
+                Spacer(modifier = Modifier.size(20.dp))
+                Image(
+                    bitmap = BitmapFactory.decodeByteArray(paso.image,0,paso.image.size).asImageBitmap(),
+                    contentDescription = "contentDescription"
+                )
+                Spacer(modifier = Modifier.size(20.dp))
+                NormalBar("Ingredientes requeridos")
+                Row(modifier = Modifier.fillMaxWidth().padding(20.dp),){
+                    Column(){
+                        if(paso.ingredientes.isNotEmpty()){
+                            for (ingrediente in paso.ingredientes) {
+                                NormalBar(ingrediente.nombre + " (" + ingrediente.cantidad + ")",ingrediente.image)
+                                Spacer(modifier = Modifier.size(50.dp))
+                            }
+                        } else {
+                            NormalBar("Ninguno para este paso!")
+                            Spacer(modifier = Modifier.size(20.dp))
+                        }
+                    }
+                }
                 Row(
                     modifier = Modifier.fillMaxWidth().weight(0.5F).padding(20.dp),
                     horizontalArrangement = Arrangement.Center,
@@ -84,7 +108,7 @@ fun PasoAPasoScreen (userInputViewModel: UserInputViewModel, navController : Nav
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
-                            userInputViewModel.appStatus.value.pasoActual = 1;
+                            userInputViewModel.appStatus.value.pasoActual.value = 1;
                             navController.navigate(Routes.MIS_RECETAS_SCREEN)
                         }
                     ) {

@@ -1,5 +1,6 @@
 package com.utn.cookmate.ui
 
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,6 +20,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 
@@ -31,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role.Companion.Button
@@ -112,6 +115,57 @@ fun TopBar(value: String) {
 @Composable
 fun TopBarPreview() {
     TopBar("Preview Text")
+}
+
+@Composable
+fun NormalBar(textValue: String) {
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = textValue,
+            color = Color.Black,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Medium
+        )
+    }
+}
+
+@Composable
+fun CheckboxRow(textValue: String,onClickCallback:()->Unit) {
+    val checked = remember { mutableStateOf(false) }
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = textValue,
+            color = Color.Black,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Medium
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Checkbox(
+            checked = checked.value,
+            onCheckedChange = {
+                checked.value = it
+                onClickCallback()
+            }
+        )
+    }
+
+}
+
+@Composable
+fun NormalBar(textValue: String, imageBytes:ByteArray) {
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = textValue,
+            color = Color.Black,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Medium
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Image(
+            bitmap = BitmapFactory.decodeByteArray(imageBytes,0,imageBytes.size).asImageBitmap(),
+            contentDescription = "contentDescription"
+        )
+    }
 }
 
 @Composable

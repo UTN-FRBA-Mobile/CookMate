@@ -2,7 +2,6 @@ package com.utn.cookmate.ui;
 
 import android.content.ContentValues.TAG
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.utn.cookmate.data.AppStatus
@@ -14,8 +13,8 @@ class UserInputViewModel : ViewModel(){
 
     fun onEvent(event: UserDataUiEvents) {
         when(event){
-            is UserDataUiEvents.UserNameEntered -> {
-                appStatus.value = appStatus.value.copy(nameEntered = event.name)
+            is UserDataUiEvents.EmailEntered -> {
+                appStatus.value = appStatus.value.copy(emailEntered = event.name)
                 Log.d(TAG, "onEvent:UserNameEntered->>")
                 Log.d(TAG, "${appStatus.value}")
             }
@@ -25,17 +24,11 @@ class UserInputViewModel : ViewModel(){
                 Log.d(TAG, "onEvent:PasswordEntered->>")
                 Log.d(TAG, "${appStatus.value}")
             }
-
-            is UserDataUiEvents.IngredienteAgregado -> {
-                appStatus.value.ingredientesElegidos.add(event.ingredienteAgregado)
-                Log.d(TAG, "onEvent:IngredienteAgregado->>")
-                Log.d(TAG, "${appStatus.value}")
-            }
         }
     }
 
     fun isValidLoginState() : Boolean {   //devuelve Boolean
-        return !appStatus.value.nameEntered.isNullOrEmpty() && !appStatus.value.passwordEntered.isNullOrEmpty()
+        return !appStatus.value.emailEntered.isNullOrEmpty() && !appStatus.value.passwordEntered.isNullOrEmpty()
     }
 
     fun isValidBusquedaRecetasState() : Boolean {   //devuelve Boolean

@@ -1,16 +1,28 @@
 package com.utn.cookmate.data
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+
 data class AppStatus(
-    var nameEntered : String = "", //default value empty
+    var emailEntered: String = "", //default value empty
     var passwordEntered: String = "",
 
-    var ingredientesElegidos: MutableList<String> = mutableListOf<String>(),
+    var ingredientesElegidos: MutableList<String> = mutableStateListOf<String>(),
 
-    var recetaElegida : Receta? = null,  //el '?' significa que puede ser null
-    var pasoActual: Int = 1,
+    var recetaElegida: Receta? = null,  //el '?' significa que puede ser null
+    var pasoActual: MutableState<Int> = mutableStateOf(1),
 
-    var response : String = "",
+    //var response: String = "",
+    var loginResponse: MutableState<String> = mutableStateOf(""),
+    var addRecipeToUserResponse: MutableState<String> = mutableStateOf(""),
+    var removeRecipeFromUserResponse: MutableState<String> = mutableStateOf(""),
+    var searchRecipesResponse: MutableState<String> = mutableStateOf(""),
+    var getAllIngredientsResponse: MutableState<String> = mutableStateOf(""),
 
-    var recetasGuardadas : MutableList<Receta> = mutableListOf<Receta>(),
-    var recetasEncontradas : MutableList<Receta> = mutableListOf<Receta>()
+    var recetasGuardadas: MutableList<Receta> = mutableStateListOf<Receta>(),
+    var recetasEncontradas: MutableList<Receta> = mutableListOf<Receta>()
+
+
 )

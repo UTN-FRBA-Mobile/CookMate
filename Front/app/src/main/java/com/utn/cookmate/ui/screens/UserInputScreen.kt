@@ -38,7 +38,7 @@ fun UserInputScreen(userInputViewModel: UserInputViewModel) {
             TextComponent(textValue = "detalles extra...", textSize = 18.sp)
             Spacer(modifier = Modifier.size(60.dp))
             TextComponent(textValue = "Nombre", textSize = 12.sp)
-            TextFieldComponent("Example",onTextChanged = {userInputViewModel.onEvent(UserDataUiEvents.UserNameEntered(it))})
+            TextFieldComponent("Example",onTextChanged = {userInputViewModel.onEvent(UserDataUiEvents.EmailEntered(it))})
             Spacer(modifier = Modifier.size(20.dp))
             TextComponent(textValue = "Elegir comida", textSize = 18.sp)
             Spacer(modifier = Modifier.size(10.dp))

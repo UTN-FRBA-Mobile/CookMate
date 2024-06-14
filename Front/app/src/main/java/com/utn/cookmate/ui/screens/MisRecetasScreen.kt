@@ -35,9 +35,6 @@ import com.utn.cookmate.ui.UserInputViewModel
 @Composable
 fun MisRecetasScreen (userInputViewModel: UserInputViewModel, navController : NavController){
 
-    userInputViewModel.appStatus.value.recetasGuardadas = Server(userInputViewModel).mockRecetas()
-    userInputViewModel.appStatus.value.recetasEncontradas  = Server(userInputViewModel).mockRecetasEncontradas()
-
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -97,8 +94,8 @@ fun MisRecetasScreen (userInputViewModel: UserInputViewModel, navController : Na
                         Text(
                             modifier = Modifier.clickable {
                                 //AlertDialogExample({ println("ok") },{ println("no") },"TITULO","Seguro?",Icons.Default.Info)
-                                funBorrar(idABorrar = receta.nombre, userInputViewModel)
-                                navController.navigate(Routes.MIS_RECETAS_SCREEN)
+                                userInputViewModel.appStatus.value.recetaElegida = receta
+                                navController.navigate(Routes.SEGURO_ELIMINAR_RECETA_SCREEN)
                               },
                             text = "\uD83D\uDDD1\uFE0F",
                             color = Color.Black,
@@ -118,7 +115,8 @@ fun MisRecetasScreen (userInputViewModel: UserInputViewModel, navController : Na
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
-                        navController.navigate(Routes.GENERAR_RECETA_SCREEN)
+                        Server(userInputViewModel).getAllIngredients()
+                        navController.navigate(Routes.BUSCAR_RECETA_ONLINE_SCREEN)
                     }
                 ) {
                     TextComponent(textValue = "Buscar una receta online", textSize = 18.sp,colorValue = Color.White)
@@ -131,18 +129,6 @@ fun MisRecetasScreen (userInputViewModel: UserInputViewModel, navController : Na
 
     }
 }
-
-fun funBorrar(idABorrar:String, userInputViewModel:UserInputViewModel){
-    for(receta in userInputViewModel.appStatus.value.recetasGuardadas){
-        println(receta.nombre + " vs " + idABorrar)
-        if(receta.nombre.equals(idABorrar)){
-            userInputViewModel.appStatus.value.recetasGuardadas.remove(receta);
-            return;
-        }
-    }
-}
-
-
 
 @Composable
 fun AlertDialogExample(
