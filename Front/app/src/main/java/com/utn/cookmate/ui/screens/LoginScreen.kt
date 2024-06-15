@@ -63,7 +63,7 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                     .fillMaxSize()
                     .padding(18.dp)
             ) {
-                TopBar("Hi there \uD83D\uDE0A")
+                TopBar("CookMate! \uD83D\uDE0A")
                 TextComponent(textValue = "Email", textSize = 12.sp)
                 TextFieldComponent(
                     "Email",
