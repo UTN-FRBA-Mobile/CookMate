@@ -40,6 +40,20 @@ import java.util.Base64
 
 @Composable
 fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavController) {
+    if(userInputViewModel.appStatus.value.downloadResourcesResponse.value.isEmpty()){
+        Server(userInputViewModel).downloadResources()
+    } else if(userInputViewModel.appStatus.value.imagenesDescargadas.isEmpty()){
+        Thread(Runnable{
+            var imagenes : JSONArray = JSONArray(userInputViewModel.appStatus.value.downloadResourcesResponse.value)
+            for (i in 0 until imagenes.length()) {
+                val item : JSONObject= imagenes.getJSONObject(i)
+                val nombre = item.getString("nombre")
+                val base64 = item.getString("base64")
+                userInputViewModel.appStatus.value.imagenesDescargadas.put(nombre,Base64.getDecoder().decode(base64))
+            }
+        }).start()
+    }
+
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -91,18 +105,19 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                             val paso : JSONObject= listaPasos.getJSONObject(j)
                             val numeroPaso = paso.getInt("numero")
                             val descripcionPaso = paso.getString("descripcion")
-                            val base64ImagePaso = paso.getString("base64Image")
+                            val imagen = paso.getString("imagen")
+                            //Base64.getDecoder().decode(base64ImagePaso)
                             val listaIngredientes = paso.getJSONArray("ingredientes")
                             var listaDeIngredientes : MutableList<Ingrediente> = mutableListOf<Ingrediente>()
                             for (k in 0 until listaIngredientes.length()) {
                                 val ingrediente : JSONObject= listaIngredientes.getJSONObject(k)
                                 val nombreIngrediente = ingrediente.getString("nombre")
                                 val cantidad = ingrediente.getInt("cantidad")
-                                val base64Image = ingrediente.getString("base64Image")
-                                var ingredienteObjeto : Ingrediente = Ingrediente(nombreIngrediente,cantidad,Base64.getDecoder().decode(base64Image))
+                                val imagenIngrediente = ingrediente.getString("imagen")
+                                var ingredienteObjeto : Ingrediente = Ingrediente(nombreIngrediente,cantidad,imagenIngrediente)
                                 listaDeIngredientes.add(ingredienteObjeto)
                             }
-                            var pasoObjeto : Paso = Paso(numeroPaso,descripcionPaso,Base64.getDecoder().decode(base64ImagePaso),listaDeIngredientes)
+                            var pasoObjeto : Paso = Paso(numeroPaso,descripcionPaso,imagen,listaDeIngredientes)
                             listaDePasos.add(pasoObjeto)
                         }
                         var receta : Receta = Receta(nombre, listaDePasos, true)
@@ -112,7 +127,7 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                     //userInputViewModel.appStatus.value.recetasGuardadas = parseado;
                     navController.navigate(Routes.MIS_RECETAS_SCREEN)
                 }
-                if (userInputViewModel.isValidLoginState()) {
+                if (userInputViewModel.isValidLoginState() && userInputViewModel.appStatus.value.imagenesDescargadas.isNotEmpty()) {
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {

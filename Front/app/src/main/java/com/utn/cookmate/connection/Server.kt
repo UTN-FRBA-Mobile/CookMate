@@ -42,6 +42,11 @@ class Server(userInputViewModel : UserInputViewModel) {
         socket.disconnect()
     }
 
+    fun downloadResources(){
+        var json = JsonObject()
+        json.addProperty("action","downloadResources")
+        sendPost("downloadResources",json)
+    }
 
     fun login(email:String, password:String) : Boolean{
         var json = JsonObject()
@@ -169,6 +174,8 @@ class Server(userInputViewModel : UserInputViewModel) {
                 userInputViewModel.appStatus.value.searchRecipesResponse.value = response.toString()
             } else if(action == "getAllIngredients"){
                 userInputViewModel.appStatus.value.getAllIngredientsResponse.value = response.toString()
+            } else if(action == "downloadResources"){
+                userInputViewModel.appStatus.value.downloadResourcesResponse.value = response.toString()
             }
         }).start()
 

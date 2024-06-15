@@ -14,12 +14,14 @@ data class AppStatus(
     var recetaElegida: Receta? = null,  //el '?' significa que puede ser null
     var pasoActual: MutableState<Int> = mutableStateOf(1),
 
-    //var response: String = "",
+    var imagenesDescargadas: MutableMap<String,ByteArray> = mutableMapOf<String,ByteArray>(),
+
     var loginResponse: MutableState<String> = mutableStateOf(""),
     var addRecipeToUserResponse: MutableState<String> = mutableStateOf(""),
     var removeRecipeFromUserResponse: MutableState<String> = mutableStateOf(""),
     var searchRecipesResponse: MutableState<String> = mutableStateOf(""),
     var getAllIngredientsResponse: MutableState<String> = mutableStateOf(""),
+    var downloadResourcesResponse: MutableState<String> = mutableStateOf(""),
 
     var recetasGuardadas: MutableList<Receta> = mutableStateListOf<Receta>(),
     var recetasEncontradas: MutableList<Receta> = mutableListOf<Receta>()

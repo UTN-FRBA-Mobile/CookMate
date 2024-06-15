@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -81,17 +82,20 @@ fun PasoAPasoScreen (userInputViewModel: UserInputViewModel, navController : Nav
                 Spacer(modifier = Modifier.size(15.dp))
                 TextComponent(paso.descripcion, textSize = 20.sp)
                 Spacer(modifier = Modifier.size(20.dp))
-                Image(
-                    bitmap = BitmapFactory.decodeByteArray(paso.image,0,paso.image.size).asImageBitmap(),
-                    contentDescription = "contentDescription"
-                )
+                if(userInputViewModel.appStatus.value.imagenesDescargadas.get(paso.image) != null){
+                    Image(
+                        bitmap = BitmapFactory.decodeByteArray(userInputViewModel.appStatus.value.imagenesDescargadas.get(paso.image),0,
+                            userInputViewModel.appStatus.value.imagenesDescargadas.get(paso.image)!!.size).asImageBitmap(),
+                        contentDescription = "contentDescription"
+                    )
+                }
                 Spacer(modifier = Modifier.size(20.dp))
                 NormalBar("Ingredientes requeridos")
                 Row(modifier = Modifier.fillMaxWidth().padding(20.dp),){
                     Column(){
                         if(paso.ingredientes.isNotEmpty()){
                             for (ingrediente in paso.ingredientes) {
-                                NormalBar(ingrediente.nombre + " (" + ingrediente.cantidad + ")",ingrediente.image)
+                                NormalBar(ingrediente.nombre + " (" + ingrediente.cantidad + ")",userInputViewModel.appStatus.value.imagenesDescargadas.get(ingrediente.imagen))
                                 Spacer(modifier = Modifier.size(50.dp))
                             }
                         } else {

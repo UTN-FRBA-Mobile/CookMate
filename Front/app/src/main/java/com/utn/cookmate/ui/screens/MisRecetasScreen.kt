@@ -34,7 +34,7 @@ import com.utn.cookmate.ui.UserInputViewModel
 
 @Composable
 fun MisRecetasScreen (userInputViewModel: UserInputViewModel, navController : NavController){
-
+    userInputViewModel.appStatus.value.ingredientesElegidos.clear()
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
