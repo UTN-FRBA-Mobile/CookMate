@@ -3,116 +3,12 @@
     "nombre": "Juan Perez",
     "email": "juan.perez@example.com",
     "contraseña": "123456",
-    "recetas": [
-      {
-        "nombre": "Tarta de Manzana",
-        "pasos": [
-          {
-            "numero": 1,
-            "descripcion": "Precalentar el horno a 180 grados Celsius.",
-            "ingredientes": []
-          },
-          {
-            "numero": 2,
-            "descripcion": "Preparar la masa.",
-            "ingredientes": [
-              {
-                "nombre": "Harina",
-                "cantidad": 200
-              },
-              {
-                "nombre": "Mantequilla",
-                "cantidad": 100
-              },
-              {
-                "nombre": "Agua",
-                "cantidad": 50
-              }
-            ]
-          },
-          {
-            "numero": 3,
-            "descripcion": "Cortar las manzanas y colocarlas sobre la masa.",
-            "ingredientes": [
-              {
-                "nombre": "Manzanas",
-                "cantidad": 3
-              },
-              {
-                "nombre": "Azúcar",
-                "cantidad": 50
-              },
-              {
-                "nombre": "Canela",
-                "cantidad": 5
-              }
-            ]
-          },
-          {
-            "numero": 4,
-            "descripcion": "Hornear durante 30 minutos.",
-            "ingredientes": []
-          }
-        ]
-      }
-    ]
+    "recetas": ["Tarta de Manzana","Pizza Margarita"]
   },
   {
     "nombre": "Maria Lopez",
     "email": "maria.lopez@example.com",
     "contraseña": "abcdef",
-    "recetas": [
-      {
-        "nombre": "Pizza Margarita",
-        "pasos": [
-          {
-            "numero": 1,
-            "descripcion": "Precalentar el horno a 220 grados Celsius.",
-            "ingredientes": []
-          },
-          {
-            "numero": 2,
-            "descripcion": "Preparar la masa de pizza.",
-            "ingredientes": [
-              {
-                "nombre": "Harina",
-                "cantidad": 250
-              },
-              {
-                "nombre": "Levadura",
-                "cantidad": 5
-              },
-              {
-                "nombre": "Agua",
-                "cantidad": 150
-              },
-              {
-                "nombre": "Sal",
-                "cantidad": 5
-              }
-            ]
-          },
-          {
-            "numero": 3,
-            "descripcion": "Añadir salsa de tomate y mozzarella.",
-            "ingredientes": [
-              {
-                "nombre": "Salsa de tomate",
-                "cantidad": 100
-              },
-              {
-                "nombre": "Mozzarella",
-                "cantidad": 200
-              }
-            ]
-          },
-          {
-            "numero": 4,
-            "descripcion": "Hornear durante 15 minutos.",
-            "ingredientes": []
-          }
-        ]
-      }
-    ]
+    "recetas": ["Pizza Margarita"]
   }
 ]
