@@ -27,7 +27,7 @@ class RecetasServiceSocket() : RecetasService, CoroutineScope {
                 val recetas = mutableListOf<Recipe>()
                 try {
                     val host = "0.tcp.sa.ngrok.io"
-                    val port = 17736
+                    val port = 12011
 
                     val socket = Socket(host, port)
                     val outputStream = ObjectOutputStream(socket.getOutputStream())
