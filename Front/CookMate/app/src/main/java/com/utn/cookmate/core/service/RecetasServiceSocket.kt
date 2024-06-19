@@ -5,7 +5,6 @@ import com.google.gson.reflect.TypeToken
 import com.utn.cookmate.core.entity.Recipe
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,20 +20,24 @@ class RecetasServiceSocket() : RecetasService, CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
+    val host = "0.tcp.sa.ngrok.io"
+    val port = 12011
+
     override fun obtenerRecetas(callback: (List<Recipe>) -> Unit) {
+        sendRequest("obtenerRecetas", callback)
+    }
+
+    private fun sendRequest(action: String, callback: (List<Recipe>) -> Unit) {
         launch {
             val recetas = withContext(Dispatchers.IO) {
                 val recetas = mutableListOf<Recipe>()
                 try {
-                    val host = "0.tcp.sa.ngrok.io"
-                    val port = 12011
-
                     val socket = Socket(host, port)
                     val outputStream = ObjectOutputStream(socket.getOutputStream())
                     val inputStream = ObjectInputStream(socket.getInputStream())
 
                     // Enviar solicitud al servidor
-                    outputStream.writeObject("obtenerRecetas")
+                    outputStream.writeObject(action)
                     outputStream.flush()
                     val gson = Gson()
 

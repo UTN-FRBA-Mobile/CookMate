@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.utn.cookmate.connection.Server
 import com.utn.cookmate.core.service.RecetasServiceSocket
 import com.utn.cookmate.data.UserDataUiEvents
 import com.utn.cookmate.data.Ingrediente
@@ -42,7 +43,6 @@ fun GenerarRecetaScreen (userInputViewModel: UserInputViewModel, navController :
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
-        val recetasService: RecetasServiceSocket = RecetasServiceSocket()
         val state = rememberScrollState()
         LaunchedEffect(Unit) { state.animateScrollTo(100) }
         Column(modifier = Modifier
@@ -68,39 +68,6 @@ fun GenerarRecetaScreen (userInputViewModel: UserInputViewModel, navController :
                         }
                         )
                     }
-
-//                    if(userInputViewModel.appStatus.value.searchRecipesResponse.value.isNotEmpty()){
-//                        userInputViewModel.appStatus.value.recetasEncontradas.clear()
-//                        var recetasEncontradas : JSONArray = JSONArray(userInputViewModel.appStatus.value.searchRecipesResponse.value)
-//                        for (i in 0 until recetasEncontradas.length()) {
-//                            var listaDePasos : MutableList<Paso> = mutableListOf<Paso>()
-//                            val item : JSONObject= recetasEncontradas.getJSONObject(i)
-//                            val nombre = item.getString("nombre")
-//                            val listaPasos = item.getJSONArray("pasos")
-//                            for (j in 0 until listaPasos.length()) {
-//                                val paso : JSONObject= listaPasos.getJSONObject(j)
-//                                val numeroPaso = paso.getInt("numero")
-//                                val descripcionPaso = paso.getString("descripcion")
-//                                val imagen = paso.getString("imagen")
-//                                val listaIngredientes = paso.getJSONArray("ingredientes")
-//                                var listaDeIngredientes : MutableList<Ingrediente> = mutableListOf<Ingrediente>()
-//                                for (k in 0 until listaIngredientes.length()) {
-//                                    val ingrediente : JSONObject= listaIngredientes.getJSONObject(k)
-//                                    val nombreIngrediente = ingrediente.getString("nombre")
-//                                    val cantidad = ingrediente.getInt("cantidad")
-//                                    val imagenIngrediente = ingrediente.getString("imagen")
-//                                    var ingredienteObjeto : Ingrediente = Ingrediente(nombreIngrediente,cantidad,imagenIngrediente)
-//                                    //Base64.getDecoder().decode(base64Image))
-//                                    listaDeIngredientes.add(ingredienteObjeto)
-//                                }
-//                                var pasoObjeto : Paso = Paso(numeroPaso,descripcionPaso,imagen,listaDeIngredientes)
-//                                listaDePasos.add(pasoObjeto)
-//                            }
-//                            var receta : Receta = Receta(nombre, listaDePasos, false)
-//                            userInputViewModel.appStatus.value.recetasEncontradas.add(receta)
-//                        }
-//                        navController.navigate(Routes.RECETAS_ENCONTRADAS_SCREEN)
-//                    }
 
                 }
             }

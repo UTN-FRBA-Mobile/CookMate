@@ -6,6 +6,7 @@ public class Step implements Serializable {
     int numero;
     String descripcion;
     Ingredient[] ingredientes;
+    String imagen;
 
     public Step(int numero, String descripcion, Ingredient[] ingredientes) {
         this.numero = numero;
@@ -27,6 +28,14 @@ public class Step implements Serializable {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
 
     public Ingredient[] getIngredientes() {
