@@ -32,7 +32,7 @@ public class ClientHandler implements Runnable {
             JsonObject solicitud = JsonParser.parseString(solicitudJson).getAsJsonObject();
 
             // Obtener la acción de la solicitud
-            String accion = solicitud.get("accion").getAsString();
+            String accion = solicitud.get("action").getAsString();
 
             // Procesar la solicitud y enviar la respuesta al cliente
             switch (accion) {
