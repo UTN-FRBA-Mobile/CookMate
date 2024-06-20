@@ -127,12 +127,14 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                     //userInputViewModel.appStatus.value.recetasGuardadas = parseado;
                     navController.navigate(Routes.MIS_RECETAS_SCREEN)
                 }
-                if (userInputViewModel.isValidLoginState() && userInputViewModel.appStatus.value.imagenesDescargadas.isNotEmpty()) {
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
-                            println("${userInputViewModel.appStatus.value.emailEntered} and ${userInputViewModel.appStatus.value.passwordEntered}")
-                            Server(userInputViewModel).login(userInputViewModel.appStatus.value.emailEntered,userInputViewModel.appStatus.value.passwordEntered)
+                            if (userInputViewModel.isValidLoginState() && userInputViewModel.appStatus.value.imagenesDescargadas.isNotEmpty()) {
+                                println("${userInputViewModel.appStatus.value.emailEntered} and ${userInputViewModel.appStatus.value.passwordEntered}")
+                                Server(userInputViewModel).login(userInputViewModel.appStatus.value.emailEntered,userInputViewModel.appStatus.value.passwordEntered)
+                            }
+
                         }
                     ) {
                         TextComponent(
@@ -141,7 +143,6 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                             colorValue = Color.White
                         )
                     }
-                }
             }
         }
         Row(

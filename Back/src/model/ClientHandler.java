@@ -12,13 +12,16 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ClientHandler implements Runnable {
     private Socket socket;
+    private Map<String,String> imagenes;
 
-    public ClientHandler(Socket socket) {
+    public ClientHandler(Socket socket, final Map<String,String> imagenes) {
         this.socket = socket;
+        this.imagenes = imagenes;
     }
 
     @Override
@@ -36,6 +39,19 @@ public class ClientHandler implements Runnable {
 
             // Procesar la solicitud y enviar la respuesta al cliente
             switch (accion) {
+                case "login":
+                    // Lógica para loguearse
+                    final String email = solicitud.get("email").getAsString();
+                    final String password = solicitud.get("password").getAsString();
+//                    final User user = _users.get(email);
+//                    if(user != null){
+//                        if(user.getContraseña().equals(password)){
+//                            return jsonize(crearListaRecetasDesdeNombres(user.getRecetas()));
+//                        }
+//                    }
+                    //return "LOGIN FAILED";
+                    salidaObjetos.writeObject(new Gson().toJson(ArchivoJson.cargarRecetas()));
+                    break;
                 case "searchRecipes":
                     // Lógica para obtener la lista de recetas del archivo JSON
                     List<Recipe> recetas = ArchivoJson.cargarRecetas();
@@ -84,10 +100,13 @@ public class ClientHandler implements Runnable {
                     break;
                 case "downloadResources":
                     // Lógica para descargar recursos
-                    // Simulamos la descarga de recursos
-                    JsonObject recursos = new JsonObject();
-                    recursos.addProperty("resource1", "data1");
-                    recursos.addProperty("resource2", "data2");
+                    final JsonArray recursos = new JsonArray();
+                    for(final Map.Entry<String, String> elem : imagenes.entrySet()){
+                        final JsonObject jo = new JsonObject();
+                        jo.addProperty("nombre", elem.getKey());
+                        jo.addProperty("base64", elem.getValue());
+                        recursos.add(jo);
+                    }
                     salidaObjetos.writeObject(new Gson().toJson(recursos));
                     break;
                 case "getAllIngredients":
