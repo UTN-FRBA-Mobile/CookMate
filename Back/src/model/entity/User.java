@@ -4,6 +4,7 @@ package model.entity;
 import model.ArchivoJson;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -55,7 +56,7 @@ public class User implements Serializable {
     }
 
     public List<Recipe> getRecetas() {
-        List<Recipe> recipes = null;
+        List<Recipe> recipes = new ArrayList<>();
         List<Recipe> recipesAll = ArchivoJson.cargarRecetas();
         Arrays.stream(this.getNombreRecetas()).forEach( nombreReceta -> {
             recipes.add(recipesAll.stream().filter(recipe -> recipe.getNombre().equals(nombreReceta)).findFirst().get());

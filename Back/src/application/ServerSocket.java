@@ -5,6 +5,7 @@ import model.ClientHandler;
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,10 +18,12 @@ public class ServerSocket {
         _imagenes = readImagenesFile();
         try (java.net.ServerSocket serverSocket = new java.net.ServerSocket(PUERTO)) {
             System.out.println("Servidor Socket iniciado en el puerto " + PUERTO);
+            System.out.println("Hora: " + LocalDateTime.now());
 
             while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("Cliente conectado desde " + socket.getInetAddress() + " o " + socket.getRemoteSocketAddress());
+                System.out.println("Hora: " + LocalDateTime.now());
 
                 new Thread(new ClientHandler(socket,_imagenes)).start();
             }

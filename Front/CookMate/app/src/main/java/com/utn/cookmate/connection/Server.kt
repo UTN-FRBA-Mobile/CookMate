@@ -74,8 +74,8 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
     private fun sendSocketRequest(action: String, body: JsonObject) {
         launch(Dispatchers.IO) {
             try {
-                val host = "0.tcp.sa.ngrok.io"
-                val port = 15075
+                val host = "198.199.90.109"
+                val port = 9090
                 val socket = Socket(host, port)
                 val outputStream = ObjectOutputStream(socket.getOutputStream())
                 val inputStream = ObjectInputStream(socket.getInputStream())
