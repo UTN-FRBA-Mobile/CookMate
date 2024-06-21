@@ -2,6 +2,7 @@ package model;
 
 import application.DataInitializer;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import model.entity.Recipe;
 import model.entity.User;
@@ -32,11 +33,14 @@ public class ArchivoJson {
     }
 
     public static List<User> cargarUsuarios() {
-        try (FileReader fileReader = new FileReader(RUTA_USUARIOS)) {
+        try {
+            FileReader fileReader = new FileReader(RUTA_USUARIOS);
             Gson gson = new Gson();
-            Type tipoListaUsuarios = new TypeToken<ArrayList<User>>() {}.getType();
-            return gson.fromJson(fileReader, tipoListaUsuarios);
-        } catch (IOException e) {
+            Type tipoObjetoConUsuarios = new TypeToken<JsonObject>() {}.getType();
+            Type tipoListaDeUsuarios = new TypeToken<ArrayList<User>>() {}.getType();
+            JsonObject objetoUser = gson.fromJson(fileReader, tipoObjetoConUsuarios);
+            return gson.fromJson(objetoUser.get("usuarios"), tipoListaDeUsuarios);
+        } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
         }

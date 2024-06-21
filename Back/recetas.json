@@ -1,102 +1,124 @@
 [
   {
     "nombre": "Tarta de Manzana",
+	"imagen": "tartaManzana",
     "pasos": [
       {
         "numero": 1,
         "descripcion": "Precalentar el horno a 180 grados Celsius.",
+		"imagen": "horno",
         "ingredientes": []
       },
       {
         "numero": 2,
         "descripcion": "Preparar la masa.",
+		"imagen": "preparadoMasa",
         "ingredientes": [
           {
             "nombre": "Harina",
-            "cantidad": 200
+            "cantidad": 200,
+			"imagen": "harina"
           },
           {
             "nombre": "Mantequilla",
-            "cantidad": 100
+            "cantidad": 100,
+			"imagen": "mantequilla"
           },
           {
             "nombre": "Agua",
-            "cantidad": 50
+            "cantidad": 50,
+			"imagen": "agua"
           }
         ]
       },
       {
         "numero": 3,
         "descripcion": "Cortar las manzanas y colocarlas sobre la masa.",
+		"imagen": "cortadoManzanas",
         "ingredientes": [
           {
             "nombre": "Manzanas",
-            "cantidad": 3
+            "cantidad": 3,
+			"imagen": "manzana"
           },
           {
-            "nombre": "Azúcar",
-            "cantidad": 50
+            "nombre": "Azucar",
+            "cantidad": 50,
+			"imagen": "azucar"
           },
           {
             "nombre": "Canela",
-            "cantidad": 5
+            "cantidad": 5,
+			"imagen": "canela"
           }
         ]
       },
       {
         "numero": 4,
         "descripcion": "Hornear durante 30 minutos.",
+		"imagen": "horno",
         "ingredientes": []
       }
     ]
   },
   {
     "nombre": "Pizza Margarita",
+	"imagen": "pizzaMargarita",
     "pasos": [
       {
         "numero": 1,
         "descripcion": "Precalentar el horno a 220 grados Celsius.",
+		"imagen": "horno",
         "ingredientes": []
       },
       {
         "numero": 2,
         "descripcion": "Preparar la masa de pizza.",
+		"imagen": "preparadoMasa",
         "ingredientes": [
           {
             "nombre": "Harina",
-            "cantidad": 250
+            "cantidad": 250,
+			"imagen": "harina"
           },
           {
             "nombre": "Levadura",
-            "cantidad": 5
+            "cantidad": 5,
+			"imagen": "levadura"
           },
           {
             "nombre": "Agua",
-            "cantidad": 150
+            "cantidad": 150,
+			"imagen": "agua"
           },
           {
             "nombre": "Sal",
-            "cantidad": 5
+            "cantidad": 5,
+			"imagen": "sal"
           }
         ]
       },
       {
         "numero": 3,
         "descripcion": "Añadir salsa de tomate y mozzarella.",
+		"imagen": "agregadoSalsa",
         "ingredientes": [
           {
             "nombre": "Salsa de tomate",
-            "cantidad": 100
+            "cantidad": 100,
+			"imagen": "salsaDeTomate"
           },
           {
             "nombre": "Mozzarella",
-            "cantidad": 200
+            "cantidad": 200,
+			"imagen": "mozzarella"
           }
         ]
       },
       {
         "numero": 4,
         "descripcion": "Hornear durante 15 minutos.",
+		"imagen": "horno",
         "ingredientes": []
       }
     ]

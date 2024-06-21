@@ -40,74 +40,72 @@ public class DataInitializer {
 
     private static String getDefaultRecipesJson() {
         Recipe[] defaultRecipes = new Recipe[]{
-                new Recipe("Tarta de Manzana", new Step[]{
-                        new Step(1, "Precalentar el horno a 180 grados Celsius.", new Ingredient[]{}),
-                        new Step(2, "Preparar la masa.", new Ingredient[]{
-                                new Ingredient("Harina", 200),
-                                new Ingredient("Mantequilla", 100),
-                                new Ingredient("Agua", 50)
+                new Recipe("Tarta de Manzana", "tartaManzana", new Step[]{
+                        new Step(1, "Precalentar el horno a 180 grados Celsius.", "horno", new Ingredient[]{}),
+                        new Step(2, "Preparar la masa.", "preparadoMasa", new Ingredient[]{
+                                new Ingredient("Harina", 200, "harina"),
+                                new Ingredient("Mantequilla", 100, "mantequilla"),
+                                new Ingredient("Agua", 50, "agua")
                         }),
-                        new Step(3, "Cortar las manzanas y colocarlas sobre la masa.", new Ingredient[]{
-                                new Ingredient("Manzanas", 3),
-                                new Ingredient("Azúcar", 50),
-                                new Ingredient("Canela", 5)
+                        new Step(3, "Cortar las manzanas y colocarlas sobre la masa.", "cortadoManzanas", new Ingredient[]{
+                                new Ingredient("Manzanas", 3, "manzanas"),
+                                new Ingredient("Azúcar", 50, "azucar"),
+                                new Ingredient("Canela", 5, "canela")
                         }),
-                        new Step(4, "Hornear durante 30 minutos.", new Ingredient[]{})
+                        new Step(4, "Hornear durante 30 minutos.", "horno", new Ingredient[]{})
                 }),
-                new Recipe("Pizza Margarita", new Step[]{
-                        new Step(1, "Precalentar el horno a 220 grados Celsius.", new Ingredient[]{}),
-                        new Step(2, "Preparar la masa de pizza.", new Ingredient[]{
-                                new Ingredient("Harina", 250),
-                                new Ingredient("Levadura", 5),
-                                new Ingredient("Agua", 150),
-                                new Ingredient("Sal", 5)
+                new Recipe("Pizza Margarita", "pizzaMargarita", new Step[]{
+                        new Step(1, "Precalentar el horno a 220 grados Celsius.", "horno", new Ingredient[]{}),
+                        new Step(2, "Preparar la masa de pizza.", "preparadoMasa", new Ingredient[]{
+                                new Ingredient("Harina", 250, "harina"),
+                                new Ingredient("Levadura", 5, "levadura"),
+                                new Ingredient("Agua", 150, "agua"),
+                                new Ingredient("Sal", 5, "sal")
                         }),
-                        new Step(3, "Añadir salsa de tomate y mozzarella.", new Ingredient[]{
-                                new Ingredient("Salsa de tomate", 100),
-                                new Ingredient("Mozzarella", 200)
+                        new Step(3, "Añadir salsa de tomate y mozzarella.", "agregadoSalsa", new Ingredient[]{
+                                new Ingredient("Salsa de tomate", 100, "salsaTomate"),
+                                new Ingredient("Mozzarella", 200, "mozzarella")
                         }),
-                        new Step(4, "Hornear durante 15 minutos.", new Ingredient[]{})
+                        new Step(4, "Hornear durante 15 minutos.", "horno", new Ingredient[]{})
                 })
         };
-        return new GsonBuilder().setPrettyPrinting().create().toJson(defaultRecipes);
+        return new GsonBuilder().setPrettyPrinting().create().toJson(new RecipesWrapper(defaultRecipes));
     }
 
     private static String getDefaultUsersJson() {
         User[] defaultUsers = new User[]{
-                new User("Juan Perez", "juan.perez@example.com", "123456", new Recipe[]{
-                        new Recipe("Tarta de Manzana", new Step[]{
-                                new Step(1, "Precalentar el horno a 180 grados Celsius.", new Ingredient[]{}),
-                                new Step(2, "Preparar la masa.", new Ingredient[]{
-                                        new Ingredient("Harina", 200),
-                                        new Ingredient("Mantequilla", 100),
-                                        new Ingredient("Agua", 50)
-                                }),
-                                new Step(3, "Cortar las manzanas y colocarlas sobre la masa.", new Ingredient[]{
-                                        new Ingredient("Manzanas", 3),
-                                        new Ingredient("Azúcar", 50),
-                                        new Ingredient("Canela", 5)
-                                }),
-                                new Step(4, "Hornear durante 30 minutos.", new Ingredient[]{})
-                        })
+                new User("Juan Perez", "juan.perez@example.com", "123456", new String[]{
+                        "Tarta de Manzana"
                 }),
-                new User("Maria Lopez", "maria.lopez@example.com", "abcdef", new Recipe[]{
-                        new Recipe("Pizza Margarita", new Step[]{
-                                new Step(1, "Precalentar el horno a 220 grados Celsius.", new Ingredient[]{}),
-                                new Step(2, "Preparar la masa de pizza.", new Ingredient[]{
-                                        new Ingredient("Harina", 250),
-                                        new Ingredient("Levadura", 5),
-                                        new Ingredient("Agua", 150),
-                                        new Ingredient("Sal", 5)
-                                }),
-                                new Step(3, "Añadir salsa de tomate y mozzarella.", new Ingredient[]{
-                                        new Ingredient("Salsa de tomate", 100),
-                                        new Ingredient("Mozzarella", 200)
-                                }),
-                                new Step(4, "Hornear durante 15 minutos.", new Ingredient[]{})
-                        })
+                new User("Maria Lopez", "maria.lopez@example.com", "abcdef", new String[]{
+                        "Pizza Margarita"
                 })
         };
-        return new GsonBuilder().setPrettyPrinting().create().toJson(defaultUsers);
+        return new GsonBuilder().setPrettyPrinting().create().toJson(new UsersWrapper(defaultUsers));
+    }
+
+    static class RecipesWrapper {
+        private Recipe[] recetas;
+
+        RecipesWrapper(Recipe[] recetas) {
+            this.recetas = recetas;
+        }
+
+        public Recipe[] getRecetas() {
+            return recetas;
+        }
+    }
+
+    static class UsersWrapper {
+        private User[] usuarios;
+
+        UsersWrapper(User[] usuarios) {
+            this.usuarios = usuarios;
+        }
+
+        public User[] getUsuarios() {
+            return usuarios;
+        }
     }
 
 }

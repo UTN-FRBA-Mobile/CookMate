@@ -4,10 +4,12 @@ import java.io.Serializable;
 
 public class Recipe implements Serializable {
     String nombre;
+    String imagen;
     Step[] pasos;
 
-    public Recipe(String nombre, Step[] pasos) {
+    public Recipe(String nombre, String imagen, Step[] pasos) {
         this.nombre = nombre;
+        this.imagen = imagen;
         this.pasos = pasos;
     }
 
