@@ -4,24 +4,29 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import model.entity.Ingredient;
+import com.google.gson.reflect.TypeToken;
 import model.entity.Recipe;
 import model.entity.User;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ClientHandler implements Runnable {
     private Socket socket;
     private Map<String,String> imagenes;
+    private final Map<String,User> users;
 
-    public ClientHandler(Socket socket, final Map<String,String> imagenes) {
+    public ClientHandler(Socket socket, final Map<String,String> imagenes, final Map<String,User> users) {
         this.socket = socket;
         this.imagenes = imagenes;
+        this.users = users;
     }
 
     @Override
@@ -43,18 +48,20 @@ public class ClientHandler implements Runnable {
                     // Lógica para loguearse
                     final String email = solicitud.get("email").getAsString();
                     final String password = solicitud.get("password").getAsString();
-//                    final User user = _users.get(email);
-//                    if(user != null){
-//                        if(user.getContraseña().equals(password)){
-//                            return jsonize(crearListaRecetasDesdeNombres(user.getRecetas()));
-//                        }
-//                    }
-                    //return "LOGIN FAILED";
-                    salidaObjetos.writeObject(new Gson().toJson(ArchivoJson.cargarRecetas()));
+                    final User user = users.get(email);
+                    if(user != null){
+                        if(user.getContraseña().equals(password)){
+                            salidaObjetos.writeObject(new Gson().toJson(ArchivoJson.cargarRecetas(user.getNombreRecetasAsList())));
+                            break;
+                        }
+                    }
+                    salidaObjetos.writeObject("{}");
                     break;
                 case "searchRecipes":
                     // Lógica para obtener la lista de recetas del archivo JSON
-                    List<Recipe> recetas = ArchivoJson.cargarRecetas();
+                    final JsonArray ingredientesPermitidos =  solicitud.get("ingredientes").getAsJsonArray();
+                    final List<String> ingredientesPermitidosList =  new Gson().fromJson(ingredientesPermitidos, new TypeToken<List<String>>(){}.getType());
+                    final List<Recipe> recetas = ArchivoJson.cargarRecetas(ingredientesPermitidosList);
                     salidaObjetos.writeObject(new Gson().toJson(recetas));
                     break;
                 case "saveRecipe":
@@ -71,7 +78,7 @@ public class ClientHandler implements Runnable {
                     break;
                 case "getAllUsers":
                     // Lógica para obtener los datos personales del usuario
-                    List<User> usuarios = ArchivoJson.cargarUsuarios();
+                    List<User> usuarios = new ArrayList(ArchivoJson.cargarUsuarios().values());
 
                     // Enviar los datos al cliente
                     salidaObjetos.writeObject(new Gson().toJson(usuarios));
@@ -110,7 +117,7 @@ public class ClientHandler implements Runnable {
                     salidaObjetos.writeObject(new Gson().toJson(recursos));
                     break;
                 case "getAllIngredients":
-                    salidaObjetos.writeObject(new Gson().toJson(obtenerTodosLosIngredientes()));
+                    salidaObjetos.writeObject(new Gson().toJson(obtenerTodosLosNombresDeIngredientes()));
                     break;
                 case "otraSolicitud":
 
@@ -126,13 +133,15 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public static List<Ingredient> obtenerTodosLosIngredientes() {
-        List<Recipe> recetas = ArchivoJson.cargarRecetas();
-        List<Ingredient> todosLosIngredientes = recetas.stream()
+    public static List<String> obtenerTodosLosNombresDeIngredientes() {
+        final List<Recipe> recetas = ArchivoJson.cargarRecetas();
+        final Set<String> todosLosIngredientes = recetas.stream()
                 .flatMap(receta -> Arrays.stream(receta.getPasos()))
                 .flatMap(paso -> Arrays.stream(paso.getIngredientes()))
-                .collect(Collectors.toList());
-
-        return todosLosIngredientes;
+                .map(ingrediente -> ingrediente.getNombre())
+                .collect(Collectors.toSet());
+        final ArrayList<String> todosLosIngredientesOrdenados = new ArrayList<>(todosLosIngredientes);
+        Collections.sort(todosLosIngredientesOrdenados);
+        return todosLosIngredientesOrdenados;
     }
 }

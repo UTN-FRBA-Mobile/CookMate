@@ -91,7 +91,7 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
 //                val theResponse by remember {
 //                    mutableStateOf(userInputViewModel.appStatus.value.response)
 //                }
-                if(userInputViewModel.appStatus.value.loginResponse.value == "LOGIN FAILED") {
+                if(userInputViewModel.appStatus.value.loginResponse.value == "{}") {
                     TextComponent(textValue = "Login fallido!", textSize = 12.sp)
                 } else if(userInputViewModel.appStatus.value.loginResponse.value != "") {
                     userInputViewModel.appStatus.value.recetasGuardadas.clear()

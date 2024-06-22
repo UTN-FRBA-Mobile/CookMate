@@ -9,13 +9,17 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import model.ArchivoJson;
+import model.entity.User;
 
 public class ServerSocket {
     private static final int PUERTO = 9090;
     private static Map<String,String> _imagenes;
+    private static Map<String,User> _users;
     
     public static void main(String[] args) throws Exception {
         _imagenes = readImagenesFile();
+        _users = ArchivoJson.cargarUsuarios();
         try (java.net.ServerSocket serverSocket = new java.net.ServerSocket(PUERTO)) {
             System.out.println("Servidor Socket iniciado en el puerto " + PUERTO);
             System.out.println("Hora: " + LocalDateTime.now());
@@ -25,7 +29,7 @@ public class ServerSocket {
                 System.out.println("Cliente conectado desde " + socket.getInetAddress() + " o " + socket.getRemoteSocketAddress());
                 System.out.println("Hora: " + LocalDateTime.now());
 
-                new Thread(new ClientHandler(socket,_imagenes)).start();
+                new Thread(new ClientHandler(socket,_imagenes,_users)).start();
             }
         } catch (IOException e) {
             e.printStackTrace();

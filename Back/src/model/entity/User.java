@@ -50,6 +50,14 @@ public class User implements Serializable {
     public String[] getNombreRecetas() {
         return nombreRecetas;
     }
+    
+    public List<String> getNombreRecetasAsList() {
+        final List<String> lista = new ArrayList<>();
+        for(final String nombreReceta : nombreRecetas){
+            lista.add(nombreReceta);
+        }
+        return lista;
+    }
 
     public void setNombreRecetas(String[] nombreRecetas) {
         this.nombreRecetas = nombreRecetas;
@@ -57,7 +65,7 @@ public class User implements Serializable {
 
     public List<Recipe> getRecetas() {
         List<Recipe> recipes = new ArrayList<>();
-        List<Recipe> recipesAll = ArchivoJson.cargarRecetas();
+        List<Recipe> recipesAll = ArchivoJson.cargarRecetas(getNombreRecetasAsList());
         Arrays.stream(this.getNombreRecetas()).forEach( nombreReceta -> {
             recipes.add(recipesAll.stream().filter(recipe -> recipe.getNombre().equals(nombreReceta)).findFirst().get());
         });
