@@ -19,7 +19,6 @@ public class ServerSocket {
     
     public static void main(String[] args) throws Exception {
         _imagenes = readImagenesFile();
-        _users = ArchivoJson.cargarUsuarios();
         try (java.net.ServerSocket serverSocket = new java.net.ServerSocket(PUERTO)) {
             System.out.println("Servidor Socket iniciado en el puerto " + PUERTO);
             System.out.println("Hora: " + LocalDateTime.now());
@@ -29,7 +28,7 @@ public class ServerSocket {
                 System.out.println("Cliente conectado desde " + socket.getInetAddress() + " o " + socket.getRemoteSocketAddress());
                 System.out.println("Hora: " + LocalDateTime.now());
 
-                new Thread(new ClientHandler(socket,_imagenes,_users)).start();
+                new Thread(new ClientHandler(socket,_imagenes)).start();
             }
         } catch (IOException e) {
             e.printStackTrace();

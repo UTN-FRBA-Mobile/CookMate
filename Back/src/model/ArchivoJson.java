@@ -1,6 +1,7 @@
 package model;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import model.entity.Recipe;
@@ -39,10 +40,10 @@ public class ArchivoJson {
         try {
             FileReader fileReader = new FileReader(RUTA_USUARIOS);
             Gson gson = new Gson();
-            Type tipoObjetoConUsuarios = new TypeToken<JsonObject>() {}.getType();
+            Type tipoObjetoConUsuarios = new TypeToken<JsonArray>() {}.getType();
             Type tipoListaDeUsuarios = new TypeToken<ArrayList<User>>() {}.getType();
-            JsonObject objetoUser = gson.fromJson(fileReader, tipoObjetoConUsuarios);
-            final ArrayList<User> listaUsuarios = gson.fromJson(objetoUser.get("usuarios"), tipoListaDeUsuarios);
+            JsonArray objetoUser = gson.fromJson(fileReader, tipoObjetoConUsuarios);
+            final ArrayList<User> listaUsuarios = gson.fromJson(objetoUser, tipoListaDeUsuarios);
             
             final Map<String,User> map = new HashMap<>();
             for(final User user : listaUsuarios){
@@ -65,9 +66,20 @@ public class ArchivoJson {
         }
     }
     
-    public static List<Recipe> cargarRecetas(final List<String> ingredientesPermitidos) {
+    public static List<Recipe> cargarLasRecetasQueSeLlamen(final List<String> nombresRecetas) {
         final List<Recipe> lista = new ArrayList<>();
-        final List<Recipe> recetas = cargarRecetas();
+        final List<Recipe> recetas = cargarTodasLasRecetas();
+        for(final Recipe receta : recetas){
+            if(nombresRecetas.contains(receta.getNombre())){
+                lista.add(receta);
+            }
+        }
+        return lista;
+    }
+    
+    public static List<Recipe> cargarLasRecetasQuePuedanHacerseCon(final List<String> ingredientesPermitidos) {
+        final List<Recipe> lista = new ArrayList<>();
+        final List<Recipe> recetas = cargarTodasLasRecetas();
         
 //            lista.add(recetas.stream().filter(recipe -> paso.getIn().equals(valida)).findFirst().get());
             
@@ -90,7 +102,7 @@ public class ArchivoJson {
         return lista;
     }
 
-    public static List<Recipe> cargarRecetas() {
+    public static List<Recipe> cargarTodasLasRecetas() {
         try (FileReader fileReader = new FileReader(RUTA_RECETAS)) {
             Gson gson = new Gson();
             Type tipoListaRecetas = new TypeToken<ArrayList<Recipe>>() {}.getType();

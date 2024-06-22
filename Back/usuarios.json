@@ -1,20 +1,18 @@
-{
-  "usuarios": [
-    {
-      "nombre": "Juan Perez",
-      "email": "juan.perez@example.com",
-      "contraseña": "123456",
-      "nombreRecetas": [
-        "Tarta de Manzana"
-      ]
-    },
-    {
-      "nombre": "Maria Lopez",
-      "email": "maria.lopez@example.com",
-      "contraseña": "abcdef",
-      "nombreRecetas": [
-        "Pizza Margarita"
-      ]
-    }
-  ]
-}
+[
+	{
+		"nombre": "Maria Lopez",
+		"email": "maria.lopez@example.com",
+		"contraseña": "abcdef",
+		"nombreRecetas": [
+			"Pizza Margarita"
+		]
+	},
+	{
+		"nombre": "Juan Perez",
+		"email": "juan.perez@example.com",
+		"contraseña": "123456",
+		"nombreRecetas": [
+			"Tarta de Manzana"
+		]
+	}
+]
