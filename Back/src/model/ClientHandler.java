@@ -56,6 +56,22 @@ public class ClientHandler implements Runnable {
                     }
                     salidaObjetos.writeObject("{}");
                     break;
+                case "register":
+                    // Lógica para registrarse
+                    final String registerEmail = solicitud.get("email").getAsString();
+                    final String registerPassword = solicitud.get("password").getAsString();
+                    final String registerNombre = solicitud.get("name").getAsString();
+                    final Map<String, User> usuarios = ArchivoJson.cargarUsuarios();
+                    if(usuarios.containsKey(registerEmail)){
+                        salidaObjetos.writeObject("{}");
+                        break;
+                    }
+                    final User registerUser = new User(registerNombre, registerEmail, registerPassword, new String[]{});
+                    usuarios.put(registerUser.getEmail(),registerUser);
+                    ArchivoJson.guardarUsuarios(new ArrayList(usuarios.values()));
+                    salidaObjetos.writeObject("Register OK");
+                    break;
+
                 case "searchRecipes":
                     // Lógica para obtener la lista de recetas del archivo JSON
                     final JsonArray ingredientesPermitidos =  solicitud.get("ingredientes").getAsJsonArray();

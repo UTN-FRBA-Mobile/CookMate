@@ -1,9 +1,10 @@
 package com.utn.cookmate.ui.screens
 
-object Routes {
+object  Routes {
 
-    const val ABOUT_SCREEN = "ABOUT_SCREEN";
+    const val ABOUT_SCREEN = "ABOUT_SCREEN"
     const val LOGIN_SCREEN = "LOGIN_SCREEN"
+    const val CREATE_USER_SCREEN = "CREATE_USER_SCREEN"
     const val MIS_RECETAS_SCREEN = "MIS_RECETAS_SCREEN"
     const val SEGURO_ELIMINAR_RECETA_SCREEN = "SEGURO_ELIMINAR_RECETA_SCREEN"
     const val BUSCAR_RECETA_ONLINE_SCREEN = "BUSCAR_RECETA_ONLINE_SCREEN"

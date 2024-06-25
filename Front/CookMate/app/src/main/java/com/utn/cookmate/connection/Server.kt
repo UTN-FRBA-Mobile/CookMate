@@ -38,6 +38,16 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
         return true
     }
 
+    fun register(email: String, password: String, nombre: String): Boolean {
+        var json = JsonObject()
+        json.addProperty("action", "register")
+        json.addProperty("email", email)
+        json.addProperty("password", password)
+        json.addProperty("name", nombre)
+        sendSocketRequest("register", json)
+        return true
+    }
+
     fun searchRecipes() {
         var json = JsonObject()
         var array: JsonArray = JsonArray()
@@ -91,6 +101,7 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
                 // Actualizar el estado de la vista basado en la acción
                 when (action) {
                     "login" -> userInputViewModel.appStatus.value.loginResponse.value = response
+                    "register" -> userInputViewModel.appStatus.value.registerResponse.value = response
                     "addRecipeToUser" -> userInputViewModel.appStatus.value.addRecipeToUserResponse.value = response
                     "removeRecipeFromUser" -> userInputViewModel.appStatus.value.removeRecipeFromUserResponse.value = response
                     "searchRecipes" -> userInputViewModel.appStatus.value.searchRecipesResponse.value = response
