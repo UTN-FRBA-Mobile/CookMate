@@ -17,16 +17,43 @@ import java.net.Socket;
 import java.util.List;
 
 public class ClientSocket {
-    private static final String SERVIDOR_IP = "198.199.90.109"; // Dirección IP del servidor
+    private static final String SERVIDOR_IP = "localhost"; // Dirección IP del servidor
     private static final int PUERTO = 9090;
 
     public static void main(String[] args) {
         // Llamadas de prueba a las diferentes funcionalidades
-        obtenerRecetas();
-        obtenerUsuarios();
-        obtenerIngredientes();
-        descargarRecursos();
-        login("test@example.com", "password123");
+        //obtenerRecetas();
+        //obtenerUsuarios();
+        //obtenerIngredientes();
+        //descargarRecursos();
+        //login("test@example.com", "password123");
+        registrarUsuario();
+    }
+
+    private static void registrarUsuario() {
+        try (
+                Socket socket = new Socket(SERVIDOR_IP, PUERTO);
+                ObjectOutputStream salidaObjetos = new ObjectOutputStream(socket.getOutputStream());
+                ObjectInputStream entradaObjetos = new ObjectInputStream(socket.getInputStream())
+        ) {
+            // Crear solicitud para obtener usuarios
+            JsonObject solicitud = new JsonObject();
+            solicitud.addProperty("action", "register");
+            solicitud.addProperty("email", "matt@a");
+            solicitud.addProperty("password", "1234");
+            solicitud.addProperty("name", "matt");
+
+            // Enviar solicitud al servidor
+            salidaObjetos.writeObject(solicitud.toString());
+
+            // Leer la respuesta del servidor
+            Boolean respuestaJson = (Boolean) entradaObjetos.readObject();
+
+            System.out.println("respuesta del registro del usuario: " + respuestaJson);
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void obtenerRecetas() {

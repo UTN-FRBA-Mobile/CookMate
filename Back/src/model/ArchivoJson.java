@@ -22,11 +22,6 @@ public class ArchivoJson {
     private static final String RUTA_USUARIOS = "usuarios.json";
     private static final String RUTA_RECETAS = "recetas.json";
 
-//    static {
-//        // Inicializar los archivos si no existen
-//        DataInitializer.initializeDataFiles();
-//    }
-
     public static void guardarUsuarios(List<User> usuarios) {
         try (FileWriter fileWriter = new FileWriter(RUTA_USUARIOS)) {
             Gson gson = new Gson();
@@ -72,7 +67,7 @@ public class ArchivoJson {
         for(final Recipe receta : recetas){
             if(nombresRecetas.contains(receta.getNombre())){
                 lista.add(receta);
-            }
+            }//hdp usa un filterrrrr
         }
         return lista;
     }

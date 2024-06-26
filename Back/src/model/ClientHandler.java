@@ -1,5 +1,6 @@
 package model;
 
+import application.DataInitializer;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -10,6 +11,7 @@ import model.entity.User;
 
 import java.io.*;
 import java.net.Socket;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,6 +28,7 @@ public class ClientHandler implements Runnable {
     public ClientHandler(Socket socket, final Map<String,String> imagenes) {
         this.socket = socket;
         this.imagenes = imagenes;
+        DataInitializer.initializeDataFiles();
     }
 
     @Override
@@ -37,9 +40,11 @@ public class ClientHandler implements Runnable {
             // Leer la solicitud del cliente
             String solicitudJson = (String) entradaObjetos.readObject();
             JsonObject solicitud = JsonParser.parseString(solicitudJson).getAsJsonObject();
+            System.out.println("Solicitud del cliente: " + solicitud);
 
             // Obtener la acción de la solicitud
             String accion = solicitud.get("action").getAsString();
+            System.out.println("Accion a realizar: " + accion);
 
             // Procesar la solicitud y enviar la respuesta al cliente
             switch (accion) {
@@ -57,19 +62,27 @@ public class ClientHandler implements Runnable {
                     salidaObjetos.writeObject("{}");
                     break;
                 case "register":
+                    boolean registerOk = false;
                     // Lógica para registrarse
-                    final String registerEmail = solicitud.get("email").getAsString();
-                    final String registerPassword = solicitud.get("password").getAsString();
-                    final String registerNombre = solicitud.get("name").getAsString();
-                    final Map<String, User> usuarios = ArchivoJson.cargarUsuarios();
-                    if(usuarios.containsKey(registerEmail)){
-                        salidaObjetos.writeObject("{}");
-                        break;
+                    try{
+                        final String registerEmail = solicitud.get("email").getAsString();
+                        final String registerPassword = solicitud.get("password").getAsString();
+                        final String registerNombre = solicitud.get("name").getAsString();
+                        final Map<String, User> usuarios = ArchivoJson.cargarUsuarios();
+                        if(usuarios.containsKey(registerEmail)){
+                            salidaObjetos.writeObject(registerOk);
+                            throw new RuntimeException("El usuario ya se encuentra registrado");
+                        }
+                        final User registerUser = new User(registerNombre, registerEmail, registerPassword, new String[]{});
+                        usuarios.put(registerUser.getEmail(),registerUser);
+                        ArchivoJson.guardarUsuarios(new ArrayList(usuarios.values()));
+                        registerOk = Boolean.TRUE;
+                    }catch (Exception e){
+                        System.out.println("Error al registrarse");
+                        e.printStackTrace();
                     }
-                    final User registerUser = new User(registerNombre, registerEmail, registerPassword, new String[]{});
-                    usuarios.put(registerUser.getEmail(),registerUser);
-                    ArchivoJson.guardarUsuarios(new ArrayList(usuarios.values()));
-                    salidaObjetos.writeObject("Register OK");
+                    salidaObjetos.writeObject(registerOk);
+                    System.out.println("respuesta: " + registerOk);
                     break;
 
                 case "searchRecipes":
@@ -78,34 +91,8 @@ public class ClientHandler implements Runnable {
                     final List<String> ingredientesPermitidosList =  new Gson().fromJson(ingredientesPermitidos, new TypeToken<List<String>>(){}.getType());
                     final List<Recipe> recetas = ArchivoJson.cargarLasRecetasQuePuedanHacerseCon(ingredientesPermitidosList);
                     salidaObjetos.writeObject(new Gson().toJson(recetas));
+                    System.out.println("respuesta: " + recetas);
                     break;
-//                case "deleteRecipeFromServer":
-//                    String emailRemove = solicitud.get("email").getAsString();
-//                    String nombreRecetaRemove = solicitud.get("nombreReceta").getAsString();
-//                    List<Recipe> recetasRemove = ArchivoJson.cargarRecetas();
-//                    recetasRemove.removeIf(r -> r.getNombre().equals(nombreRecetaRemove));
-//                    ArchivoJson.guardarRecetas(recetasRemove);
-//                    salidaObjetos.writeObject("Receta eliminada para el usuario: " + emailRemove);
-//                    break;
-//                case "addRecipeToServer":
-//                    // Leer la receta a guardar desde el cliente
-//                    Recipe receta = new Gson().fromJson(solicitud.get("receta").getAsJsonObject(), Recipe.class);
-//
-//                    // Guardar la receta en el archivo JSON
-//                    List<Recipe> listaRecetas = ArchivoJson.cargarTodasLasRecetas();
-//                    listaRecetas.add(receta);
-//                    ArchivoJson.guardarRecetas(listaRecetas);
-//
-//                    // Enviar confirmación al cliente
-//                    salidaObjetos.writeObject("Receta guardada");
-//                    break;
-//                case "getAllUsers":
-//                    // Lógica para obtener los datos personales del usuario
-//                    List<User> usuarios = new ArrayList(ArchivoJson.cargarUsuarios().values());
-//
-//                    // Enviar los datos al cliente
-//                    salidaObjetos.writeObject(new Gson().toJson(usuarios));
-//                    break;
                 case "removeRecipeFromUser":
                     String emailRemove = solicitud.get("email").getAsString();
                     String nombreRecetaRemove = solicitud.get("nombreReceta").getAsString();
@@ -121,7 +108,7 @@ public class ClientHandler implements Runnable {
 //                        salidaObjetos.writeObject(new Gson().toJson(ArchivoJson.cargarRecetas(usuario.getNombreRecetasAsList())));
                         salidaObjetos.writeObject("Receta eliminada para el usuario: " + emailRemove);
                     }
-                    break;    
+                    break;
                 case "addRecipeToUser":
                     // Lógica para agregar una receta al usuario
                     String emailAdd = solicitud.get("email").getAsString();

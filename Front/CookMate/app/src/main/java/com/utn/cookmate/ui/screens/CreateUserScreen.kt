@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,10 +22,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.utn.cookmate.data.UserDataUiEvents
 import com.utn.cookmate.connection.Server
-import com.utn.cookmate.data.Ingrediente
-import com.utn.cookmate.data.Paso
-import com.utn.cookmate.data.Receta
-
 import com.utn.cookmate.ui.TextComponent
 import com.utn.cookmate.ui.TextFieldComponent
 import com.utn.cookmate.ui.TopBar
@@ -33,23 +32,24 @@ import java.util.Base64
 
 @Composable
 fun CreateUserScreen(userInputViewModel: UserInputViewModel, navController: NavController) {
-    if(userInputViewModel.appStatus.value.downloadResourcesResponse.value.isEmpty()){
+    val appStatus = userInputViewModel.appStatus.value
+    val registerSuccess = remember { mutableStateOf<Boolean?>(null) }
+
+    if (appStatus.downloadResourcesResponse.value.isEmpty()) {
         Server(userInputViewModel).downloadResources()
-    } else if(userInputViewModel.appStatus.value.imagenesDescargadas.isEmpty()){
-        Thread(Runnable{
-            var imagenes : JSONArray = JSONArray(userInputViewModel.appStatus.value.downloadResourcesResponse.value)
+    } else if (appStatus.imagenesDescargadas.isEmpty()) {
+        Thread(Runnable {
+            val imagenes: JSONArray = JSONArray(appStatus.downloadResourcesResponse)
             for (i in 0 until imagenes.length()) {
-                val item : JSONObject= imagenes.getJSONObject(i)
+                val item: JSONObject = imagenes.getJSONObject(i)
                 val nombre = item.getString("nombre")
                 val base64 = item.getString("base64")
-                userInputViewModel.appStatus.value.imagenesDescargadas.put(nombre,Base64.getDecoder().decode(base64))
+                appStatus.imagenesDescargadas.put(nombre, Base64.getDecoder().decode(base64))
             }
         }).start()
     }
 
-    Surface(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Surface(modifier = Modifier.fillMaxSize()) {
         Row {
             Column(
                 modifier = Modifier
@@ -72,17 +72,35 @@ fun CreateUserScreen(userInputViewModel: UserInputViewModel, navController: NavC
                     "Nombre",
                     onTextChanged = { userInputViewModel.onEvent(UserDataUiEvents.RegisterNameEntered(it)) })
                 Spacer(modifier = Modifier.size(40.dp))
-                if(userInputViewModel.appStatus.value.registerResponse.value == "{}") {
-                    TextComponent(textValue = "El correo elegido ya esta registrado", textSize = 12.sp)
-                } else if(userInputViewModel.appStatus.value.registerResponse.value != "") {
-                    TextComponent(textValue = "Registrado correctamente! Para activar la cuenta volver e iniciar sesion por primera vez.", textSize = 12.sp)
-                    //navController.navigate(Routes.MIS_RECETAS_SCREEN)
+
+                when (registerSuccess.value) {
+                    true -> {
+                        TextComponent(textValue = "Registrado correctamente! Para activar la cuenta, vuelve e inicia sesión por primera vez.", textSize = 12.sp)
+                        LaunchedEffect(registerSuccess.value) {
+                            navController.navigate(Routes.LOGIN_SCREEN) {
+                                popUpTo(Routes.CREATE_USER_SCREEN) { inclusive = true }
+                            }
+                        }
+                    }
+                    false -> {
+                        TextComponent(textValue = "El correo elegido ya está registrado o ocurrió un error.", textSize = 12.sp)
+                    }
+                    null -> {
+                        // No mostrar nada hasta que se haga un intento de registro
+                    }
                 }
+
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
                         if (userInputViewModel.isValidRegisterState()) {
-                            Server(userInputViewModel).register(userInputViewModel.appStatus.value.registerEmailEntered,userInputViewModel.appStatus.value.registerPasswordEntered,userInputViewModel.appStatus.value.registerNameEntered)
+                            val success = Server(userInputViewModel)
+                                            .register(
+                                                appStatus.registerEmailEntered,
+                                                appStatus.registerPasswordEntered,
+                                                appStatus.registerNameEntered
+                                            )
+                            registerSuccess.value = success
                         }
                     }
                 ) {
@@ -95,7 +113,9 @@ fun CreateUserScreen(userInputViewModel: UserInputViewModel, navController: NavC
             }
         }
         Row(
-            modifier = Modifier.fillMaxWidth().padding(15.dp),//.weight(0.5F).padding(20.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(15.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Bottom
         ) {
@@ -105,9 +125,8 @@ fun CreateUserScreen(userInputViewModel: UserInputViewModel, navController: NavC
                     navController.navigate(Routes.LOGIN_SCREEN)
                 }
             ) {
-                TextComponent(textValue = "Volver", textSize = 18.sp,colorValue = Color.White)
+                TextComponent(textValue = "Volver", textSize = 18.sp, colorValue = Color.White)
             }
         }
-
     }
 }
