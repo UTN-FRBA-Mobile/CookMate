@@ -1,6 +1,5 @@
 package com.utn.cookmate.ui.screens
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,30 +12,24 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.utn.cookmate.connection.Server
-import com.utn.cookmate.core.service.RecetasServiceSocket
-import com.utn.cookmate.data.UserDataUiEvents
 import com.utn.cookmate.data.Ingrediente
 import com.utn.cookmate.data.Paso
 import com.utn.cookmate.data.Receta
 import com.utn.cookmate.ui.CheckboxRow
 import com.utn.cookmate.ui.TextComponent
-import com.utn.cookmate.ui.TextFieldComponent
 import com.utn.cookmate.ui.TopBar
 import com.utn.cookmate.ui.UserInputViewModel
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.Base64
 
 @Composable
 fun GenerarRecetaScreen (userInputViewModel: UserInputViewModel, navController : NavController){

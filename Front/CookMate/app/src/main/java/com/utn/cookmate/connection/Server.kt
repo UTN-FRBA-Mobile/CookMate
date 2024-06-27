@@ -2,17 +2,14 @@ package com.utn.cookmate.connection
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import com.utn.cookmate.core.service.RecetasServiceSocket
-import com.utn.cookmate.data.Receta
 import com.utn.cookmate.ui.UserInputViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.io.*
-import java.net.HttpURLConnection
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 import java.net.Socket
-import java.net.URL
 import kotlin.coroutines.CoroutineContext
 
 class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
