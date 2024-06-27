@@ -9,10 +9,13 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import model.ArchivoJson;
+import model.entity.User;
 
 public class ServerSocket {
     private static final int PUERTO = 9090;
     private static Map<String,String> _imagenes;
+    private static Map<String,User> _users;
     
     public static void main(String[] args) throws Exception {
         _imagenes = readImagenesFile();

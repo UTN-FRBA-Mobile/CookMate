@@ -2,17 +2,14 @@ package com.utn.cookmate.connection
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import com.utn.cookmate.core.service.RecetasServiceSocket
-import com.utn.cookmate.data.Receta
 import com.utn.cookmate.ui.UserInputViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.io.*
-import java.net.HttpURLConnection
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 import java.net.Socket
-import java.net.URL
 import kotlin.coroutines.CoroutineContext
 
 class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
@@ -35,6 +32,16 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
         json.addProperty("email", email)
         json.addProperty("password", password)
         sendSocketRequest("login", json)
+        return true
+    }
+
+    fun register(email: String, password: String, nombre: String): Boolean {
+        var json = JsonObject()
+        json.addProperty("action", "register")
+        json.addProperty("email", email)
+        json.addProperty("password", password)
+        json.addProperty("name", nombre)
+        sendSocketRequest("register", json)
         return true
     }
 
@@ -91,6 +98,7 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
                 // Actualizar el estado de la vista basado en la acción
                 when (action) {
                     "login" -> userInputViewModel.appStatus.value.loginResponse.value = response
+                    "register" -> userInputViewModel.appStatus.value.registerResponse.value = response
                     "addRecipeToUser" -> userInputViewModel.appStatus.value.addRecipeToUserResponse.value = response
                     "removeRecipeFromUser" -> userInputViewModel.appStatus.value.removeRecipeFromUserResponse.value = response
                     "searchRecipes" -> userInputViewModel.appStatus.value.searchRecipesResponse.value = response

@@ -15,20 +15,32 @@ class UserInputViewModel : ViewModel(){
         when(event){
             is UserDataUiEvents.EmailEntered -> {
                 appStatus.value = appStatus.value.copy(emailEntered = event.name)
-                Log.d(TAG, "onEvent:UserNameEntered->>")
-                Log.d(TAG, "${appStatus.value}")
             }
 
             is UserDataUiEvents.PasswordEntered -> {
                 appStatus.value = appStatus.value.copy(passwordEntered = event.password)
-                Log.d(TAG, "onEvent:PasswordEntered->>")
-                Log.d(TAG, "${appStatus.value}")
+            }
+
+            is UserDataUiEvents.RegisterEmailEntered -> {
+                appStatus.value = appStatus.value.copy(registerEmailEntered = event.registerEmail)
+            }
+
+            is UserDataUiEvents.RegisterPasswordEntered -> {
+                appStatus.value = appStatus.value.copy(registerPasswordEntered = event.registerPassword)
+            }
+
+            is UserDataUiEvents.RegisterNameEntered -> {
+                appStatus.value = appStatus.value.copy(registerNameEntered = event.registerName)
             }
         }
     }
 
     fun isValidLoginState() : Boolean {   //devuelve Boolean
         return !appStatus.value.emailEntered.isNullOrEmpty() && !appStatus.value.passwordEntered.isNullOrEmpty()
+    }
+
+    fun isValidRegisterState() : Boolean {   //devuelve Boolean
+        return !appStatus.value.registerEmailEntered.isNullOrEmpty() && !appStatus.value.registerPasswordEntered.isNullOrEmpty() && !appStatus.value.registerNameEntered.isNullOrEmpty()
     }
 
     fun isValidBusquedaRecetasState() : Boolean {   //devuelve Boolean

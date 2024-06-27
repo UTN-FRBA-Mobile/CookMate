@@ -9,6 +9,10 @@ data class AppStatus(
     var emailEntered: String = "", //default value empty
     var passwordEntered: String = "",
 
+    var registerEmailEntered: String = "", //default value empty
+    var registerPasswordEntered: String = "",
+    var registerNameEntered: String = "",
+
     var ingredientesElegidos: MutableList<String> = mutableStateListOf<String>(),
 
     var recetaElegida: Receta? = null,  //el '?' significa que puede ser null
@@ -17,6 +21,7 @@ data class AppStatus(
     var imagenesDescargadas: MutableMap<String,ByteArray> = mutableMapOf<String,ByteArray>(),
 
     var loginResponse: MutableState<String> = mutableStateOf(""),
+    var registerResponse: MutableState<String> = mutableStateOf(""),
     var addRecipeToUserResponse: MutableState<String> = mutableStateOf(""),
     var removeRecipeFromUserResponse: MutableState<String> = mutableStateOf(""),
     var searchRecipesResponse: MutableState<String> = mutableStateOf(""),

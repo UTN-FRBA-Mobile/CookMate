@@ -15,10 +15,6 @@ public class DataInitializer {
     private static final String RECIPES_FILE_PATH = "recetas.json";
     private static final String USERS_FILE_PATH = "usuarios.json";
 
-    public static void main(String[] args) {
-        initializeDataFiles();
-    }
-
     public static void initializeDataFiles() {
         createFileIfNotExists(RECIPES_FILE_PATH, getDefaultRecipesJson());
         createFileIfNotExists(USERS_FILE_PATH, getDefaultUsersJson());
@@ -69,7 +65,7 @@ public class DataInitializer {
                         new Step(4, "Hornear durante 15 minutos.", "horno", new Ingredient[]{})
                 })
         };
-        return new GsonBuilder().setPrettyPrinting().create().toJson(new RecipesWrapper(defaultRecipes));
+        return new GsonBuilder().setPrettyPrinting().create().toJson(defaultRecipes);
     }
 
     private static String getDefaultUsersJson() {
@@ -81,31 +77,7 @@ public class DataInitializer {
                         "Pizza Margarita"
                 })
         };
-        return new GsonBuilder().setPrettyPrinting().create().toJson(new UsersWrapper(defaultUsers));
-    }
-
-    static class RecipesWrapper {
-        private Recipe[] recetas;
-
-        RecipesWrapper(Recipe[] recetas) {
-            this.recetas = recetas;
-        }
-
-        public Recipe[] getRecetas() {
-            return recetas;
-        }
-    }
-
-    static class UsersWrapper {
-        private User[] usuarios;
-
-        UsersWrapper(User[] usuarios) {
-            this.usuarios = usuarios;
-        }
-
-        public User[] getUsuarios() {
-            return usuarios;
-        }
+        return new GsonBuilder().setPrettyPrinting().create().toJson(defaultUsers);
     }
 
 }

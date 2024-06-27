@@ -63,6 +63,7 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                     .fillMaxSize()
                     .padding(18.dp)
             ) {
+                userInputViewModel.appStatus.value.registerResponse.value = ""
                 TopBar("CookMate! \uD83D\uDE0A")
                 TextComponent(textValue = "Email", textSize = 12.sp)
                 TextFieldComponent(
@@ -91,7 +92,7 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
 //                val theResponse by remember {
 //                    mutableStateOf(userInputViewModel.appStatus.value.response)
 //                }
-                if(userInputViewModel.appStatus.value.loginResponse.value == "LOGIN FAILED") {
+                if(userInputViewModel.appStatus.value.loginResponse.value == "{}") {
                     TextComponent(textValue = "Login fallido!", textSize = 12.sp)
                 } else if(userInputViewModel.appStatus.value.loginResponse.value != "") {
                     userInputViewModel.appStatus.value.recetasGuardadas.clear()
@@ -127,22 +128,35 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                     //userInputViewModel.appStatus.value.recetasGuardadas = parseado;
                     navController.navigate(Routes.MIS_RECETAS_SCREEN)
                 }
-                    Button(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = {
-                            if (userInputViewModel.isValidLoginState() && userInputViewModel.appStatus.value.imagenesDescargadas.isNotEmpty()) {
-                                println("${userInputViewModel.appStatus.value.emailEntered} and ${userInputViewModel.appStatus.value.passwordEntered}")
-                                Server(userInputViewModel).login(userInputViewModel.appStatus.value.emailEntered,userInputViewModel.appStatus.value.passwordEntered)
-                            }
 
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        if (userInputViewModel.isValidLoginState() && userInputViewModel.appStatus.value.imagenesDescargadas.isNotEmpty()) {
+                            println("${userInputViewModel.appStatus.value.emailEntered} and ${userInputViewModel.appStatus.value.passwordEntered}")
+                            Server(userInputViewModel).login(userInputViewModel.appStatus.value.emailEntered,userInputViewModel.appStatus.value.passwordEntered)
                         }
-                    ) {
-                        TextComponent(
-                            textValue = "LOGIN!",
-                            textSize = 18.sp,
-                            colorValue = Color.White
-                        )
+
                     }
+                ) {
+                    TextComponent(
+                        textValue = "LOGIN!",
+                        textSize = 18.sp,
+                        colorValue = Color.White
+                    )
+                }
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        navController.navigate(Routes.CREATE_USER_SCREEN)
+                    }
+                ) {
+                    TextComponent(
+                        textValue = "Registrarse",
+                        textSize = 18.sp,
+                        colorValue = Color.White
+                    )
+                }
             }
         }
         Row(

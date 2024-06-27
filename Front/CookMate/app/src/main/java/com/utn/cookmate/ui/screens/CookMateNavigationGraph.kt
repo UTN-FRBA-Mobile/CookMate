@@ -36,6 +36,10 @@ fun CookMateNavigationGraph(userInputViewModel: UserInputViewModel = viewModel()
             LoginScreen(userInputViewModel,navController)
         }
 
+        composable(Routes.CREATE_USER_SCREEN){
+            CreateUserScreen(userInputViewModel,navController)
+        }
+
         composable(Routes.ABOUT_SCREEN){
             AboutScreen(navController)
         }
