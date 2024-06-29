@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import model.entity.Ingredient;
 import model.entity.Step;
 
@@ -62,14 +64,15 @@ public class ArchivoJson {
     }
     
     public static List<Recipe> cargarLasRecetasQueSeLlamen(final List<String> nombresRecetas) {
-        final List<Recipe> lista = new ArrayList<>();
+//        final List<Recipe> lista = new ArrayList<>();
         final List<Recipe> recetas = cargarTodasLasRecetas();
-        for(final Recipe receta : recetas){
-            if(nombresRecetas.contains(receta.getNombre())){
-                lista.add(receta);
-            }//hdp usa un filterrrrr
-        }
-        return lista;
+//        for(final Recipe receta : recetas){
+        return recetas.stream().filter(receta -> nombresRecetas.contains(receta.getNombre())).collect(Collectors.toList());
+//            if(nombresRecetas.contains(receta.getNombre())){
+//                lista.add(receta);
+//            }//hdp usa un filterrrrr => XD
+//        }
+//        return lista;
     }
     
     public static List<Recipe> cargarLasRecetasQuePuedanHacerseCon(final List<String> ingredientesPermitidos) {

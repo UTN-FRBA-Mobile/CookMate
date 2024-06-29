@@ -28,4 +28,8 @@ public class Recipe implements Serializable {
     public void setPasos(Step[] pasos) {
         this.pasos = pasos;
     }
+
+    public String getImagen() {
+        return imagen;
+    }
 }

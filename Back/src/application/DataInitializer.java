@@ -5,6 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import com.google.gson.GsonBuilder;
+import java.util.ArrayList;
+import java.util.List;
 import model.entity.Ingredient;
 import model.entity.Recipe;
 import model.entity.Step;
@@ -44,7 +46,7 @@ public class DataInitializer {
                                 new Ingredient("Agua", 50, "agua")
                         }),
                         new Step(3, "Cortar las manzanas y colocarlas sobre la masa.", "cortadoManzanas", new Ingredient[]{
-                                new Ingredient("Manzanas", 3, "manzanas"),
+                                new Ingredient("Manzanas", 3, "manzana"),
                                 new Ingredient("Azúcar", 50, "azucar"),
                                 new Ingredient("Canela", 5, "canela")
                         }),
@@ -63,8 +65,111 @@ public class DataInitializer {
                                 new Ingredient("Mozzarella", 200, "mozzarella")
                         }),
                         new Step(4, "Hornear durante 15 minutos.", "horno", new Ingredient[]{})
+                }),
+                new Recipe("Salchichas", "salchichas", new Step[]{
+                        new Step(1, "Hervir agua en una olla.", "ollaAgua", new Ingredient[]{
+                                new Ingredient("Agua", 5000, "agua")
+                        }),
+                        new Step(2, "Volcar dentro un paquete de salchichas.", "salchichasHirviendo", new Ingredient[]{
+                                new Ingredient("Salchichas", 300, "paqueteSalchichas")
+                        }),
+                        new Step(3, "Hervir por 15 minutos.", "ollaAgua", new Ingredient[]{})
+                }),
+                new Recipe("Carne con papas", "carneConPapas", new Step[]{
+                        new Step(1, "Precalentar el horno a 220 grados Celsius.", "horno", new Ingredient[]{}),
+                        new Step(2, "Cortar la carne y salarla a gusto.", "cortadoCarne", new Ingredient[]{
+                                new Ingredient("Carne", 200, "carne"),
+                                new Ingredient("Sal", 5, "sal")
+                        }),
+                        new Step(3, "Cortar las papas.", "cortadoPapas", new Ingredient[]{
+                                new Ingredient("Papas", 3, "papas")
+                        }),
+                        new Step(4, "Hornear durante 45 minutos.", "horno", new Ingredient[]{})
+                }),
+                new Recipe("Filet de merluza", "filetDeMerluza", new Step[]{
+                        new Step(1, "Precalentar el horno a 220 grados Celsius.", "horno", new Ingredient[]{}),
+                        new Step(2, "Filetear el pescado y salarlo a gusto.", "cortadoPescado", new Ingredient[]{
+                                new Ingredient("Merluza", 200, "merluza"),
+                                new Ingredient("Sal", 5, "sal")
+                        }),
+                        new Step(4, "Hornear durante 45 minutos.", "horno", new Ingredient[]{})
+                }),
+                new Recipe("Hamburguesa", "hamburguesa", new Step[]{
+                        new Step(1, "Precalentar el horno a 220 grados Celsius.", "horno", new Ingredient[]{}),
+                        new Step(2, "Cortar a la mitad el pan.", "cortadoPan", new Ingredient[]{
+                                new Ingredient("Pan", 100, "pan")
+                        }),
+                        new Step(3, "Picar la carne y salarla a gusto.", "picadoCarne", new Ingredient[]{
+                                new Ingredient("Carne", 200, "carne"),
+                                new Ingredient("Sal", 5, "sal")
+                        }),
+                        new Step(4, "Hornear la carne durante 20 minutos.", "horno", new Ingredient[]{}),
+                        new Step(5, "Colocar la carne cocinada dentro del pan.", "hamburguesa", new Ingredient[]{})
+                }),
+                new Recipe("Papas fritas", "papasFritas", new Step[]{
+                        new Step(1, "Precalentar aceite en una sartén a 220 grados Celsius.", "sartenAceite", new Ingredient[]{}),
+                        new Step(2, "Pelar las papas.", "peladoPapas", new Ingredient[]{
+                                new Ingredient("Papas", 1000, "papas")
+                        }),
+                        new Step(3, "Cortar las papas en juliana.", "cortadoPapasJuliana", new Ingredient[]{
+                                new Ingredient("Papas", 1000, "papas")
+                        }),
+                        new Step(3, "Freir las papas 5 minutos.", "sartenAceite", new Ingredient[]{})
+                }),
+                new Recipe("Fideos con manteca", "fideosConManteca", new Step[]{
+                        new Step(1, "Hervir agua en una olla.", "ollaAgua", new Ingredient[]{
+                                new Ingredient("Agua", 5000, "agua")
+                        }),
+                        new Step(2, "Volcar dentro un paquete de fideos.", "fideosHirviendo", new Ingredient[]{
+                                new Ingredient("Fideos", 500, "paqueteFideos")
+                        }),
+                        new Step(3, "Hervir por 15 minutos.", "ollaAgua", new Ingredient[]{})
+                }),
+                new Recipe("Ensalada de tomate y lechuga", "ensaladaTyL", new Step[]{
+                        new Step(1, "Lavar la lechuga.", "lavadoLechuga", new Ingredient[]{
+                                new Ingredient("Lechuga", 500, "lechuga")
+                        }),
+                        new Step(2, "Lavar el tomate.", "lavadoTomate", new Ingredient[]{
+                                new Ingredient("Tomate", 300, "tomate")
+                        }),
+                        new Step(3, "Cortar la lechuga.", "cortadoLechuga", new Ingredient[]{
+                                new Ingredient("Lechuga", 500, "lechuga")
+                        }),
+                        new Step(4, "Cortar el tomate en rodajas.", "cortadoTomate", new Ingredient[]{
+                                new Ingredient("Tomate", 300, "tomate")
+                        }),
+                        new Step(5, "Colocar la mezcla en una ensaladera.", "ensaladaTyL", new Ingredient[]{})
+                }),
+                new Recipe("Pollo frito", "polloFrito", new Step[]{
+                        new Step(1, "Precalentar aceite en una sartén a 220 grados Celsius.", "sartenAceite", new Ingredient[]{}),
+                        new Step(2, "Cortar el pollo.", "cortadoPollo", new Ingredient[]{
+                                new Ingredient("Muslo de pollo", 500, "pollo")
+                        }),
+                        new Step(3, "Freir el pollo durante 20 minutos.", "sartenAceite", new Ingredient[]{})
+                }),
+                new Recipe("Sandwich de jamon y queso", "sandwichJQ", new Step[]{
+                        new Step(1, "Cortar a la mitad el pan.", "cortadoPan", new Ingredient[]{
+                                new Ingredient("Pan", 100, "pan")
+                        }),
+                        new Step(2, "Colocar una feta de jamón en el pan.", "jamonEnPan", new Ingredient[]{
+                                new Ingredient("Jamon", 100, "jamon")
+                        }),
+                        new Step(3, "Colocar una feta de queso en el pan.", "quesoEnPan", new Ingredient[]{
+                                new Ingredient("Queso", 100, "queso")
+                        }),
+                        new Step(4, "Colocar la tapa al pan.", "sandwichJQ", new Ingredient[]{})
+                }),
+                new Recipe("Guiso de lentejas", "guisoLentejas", new Step[]{
+                        new Step(1, "Hervir agua en una olla.", "ollaAgua", new Ingredient[]{
+                                new Ingredient("Agua", 5000, "agua")
+                        }),
+                        new Step(2, "Volcar dentro una lata de lentejas.", "lentejasHirviendo", new Ingredient[]{
+                                new Ingredient("Lentejas", 300, "lataLentejas")
+                        }),
+                        new Step(3, "Hervir por 30 minutos.", "ollaAgua", new Ingredient[]{})
                 })
         };
+        checkIfImagesExist(defaultRecipes);
         return new GsonBuilder().setPrettyPrinting().create().toJson(defaultRecipes);
     }
 
@@ -78,6 +183,31 @@ public class DataInitializer {
                 })
         };
         return new GsonBuilder().setPrettyPrinting().create().toJson(defaultUsers);
+    }
+    
+    private static void checkIfImagesExist(final Recipe[] recipes) {
+        final List<String> imagesAvailable = new ArrayList<>();
+        final File folder = new File("imagenes");
+        for(final File file : folder.listFiles()){
+            imagesAvailable.add(removeExtensionFromFilename(file.getName()));
+        }
+        for(final Recipe recipe : recipes){
+            if(!imagesAvailable.contains(recipe.getImagen())) System.out.println("Falta la imagen: " + recipe.getImagen());
+            for(final Step step : recipe.getPasos()){
+                if(!imagesAvailable.contains(step.getImagen())) System.out.println("Falta la imagen: " + step.getImagen());
+                for(final Ingredient ingredient : step.getIngredientes()){
+                    if(!imagesAvailable.contains(ingredient.getImagen())) System.out.println("Falta la imagen: " + ingredient.getImagen());
+                }
+            }
+        }
+    }
+    
+    private static String removeExtensionFromFilename(final String filename){
+        final int index = filename.lastIndexOf('.');
+        if(index > -1){
+            return filename.substring(0,index);
+        }
+        return filename;
     }
 
 }

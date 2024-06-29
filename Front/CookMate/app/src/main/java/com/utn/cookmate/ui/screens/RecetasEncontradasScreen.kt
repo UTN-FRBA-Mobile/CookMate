@@ -41,7 +41,7 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
         modifier = Modifier.fillMaxSize()
     ) {
         val state = rememberScrollState()
-        LaunchedEffect(Unit) { state.animateScrollTo(100) }
+        LaunchedEffect(Unit) { state.animateScrollTo(0) }
         Column(modifier = Modifier
             .fillMaxSize()
             .padding(18.dp),
