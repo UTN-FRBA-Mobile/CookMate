@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,6 +36,7 @@ import com.utn.cookmate.connection.Server
 import com.utn.cookmate.ui.TextComponent
 import com.utn.cookmate.ui.TopBar
 import com.utn.cookmate.ui.UserInputViewModel
+import com.utn.cookmate.R
 
 @Composable
 fun MisRecetasScreen (userInputViewModel: UserInputViewModel, navController : NavController){
@@ -49,7 +51,7 @@ fun MisRecetasScreen (userInputViewModel: UserInputViewModel, navController : Na
             .padding(18.dp),
             verticalArrangement= Arrangement.SpaceBetween
         ) {
-            TopBar(value = "Estas son tus recetas guardadas")
+            TopBar(value = "Mis recetas")
             Spacer(modifier = Modifier.size(30.dp))
             /*SmallFloatingActionButton(
                 onClick = { Modifier.clickable { navController.navigate(Routes.GENERAR_RECETA_SCREEN) }},
@@ -76,7 +78,9 @@ fun MisRecetasScreen (userInputViewModel: UserInputViewModel, navController : Na
                 )
             }
             Spacer(modifier = Modifier.size(30.dp))*/
-            Column(modifier = Modifier.verticalScroll(state).weight(1f, true)){
+            Column(modifier = Modifier
+                .verticalScroll(state)
+                .weight(1f, true)){
                 for (receta in userInputViewModel.appStatus.value.recetasGuardadas) {
                     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         Text(
@@ -112,7 +116,9 @@ fun MisRecetasScreen (userInputViewModel: UserInputViewModel, navController : Na
             }
             Spacer(modifier = Modifier.size(10.dp))
             Row(
-                modifier = Modifier.fillMaxWidth().padding(20.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
                 horizontalArrangement = Arrangement.Absolute.Right,
                 verticalAlignment = Alignment.Bottom
             ) {
@@ -122,6 +128,8 @@ fun MisRecetasScreen (userInputViewModel: UserInputViewModel, navController : Na
                         navController.navigate(Routes.BUSCAR_RECETA_ONLINE_SCREEN)
                     },
                     shape = CircleShape,
+                    containerColor = colorResource(id = R.color.purple_700),
+                    contentColor = Color.White
                 ) {
                     Icon(Icons.Filled.Add, "Buscar una receta online")
                 }

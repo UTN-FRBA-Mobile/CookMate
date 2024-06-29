@@ -5,6 +5,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
+import androidx.core.content.ContextCompat
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.utn.cookmate.ui.screens.CookMateNavigationGraph
 import com.utn.cookmate.ui.theme.CookMateTheme
 
@@ -14,6 +18,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CookMateTheme {
+
+                val systemUiController = rememberSystemUiController()
+
+                // Use SideEffect to apply changes to the system UI (status bar color)
+                SideEffect {
+                    systemUiController.setStatusBarColor(
+                        color = Color(ContextCompat.getColor(this@MainActivity, R.color.purple_700))
+                    )
+                }
                 CookMateApp()
                 // A surface container using the 'background' color from the theme
 //                Surface(

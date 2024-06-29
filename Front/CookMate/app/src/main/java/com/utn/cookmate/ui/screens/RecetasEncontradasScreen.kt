@@ -1,5 +1,7 @@
 package com.utn.cookmate.ui.screens
 
+import android.graphics.BitmapFactory
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,11 +22,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.utn.cookmate.R
 import com.utn.cookmate.connection.Server
 import com.utn.cookmate.data.Receta
 import com.utn.cookmate.ui.RecetaCard
@@ -76,13 +81,14 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
                                 fontWeight = FontWeight.Medium
                             )
                         } else {
-                            Text(
-                                modifier = Modifier.clickable { funGuardar(receta.nombre,userInputViewModel) },
-                                text = "\u21E9",
-                                color = Color.Black,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Medium
-                            )
+                            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                                Spacer(modifier = Modifier.weight(1f))
+                                Image(
+                                    modifier = Modifier.size(30.dp).clickable { funGuardar(receta.nombre,userInputViewModel) },
+                                    painter = painterResource(id = R.drawable.download_button),
+                                    contentDescription = "Boton de descarga"
+                                )
+                            }
                         }
 
                     }

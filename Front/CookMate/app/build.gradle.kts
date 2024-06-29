@@ -67,6 +67,8 @@ dependencies {
     // Jetpack Compose Navigation dependencies
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
+
     /*implementation("androidx.navigation:navigation-compose:2.6.1")*/
 /*    implementation("androidx.navigation:navigation-fragment-ktx:2.5.1")
     implementation("androidx.navigation:navigation-ui-ktx:2.5.1")*/

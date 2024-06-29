@@ -1,5 +1,6 @@
 package com.utn.cookmate.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -20,10 +23,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.gson.JsonObject
+import com.utn.cookmate.R
 import com.utn.cookmate.data.UserDataUiEvents
 import com.utn.cookmate.connection.Server
 import com.utn.cookmate.data.Ingrediente
@@ -64,7 +71,13 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                     .padding(18.dp)
             ) {
                 userInputViewModel.appStatus.value.registerResponse.value = ""
-                TopBar("CookMate! \uD83D\uDE0A")
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                   Image(
+                        modifier = Modifier.size(150.dp),
+                        painter = painterResource(id = R.drawable.logo_nombre),
+                        contentDescription = "Logo de CookMate"
+                    )
+                }
                 TextComponent(textValue = "Email", textSize = 12.sp)
                 TextFieldComponent(
                     "Email",
@@ -131,6 +144,7 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
 
                 Button(
                     modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
                     onClick = {
                         if (userInputViewModel.isValidLoginState() && userInputViewModel.appStatus.value.imagenesDescargadas.isNotEmpty()) {
                             println("${userInputViewModel.appStatus.value.emailEntered} and ${userInputViewModel.appStatus.value.passwordEntered}")
@@ -140,13 +154,14 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                     }
                 ) {
                     TextComponent(
-                        textValue = "LOGIN!",
+                        textValue = "Ingresar",
                         textSize = 18.sp,
                         colorValue = Color.White
                     )
                 }
                 Button(
                     modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
                     onClick = {
                         navController.navigate(Routes.CREATE_USER_SCREEN)
                     }
@@ -166,6 +181,7 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
         ) {
             Button(
                 modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
                 onClick = {
                     navController.navigate(Routes.ABOUT_SCREEN)
                 }
