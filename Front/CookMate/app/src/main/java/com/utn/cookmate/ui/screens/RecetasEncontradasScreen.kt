@@ -98,10 +98,25 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
+                        navController.navigate(Routes.MIS_RECETAS_SCREEN)
+                    }
+                ) {
+                    TextComponent(textValue = "Volver a mis recetas", textSize = 18.sp,colorValue = Color.White)
+                }
+            }
+            Spacer(modifier = Modifier.size(10.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(20.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
                         navController.navigate(Routes.BUSCAR_RECETA_ONLINE_SCREEN)
                     }
                 ) {
-                    TextComponent(textValue = "Volver", textSize = 18.sp,colorValue = Color.White)
+                    TextComponent(textValue = "Buscar otras recetas", textSize = 18.sp,colorValue = Color.White)
                 }
             }
         }

@@ -10,10 +10,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -109,17 +113,17 @@ fun MisRecetasScreen (userInputViewModel: UserInputViewModel, navController : Na
             Spacer(modifier = Modifier.size(10.dp))
             Row(
                 modifier = Modifier.fillMaxWidth().padding(20.dp),
-                horizontalArrangement = Arrangement.Center,
+                horizontalArrangement = Arrangement.Absolute.Right,
                 verticalAlignment = Alignment.Bottom
             ) {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
+                LargeFloatingActionButton(
                     onClick = {
                         Server(userInputViewModel).getAllIngredients()
                         navController.navigate(Routes.BUSCAR_RECETA_ONLINE_SCREEN)
-                    }
+                    },
+                    shape = CircleShape,
                 ) {
-                    TextComponent(textValue = "Buscar una receta online", textSize = 18.sp,colorValue = Color.White)
+                    Icon(Icons.Filled.Add, "Buscar una receta online")
                 }
             }
         }
