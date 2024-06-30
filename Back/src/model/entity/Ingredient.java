@@ -7,6 +7,7 @@ public class Ingredient implements Serializable {
     int cantidad;
     String imagen;
 
+
     public Ingredient(String nombre, int cantidad, String imagen) {
         this.nombre = nombre;
         this.cantidad = cantidad;

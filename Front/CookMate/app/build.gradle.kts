@@ -76,6 +76,7 @@ dependencies {
     // Gson library
     implementation("com.google.code.gson:gson:2.8.8")
     implementation("io.socket:socket.io-client:1.0.0")
+    implementation(libs.firebase.common.ktx)
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

@@ -11,11 +11,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import model.entity.Ingredient;
 import model.entity.Step;
@@ -74,29 +70,29 @@ public class ArchivoJson {
 //        }
 //        return lista;
     }
-    
+
     public static List<Recipe> cargarLasRecetasQuePuedanHacerseCon(final List<String> ingredientesPermitidos) {
-        final List<Recipe> lista = new ArrayList<>();
-        final List<Recipe> recetas = cargarTodasLasRecetas();
-        
-//            lista.add(recetas.stream().filter(recipe -> paso.getIn().equals(valida)).findFirst().get());
-            
-            loopReceta: for(final Recipe receta : recetas){
-                for(final Step paso : receta.getPasos()){
-                    for(final Ingredient ingredienteNecesario : paso.getIngredientes()){
-                        if(!ingredientesPermitidos.contains(ingredienteNecesario.getNombre())){
-                            continue loopReceta; //necesito un ingrediente que no tengo, esta receta no sirve mas!
-                        }
-                    }
+        List<Recipe> lista = new ArrayList<>();
+        List<Recipe> recetas = cargarTodasLasRecetas(); // Obtener todas las recetas disponibles
+
+        for (Recipe receta : recetas) {
+
+            List<Ingredient> ingredienteReceta = new LinkedList<Ingredient>();
+            for (Step paso : receta.getPasos()) {
+                // Si el paso no tiene ingredientes, lo consideramos válido automáticamente
+                if (paso.getIngredientes() != null){
+                    ingredienteReceta.addAll((Arrays.stream(paso.getIngredientes()).collect(Collectors.toList())));
                 }
+
+            }
+
+
+            // Si contiene al menos uno de los ingredientes permitidos, añadir la receta a la lista
+            if (ingredientesPermitidos.containsAll(ingredienteReceta.stream().map(ingredient -> ingredient.getNombre().toLowerCase()).collect(Collectors.toList()))) {
                 lista.add(receta);
             }
-            
-//            List<Recipe> todosLosIngredientes = recetas.stream()
-//                .flatMap(receta -> Arrays.stream(receta.getPasos()))
-//                .flatMap(paso -> Arrays.stream(paso.getIngredientes()))
-//                .filter(ingrediente -> ingrediente.getNombre().equals(ingredienteValido))
-//                .collect(receta);
+        }
+
         return lista;
     }
 

@@ -89,9 +89,9 @@ public class ClientHandler implements Runnable {
                     // Lógica para obtener la lista de recetas del archivo JSON
                     final JsonArray ingredientesPermitidos =  solicitud.get("ingredientes").getAsJsonArray();
                     final List<String> ingredientesPermitidosList =  new Gson().fromJson(ingredientesPermitidos, new TypeToken<List<String>>(){}.getType());
-                    final List<Recipe> recetas = ArchivoJson.cargarLasRecetasQuePuedanHacerseCon(ingredientesPermitidosList);
+                    final List<Recipe> recetas = ArchivoJson.cargarLasRecetasQuePuedanHacerseCon(ingredientesPermitidosList.stream().map(String::toLowerCase).collect(Collectors.toList()));
                     salidaObjetos.writeObject(new Gson().toJson(recetas));
-                    System.out.println("respuesta: " + recetas);
+                    System.out.println("respuesta: " + new Gson().toJson(recetas));
                     break;
                 case "removeRecipeFromUser":
                     String emailRemove = solicitud.get("email").getAsString();

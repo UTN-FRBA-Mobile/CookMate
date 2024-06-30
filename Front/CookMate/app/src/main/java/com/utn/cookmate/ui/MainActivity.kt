@@ -9,6 +9,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.firebase.FirebaseApp
 import com.utn.cookmate.ui.screens.CookMateNavigationGraph
 import com.utn.cookmate.ui.theme.CookMateTheme
 
@@ -16,6 +17,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this);
+
         setContent {
             CookMateTheme {
 

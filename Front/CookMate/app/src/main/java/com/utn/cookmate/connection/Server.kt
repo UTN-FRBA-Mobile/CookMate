@@ -48,8 +48,10 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
     fun searchRecipes() {
         var json = JsonObject()
         var array: JsonArray = JsonArray()
+        System.out.println("Buscando recetas con ingredentes: ")
         for (ingrediente in userInputViewModel.appStatus.value.ingredientesElegidos) {
             array.add(ingrediente)
+            System.out.println("Ingrediente "+ingrediente.toString())
         }
         json.addProperty("action", "searchRecipes")
         json.add("ingredientes", array)

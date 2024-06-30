@@ -1,9 +1,9 @@
 package com.utn.cookmate.data
 
-class Paso(var numero: Int,
-           var descripcion:String,
-           var image:String,
-           var ingredientes: MutableList<Ingrediente>) {
-
-
-}
+data class Paso(
+    val numero: Int,
+    val descripcion: String,
+    val imagen: String,
+    val ingredientes: List<Ingrediente>,
+    val duracion: Int? = null // Duración en minutos, opcional
+)

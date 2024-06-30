@@ -22,12 +22,12 @@ public class ClientSocket {
 
     public static void main(String[] args) {
         // Llamadas de prueba a las diferentes funcionalidades
-        //obtenerRecetas();
+        obtenerRecetas();
         //obtenerUsuarios();
         //obtenerIngredientes();
         //descargarRecursos();
         //login("test@example.com", "password123");
-        registrarUsuario();
+        //registrarUsuario();
     }
 
     private static void registrarUsuario() {
@@ -66,13 +66,21 @@ public class ClientSocket {
             JsonObject solicitud = new JsonObject();
             solicitud.addProperty("action", "searchRecipes");
 
+            // Crear un JsonArray de ingredientes permitidos
+            JsonArray ingredientesPermitidos = new JsonArray();
+            ingredientesPermitidos.add("Pan");
+            ingredientesPermitidos.add("Carne");
+            ingredientesPermitidos.add("Sal");
+
+            // Agregar el JsonArray de ingredientes a la solicitud
+            solicitud.add("ingredientes", ingredientesPermitidos);
+
             // Enviar solicitud al servidor
             salidaObjetos.writeObject(solicitud.toString());
 
             // Leer la respuesta del servidor
             String respuestaJson = (String) entradaObjetos.readObject();
-            Type listType = new TypeToken<List<Recipe>>() {}.getType();
-            List<Recipe> recetas = new Gson().fromJson(respuestaJson, listType);
+            List<Recipe> recetas = new Gson().fromJson(respuestaJson, new TypeToken<List<Recipe>>(){}.getType());
 
             // Imprimir recetas
             for (Recipe receta : recetas) {
@@ -82,13 +90,13 @@ public class ClientSocket {
                     for (Ingredient ingrediente : paso.getIngredientes()) {
                         System.out.println(" - Ingrediente: " + ingrediente.getNombre() + ", Cantidad: " + ingrediente.getCantidad());
                     }
+                    System.out.println("Duracion: " + paso.getDuracion());
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
-
     private static void obtenerUsuarios() {
         try (
                 Socket socket = new Socket(SERVIDOR_IP, PUERTO);
