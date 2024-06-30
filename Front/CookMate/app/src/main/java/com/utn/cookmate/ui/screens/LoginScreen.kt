@@ -12,34 +12,25 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.google.gson.JsonObject
 import com.utn.cookmate.R
-import com.utn.cookmate.data.UserDataUiEvents
 import com.utn.cookmate.connection.Server
 import com.utn.cookmate.data.Ingrediente
 import com.utn.cookmate.data.Paso
 import com.utn.cookmate.data.Receta
-
+import com.utn.cookmate.data.UserDataUiEvents
 import com.utn.cookmate.ui.TextComponent
 import com.utn.cookmate.ui.TextFieldComponent
-import com.utn.cookmate.ui.TopBar
 import com.utn.cookmate.ui.UserInputViewModel
 import org.json.JSONArray
 import org.json.JSONObject
@@ -47,6 +38,17 @@ import java.util.Base64
 
 @Composable
 fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavController) {
+    val context = LocalContext.current
+
+    // Revisar si hay datos de inicio de sesión guardados
+    LaunchedEffect(Unit) {
+        val (savedEmail, savedPassword) = PreferencesHelper.getLoginDetails(context)
+        if (!savedEmail.isNullOrEmpty() && !savedPassword.isNullOrEmpty()) {
+            // Intentar iniciar sesión con los datos guardados
+            Server(userInputViewModel).login(savedEmail, savedPassword)
+        }
+    }
+
     if(userInputViewModel.appStatus.value.downloadResourcesResponse.value.isEmpty()){
         Server(userInputViewModel).downloadResources()
     } else if(userInputViewModel.appStatus.value.imagenesDescargadas.isEmpty()){
@@ -72,7 +74,7 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
             ) {
                 userInputViewModel.appStatus.value.registerResponse.value = ""
                 Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                   Image(
+                    Image(
                         modifier = Modifier.size(150.dp),
                         painter = painterResource(id = R.drawable.logo_nombre),
                         contentDescription = "Logo de CookMate"
@@ -88,26 +90,17 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                     "Clave",
                     onTextChanged = { userInputViewModel.onEvent(UserDataUiEvents.PasswordEntered(it)) })
                 Spacer(modifier = Modifier.size(20.dp))
-                /*TextComponent(textValue = "Elegir comida", textSize = 18.sp)
-                Spacer(modifier = Modifier.size(10.dp))
-                Row(modifier = Modifier.fillMaxWidth()){
-                    FoodCard(image = R.drawable.burger,userInputViewModel.uiState.value.foodSelected == "hamburguesa", foodSelected = {
-                        userInputViewModel.onEvent(UserDataUiEvents.FoodSelected(it))
-                    })
-                    FoodCard(image = R.drawable.pizza, foodSelected = {userInputViewModel.onEvent(
-                        UserDataUiEvents.FoodSelected(it))}, selected = userInputViewModel.uiState.value.foodSelected == "pizza")
-                }
-                Spacer(modifier = Modifier.weight(1f))
 
-                 */
-
-//                val originalResponse = remember { mutableStateOf(userInputViewModel.appStatus.value.response) }
-//                val theResponse by remember {
-//                    mutableStateOf(userInputViewModel.appStatus.value.response)
-//                }
                 if(userInputViewModel.appStatus.value.loginResponse.value == "{}") {
                     TextComponent(textValue = "Login fallido!", textSize = 12.sp)
                 } else if(userInputViewModel.appStatus.value.loginResponse.value != "") {
+                    // Guardar las credenciales de inicio de sesión
+                    PreferencesHelper.saveLoginDetails(
+                        context,
+                        userInputViewModel.appStatus.value.emailEntered,
+                        userInputViewModel.appStatus.value.passwordEntered
+                    )
+
                     userInputViewModel.appStatus.value.recetasGuardadas.clear()
                     var recetasGuardadas : JSONArray = JSONArray(userInputViewModel.appStatus.value.loginResponse.value)
                     for (i in 0 until recetasGuardadas.length()) {
@@ -120,7 +113,6 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                             val numeroPaso = paso.getInt("numero")
                             val descripcionPaso = paso.getString("descripcion")
                             val imagen = paso.getString("imagen")
-                            //Base64.getDecoder().decode(base64ImagePaso)
                             val listaIngredientes = paso.getJSONArray("ingredientes")
                             var listaDeIngredientes : MutableList<Ingrediente> = mutableListOf<Ingrediente>()
                             for (k in 0 until listaIngredientes.length()) {
@@ -138,7 +130,6 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                         userInputViewModel.appStatus.value.recetasGuardadas.add(receta)
                     }
 
-                    //userInputViewModel.appStatus.value.recetasGuardadas = parseado;
                     navController.navigate(Routes.MIS_RECETAS_SCREEN)
                 }
 
@@ -147,10 +138,8 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
                     onClick = {
                         if (userInputViewModel.isValidLoginState() && userInputViewModel.appStatus.value.imagenesDescargadas.isNotEmpty()) {
-                            println("${userInputViewModel.appStatus.value.emailEntered} and ${userInputViewModel.appStatus.value.passwordEntered}")
                             Server(userInputViewModel).login(userInputViewModel.appStatus.value.emailEntered,userInputViewModel.appStatus.value.passwordEntered)
                         }
-
                     }
                 ) {
                     TextComponent(
@@ -193,6 +182,5 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                 )
             }
         }
-
     }
 }
