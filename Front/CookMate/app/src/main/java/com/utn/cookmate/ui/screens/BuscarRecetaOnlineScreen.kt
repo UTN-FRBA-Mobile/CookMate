@@ -8,81 +8,158 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.utn.cookmate.connection.Server
-import com.utn.cookmate.data.Ingrediente
-import com.utn.cookmate.data.Paso
-import com.utn.cookmate.data.Receta
-import com.utn.cookmate.ui.CheckboxRow
 import com.utn.cookmate.ui.TextComponent
 import com.utn.cookmate.ui.TopBar
 import com.utn.cookmate.ui.UserInputViewModel
 import org.json.JSONArray
-import org.json.JSONObject
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GenerarRecetaScreen (userInputViewModel: UserInputViewModel, navController : NavController){
-    Surface(
-        modifier = Modifier.fillMaxSize()
-    ) {
+fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: NavController) {
+    var searchQuery by remember { mutableStateOf("") }
+    val ingredientesEnServidor = remember { mutableStateOf(JSONArray()) }
+    val ingredientesSeleccionados = remember { mutableStateOf(mutableListOf<String>()) }
+
+    LaunchedEffect(userInputViewModel.appStatus.value.getAllIngredientsResponse.value) {
+        val response = userInputViewModel.appStatus.value.getAllIngredientsResponse.value
+        if (!response.isNullOrEmpty()) {
+            ingredientesEnServidor.value = JSONArray(response)
+        }
+    }
+
+    Surface(modifier = Modifier.fillMaxSize()) {
         val state = rememberScrollState()
         LaunchedEffect(Unit) { state.animateScrollTo(0) }
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(18.dp),
-            verticalArrangement= Arrangement.SpaceBetween
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(18.dp),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             TopBar(value = "Buscar recetas con ingredientes dados \uD83D\uDCA1")
             Spacer(modifier = Modifier.size(30.dp))
-            Column(modifier = Modifier.verticalScroll(state).weight(1f, true)){
-                if(userInputViewModel.appStatus.value.getAllIngredientsResponse.value.isNotEmpty()){
-                    var ingredientesEnServidor : JSONArray = JSONArray(userInputViewModel.appStatus.value.getAllIngredientsResponse.value)
-                    for (i in 0 until ingredientesEnServidor.length()) {
-                        val item : String = ingredientesEnServidor.getString(i)
-                        //                TextComponent(textValue = item, textSize = 16.sp)
-                        //                Spacer(modifier = Modifier.size(20.dp))
-                        CheckboxRow(item,{
-                            if(userInputViewModel.appStatus.value.ingredientesElegidos.contains(item)){
-                                userInputViewModel.appStatus.value.ingredientesElegidos.remove(item)
-                            } else {
-                                userInputViewModel.appStatus.value.ingredientesElegidos.add(item)
-                            }
-                        }
-                        )
+
+            // Search Bar
+            TextField(
+                value = searchQuery,
+                onValueChange = {
+                    searchQuery = it
+                },
+                label = { Text("Buscar Ingrediente") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
+            )
+
+            Column(modifier = Modifier.verticalScroll(state).weight(1f, true)) {
+                if (ingredientesEnServidor.value.length() > 0) {
+                    val ingredients = (0 until ingredientesEnServidor.value.length()).map { i ->
+                        ingredientesEnServidor.value.getString(i)
                     }
 
+                    if (searchQuery.isEmpty()) {
+                        // Mostrar todos los ingredientes, incluidos los seleccionados, cuando no hay búsqueda activa
+                        ingredients.forEach { item ->
+                            CheckboxRow(
+                                text = item,
+                                onCheckedChange = { isChecked ->
+                                    if (isChecked) {
+                                        ingredientesSeleccionados.value.add(item)
+                                    } else {
+                                        ingredientesSeleccionados.value.remove(item)
+                                    }
+                                },
+                                checked = ingredientesSeleccionados.value.contains(item)
+                            )
+                        }
+                    } else {
+                        // Mostrar ingredientes filtrados, excluyendo los ya seleccionados, cuando hay búsqueda activa
+                        val filteredIngredients = ingredients.filter {
+                            it.contains(searchQuery, ignoreCase = true) && !ingredientesSeleccionados.value.contains(it)
+                        }
+
+                        filteredIngredients.forEach { item ->
+                            CheckboxRow(
+                                text = item,
+                                onCheckedChange = { isChecked ->
+                                    if (isChecked) {
+                                        ingredientesSeleccionados.value.add(item)
+                                        searchQuery = "" // Reiniciar la búsqueda
+                                    } else {
+                                        ingredientesSeleccionados.value.remove(item)
+                                    }
+                                },
+                                checked = ingredientesSeleccionados.value.contains(item)
+                            )
+                        }
+                    }
                 }
             }
-            if(userInputViewModel.isValidBusquedaRecetasState()){
+
+
+
+            if (ingredientesSeleccionados.value.isNotEmpty()) {
                 Spacer(modifier = Modifier.size(10.dp))
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(20.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.Bottom
                 ) {
-                        Button(
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = {
-                                Server(userInputViewModel).searchRecipes()
+                    Button(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = {
+                            userInputViewModel.appStatus.value.recetasEncontradas.clear()
+                            val allRecipes = userInputViewModel.appStatus.value.recetasEncontradas
+                            val selectedIngredients = ingredientesSeleccionados.value
+
+                            val filteredRecipes = allRecipes.filter { receta ->
+                                receta.listaPasos.any { paso ->
+                                    paso.ingredientes.any { ingrediente ->
+                                        selectedIngredients.contains(ingrediente.nombre)
+                                    }
+                                }
                             }
-                        ) {
-                            TextComponent(textValue = "Buscar recetas!", textSize = 18.sp,colorValue = Color.White)
+
+                            userInputViewModel.appStatus.value.recetasEncontradas.addAll(filteredRecipes)
+                            navController.navigate(Routes.RECETAS_ENCONTRADAS_SCREEN)
                         }
+                    ) {
+                        TextComponent(
+                            textValue = "Buscar recetas!",
+                            textSize = 18.sp,
+                            colorValue = Color.White
+                        )
                     }
+                }
             }
+
             Row(
-                modifier = Modifier.fillMaxWidth().padding(20.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.Bottom
             ) {
@@ -92,122 +169,34 @@ fun GenerarRecetaScreen (userInputViewModel: UserInputViewModel, navController :
                         navController.navigate(Routes.MIS_RECETAS_SCREEN)
                     }
                 ) {
-                    TextComponent(textValue = "Volver", textSize = 18.sp,colorValue = Color.White)
-                }
-            }
-        }
-    }
-
-    if(userInputViewModel.appStatus.value.searchRecipesResponse.value.isNotEmpty()){
-        userInputViewModel.appStatus.value.recetasEncontradas.clear()
-        var recetasEncontradas : JSONArray = JSONArray(userInputViewModel.appStatus.value.searchRecipesResponse.value)
-        for (i in 0 until recetasEncontradas.length()) {
-            var listaDePasos : MutableList<Paso> = mutableListOf<Paso>()
-            val item : JSONObject= recetasEncontradas.getJSONObject(i)
-            val nombre = item.getString("nombre")
-            val listaPasos = item.getJSONArray("pasos")
-            for (j in 0 until listaPasos.length()) {
-                val paso : JSONObject= listaPasos.getJSONObject(j)
-                val numeroPaso = paso.getInt("numero")
-                val descripcionPaso = paso.getString("descripcion")
-                val imagen = paso.getString("imagen")
-                val listaIngredientes = paso.getJSONArray("ingredientes")
-                var listaDeIngredientes : MutableList<Ingrediente> = mutableListOf<Ingrediente>()
-                for (k in 0 until listaIngredientes.length()) {
-                    val ingrediente : JSONObject= listaIngredientes.getJSONObject(k)
-                    val nombreIngrediente = ingrediente.getString("nombre")
-                    val cantidad = ingrediente.getInt("cantidad")
-                    val imagenIngrediente = ingrediente.getString("imagen")
-                    var ingredienteObjeto : Ingrediente = Ingrediente(nombreIngrediente,cantidad,imagenIngrediente)
-                    //Base64.getDecoder().decode(base64Image))
-                    listaDeIngredientes.add(ingredienteObjeto)
-                }
-                var pasoObjeto : Paso = Paso(numeroPaso,descripcionPaso,imagen,listaDeIngredientes)
-                listaDePasos.add(pasoObjeto)
-            }
-            var receta : Receta = Receta(nombre, listaDePasos, false)
-            userInputViewModel.appStatus.value.recetasEncontradas.add(receta)
-        }
-        navController.navigate(Routes.RECETAS_ENCONTRADAS_SCREEN)
-    }
-
-
-
-
-
-/*
-
-    Surface(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(18.dp)
-        ) {
-            Spacer(modifier = Modifier.size(40.dp))
-            TextComponent(textValue = "Buscar recetas con ingredientes dados \uD83D\uDCA1", textSize = 24.sp)
-            Spacer(modifier = Modifier.size(20.dp))
-
-            if(userInputViewModel.appStatus.value.getAllIngredientsResponse.value.isNotEmpty()){
-                var ingredientesEnServidor : JSONArray = JSONArray(userInputViewModel.appStatus.value.getAllIngredientsResponse.value)
-                for (i in 0 until ingredientesEnServidor.length()) {
-                    val item : String = ingredientesEnServidor.getString(i)
-    //                TextComponent(textValue = item, textSize = 16.sp)
-    //                Spacer(modifier = Modifier.size(20.dp))
-                    CheckboxRow(item,{
-                            if(userInputViewModel.appStatus.value.ingredientesElegidos.contains(item)){
-                                userInputViewModel.appStatus.value.ingredientesElegidos.remove(item)
-                            } else {
-                                userInputViewModel.appStatus.value.ingredientesElegidos.add(item)
-                            }
-                        }
+                    TextComponent(
+                        textValue = "Volver",
+                        textSize = 18.sp,
+                        colorValue = Color.White
                     )
                 }
-                if(userInputViewModel.isValidBusquedaRecetasState()){
-                    Button(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = {
-                            //Server(userInputViewModel).mockRecetasEncontradas()
-                            println("Se buscan recetas con estos ingredientes")
-                            Server(userInputViewModel).searchRecipes()
-                        }
-                    ) {
-                        TextComponent(textValue = "Buscar recetas!", textSize = 18.sp,colorValue = Color.White)
-                    }
-                }
-                if(userInputViewModel.appStatus.value.searchRecipesResponse.value.isNotEmpty()){
-                    userInputViewModel.appStatus.value.recetasEncontradas.clear()
-                    var recetasEncontradas : JSONArray = JSONArray(userInputViewModel.appStatus.value.searchRecipesResponse.value)
-                    for (i in 0 until recetasEncontradas.length()) {
-                        var listaDePasos : MutableList<Paso> = mutableListOf<Paso>()
-                        val item : JSONObject= recetasEncontradas.getJSONObject(i)
-                        val nombre = item.getString("nombre")
-                        val listaPasos = item.getJSONArray("pasos")
-                        for (j in 0 until listaPasos.length()) {
-                            val paso : JSONObject= listaPasos.getJSONObject(j)
-                            val numeroPaso = paso.getInt("numero")
-                            val descripcionPaso = paso.getString("descripcion")
-                            val imagen = paso.getString("imagen")
-                            val listaIngredientes = paso.getJSONArray("ingredientes")
-                            var listaDeIngredientes : MutableList<Ingrediente> = mutableListOf<Ingrediente>()
-                            for (k in 0 until listaIngredientes.length()) {
-                                val ingrediente : JSONObject= listaIngredientes.getJSONObject(k)
-                                val nombreIngrediente = ingrediente.getString("nombre")
-                                val cantidad = ingrediente.getInt("cantidad")
-                                val imagenIngrediente = ingrediente.getString("imagen")
-                                var ingredienteObjeto : Ingrediente = Ingrediente(nombreIngrediente,cantidad,imagenIngrediente)
-                                    //Base64.getDecoder().decode(base64Image))
-                                listaDeIngredientes.add(ingredienteObjeto)
-                            }
-                            var pasoObjeto : Paso = Paso(numeroPaso,descripcionPaso,imagen,listaDeIngredientes)
-                            listaDePasos.add(pasoObjeto)
-                        }
-                        var receta : Receta = Receta(nombre, listaDePasos, false)
-                        userInputViewModel.appStatus.value.recetasEncontradas.add(receta)
-                    }
-                    navController.navigate(Routes.RECETAS_ENCONTRADAS_SCREEN)
-                }
             }
         }
-    }*/
+    }
+}
+
+@Composable
+fun CheckboxRow(
+    text: String,
+    onCheckedChange: (Boolean) -> Unit,
+    checked: Boolean = false
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Checkbox(
+            checked = checked,
+            onCheckedChange = onCheckedChange
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text)
+    }
 }
