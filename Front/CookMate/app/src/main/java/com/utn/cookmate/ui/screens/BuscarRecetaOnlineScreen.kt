@@ -1,14 +1,4 @@
-package com.utn.cookmate.ui.screens
-
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -17,22 +7,23 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.utn.cookmate.connection.Server
+import com.utn.cookmate.data.Ingrediente
+import com.utn.cookmate.data.Paso
+import com.utn.cookmate.data.Receta
 import com.utn.cookmate.ui.TextComponent
 import com.utn.cookmate.ui.TopBar
 import com.utn.cookmate.ui.UserInputViewModel
+import com.utn.cookmate.ui.screens.Routes
 import org.json.JSONArray
+import org.json.JSONObject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -117,8 +108,6 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
                 }
             }
 
-
-
             if (ingredientesSeleccionados.value.isNotEmpty()) {
                 Spacer(modifier = Modifier.size(10.dp))
                 Row(
@@ -128,23 +117,51 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.Bottom
                 ) {
+                    // Dentro de tu función GenerarRecetaScreen
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
-                            userInputViewModel.appStatus.value.recetasEncontradas.clear()
-                            val allRecipes = userInputViewModel.appStatus.value.recetasEncontradas
-                            val selectedIngredients = ingredientesSeleccionados.value
+                            userInputViewModel.appStatus.value.ingredientesElegidos = ingredientesSeleccionados.value;
+                            Server(userInputViewModel).searchRecipes()
+                            val response = userInputViewModel.appStatus.value.searchRecipesResponse.value
 
-                            val filteredRecipes = allRecipes.filter { receta ->
-                                receta.listaPasos.any { paso ->
-                                    paso.ingredientes.any { ingrediente ->
-                                        selectedIngredients.contains(ingrediente.nombre)
+                            if (response.isNotEmpty()) {
+                                userInputViewModel.appStatus.value.recetasEncontradas.clear()
+
+                                val recetasEncontradas = JSONArray(response)
+                                for (i in 0 until recetasEncontradas.length()) {
+                                    val item = recetasEncontradas.getJSONObject(i)
+                                    val nombre = item.getString("nombre")
+                                    val listaPasos = item.getJSONArray("pasos")
+                                    val listaDePasos = mutableListOf<Paso>()
+
+                                    for (j in 0 until listaPasos.length()) {
+                                        val paso = listaPasos.getJSONObject(j)
+                                        val numeroPaso = paso.getInt("numero")
+                                        val descripcionPaso = paso.getString("descripcion")
+                                        val imagen = paso.getString("imagen")
+                                        val listaIngredientes = paso.getJSONArray("ingredientes")
+                                        val listaDeIngredientes = mutableListOf<Ingrediente>()
+
+                                        for (k in 0 until listaIngredientes.length()) {
+                                            val ingrediente = listaIngredientes.getJSONObject(k)
+                                            val nombreIngrediente = ingrediente.getString("nombre")
+                                            val cantidad = ingrediente.getInt("cantidad")
+                                            val imagenIngrediente = ingrediente.getString("imagen")
+                                            val ingredienteObjeto = Ingrediente(nombreIngrediente, cantidad, imagenIngrediente)
+                                            listaDeIngredientes.add(ingredienteObjeto)
+                                        }
+
+                                        val pasoObjeto = Paso(numeroPaso, descripcionPaso, imagen, listaDeIngredientes)
+                                        listaDePasos.add(pasoObjeto)
                                     }
-                                }
-                            }
 
-                            userInputViewModel.appStatus.value.recetasEncontradas.addAll(filteredRecipes)
-                            navController.navigate(Routes.RECETAS_ENCONTRADAS_SCREEN)
+                                    val receta = Receta(nombre, listaDePasos, false)
+                                    userInputViewModel.appStatus.value.recetasEncontradas.add(receta)
+                                }
+
+                                navController.navigate(Routes.RECETAS_ENCONTRADAS_SCREEN)
+                            }
                         }
                     ) {
                         TextComponent(
@@ -153,6 +170,7 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
                             colorValue = Color.White
                         )
                     }
+
                 }
             }
 
