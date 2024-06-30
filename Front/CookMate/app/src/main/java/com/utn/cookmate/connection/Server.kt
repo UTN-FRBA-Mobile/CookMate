@@ -95,7 +95,7 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
 
                 // Leer respuesta del servidor
                 val response = inputStream.readObject().toString()
-                println("RESPONSE: $response")
+                println("RESPONSE: $response" + "\nAccion "+action)
 
                 // Actualizar el estado de la vista basado en la acción
                 when (action) {

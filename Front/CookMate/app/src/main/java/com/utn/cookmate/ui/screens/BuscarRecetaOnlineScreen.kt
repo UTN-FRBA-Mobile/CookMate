@@ -30,12 +30,12 @@ import org.json.JSONObject
 fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: NavController) {
     var searchQuery by remember { mutableStateOf("") }
     val ingredientesEnServidor = remember { mutableStateOf(JSONArray()) }
-    val ingredientesSeleccionados = remember { mutableStateOf(mutableListOf<String>()) }
+    val ingredientesSeleccionados = remember { mutableStateListOf<String>() }
 
-    LaunchedEffect(userInputViewModel.appStatus?.value?.getAllIngredientsResponse?.value) {
-        val response = userInputViewModel.appStatus?.value?.getAllIngredientsResponse?.value
+    LaunchedEffect(userInputViewModel.appStatus.value?.getAllIngredientsResponse?.value) {
+        val response = userInputViewModel.appStatus.value?.getAllIngredientsResponse?.value
         if (!response.isNullOrEmpty()) {
-            ingredientesEnServidor?.value = JSONArray(response)
+            ingredientesEnServidor.value = JSONArray(response)
         }
     }
 
@@ -64,59 +64,51 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
             )
 
             Column(modifier = Modifier.verticalScroll(state).weight(1f, true)) {
-                if (ingredientesEnServidor?.value?.length()!! > 0) {
-                    val ingredients = (0 until ingredientesEnServidor?.value?.length()!!).map { i ->
-                        ingredientesEnServidor?.value?.getString(i)
+                if (ingredientesEnServidor.value.length() > 0) {
+                    val ingredients = (0 until ingredientesEnServidor.value.length()).map { i ->
+                        ingredientesEnServidor.value.getString(i)
                     }
 
                     if (searchQuery.isEmpty()) {
                         // Mostrar todos los ingredientes, incluidos los seleccionados, cuando no hay búsqueda activa
                         ingredients.forEach { item ->
-                            ingredientesSeleccionados?.value?.contains(item)?.let {
-                                if (item != null) {
-                                    CheckboxRow(
-                                        text = item,
-                                        onCheckedChange = { isChecked ->
-                                            if (isChecked) {
-                                                ingredientesSeleccionados?.value?.add(item)
-                                            } else {
-                                                ingredientesSeleccionados?.value?.remove(item)
-                                            }
-                                        },
-                                        checked = it
-                                    )
-                                }
-                            }
+                            CheckboxRow(
+                                text = item,
+                                onCheckedChange = { isChecked ->
+                                    if (isChecked) {
+                                        ingredientesSeleccionados.add(item)
+                                    } else {
+                                        ingredientesSeleccionados.remove(item)
+                                    }
+                                },
+                                checked = ingredientesSeleccionados.contains(item)
+                            )
                         }
                     } else {
                         // Mostrar ingredientes filtrados, excluyendo los ya seleccionados, cuando hay búsqueda activa
                         val filteredIngredients = ingredients.filter {
-                            it?.contains(searchQuery, ignoreCase = true) == true && !ingredientesSeleccionados?.value?.contains(it)!!
+                            it.contains(searchQuery, ignoreCase = true) && !ingredientesSeleccionados.contains(it)
                         }
 
                         filteredIngredients.forEach { item ->
-                            if (item != null) {
-                                ingredientesSeleccionados?.value?.contains(item)?.let {
-                                    CheckboxRow(
-                                        text = item,
-                                        onCheckedChange = { isChecked ->
-                                            if (isChecked) {
-                                                ingredientesSeleccionados?.value?.add(item)
-                                                searchQuery = "" // Reiniciar la búsqueda
-                                            } else {
-                                                ingredientesSeleccionados?.value?.remove(item)
-                                            }
-                                        },
-                                        checked = it
-                                    )
-                                }
-                            }
+                            CheckboxRow(
+                                text = item,
+                                onCheckedChange = { isChecked ->
+                                    if (isChecked) {
+                                        ingredientesSeleccionados.add(item)
+                                        searchQuery = "" // Reiniciar la búsqueda
+                                    } else {
+                                        ingredientesSeleccionados.remove(item)
+                                    }
+                                },
+                                checked = ingredientesSeleccionados.contains(item)
+                            )
                         }
                     }
                 }
             }
 
-            if (ingredientesSeleccionados?.value?.isNotEmpty() == true) {
+            if (ingredientesSeleccionados.isNotEmpty()) {
                 Spacer(modifier = Modifier.size(10.dp))
                 Row(
                     modifier = Modifier
@@ -129,13 +121,13 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
-                            userInputViewModel.appStatus?.value?.ingredientesElegidos =
-                                ingredientesSeleccionados?.value!!;
+                            userInputViewModel.appStatus.value?.ingredientesElegidos =
+                                ingredientesSeleccionados
                             Server(userInputViewModel).searchRecipes()
-                            val response = userInputViewModel.appStatus?.value?.searchRecipesResponse?.value
+                            val response = userInputViewModel.appStatus.value?.searchRecipesResponse?.value
 
                             if (response?.isNotEmpty() == true) {
-                                userInputViewModel.appStatus?.value?.recetasEncontradas?.clear()
+                                userInputViewModel.appStatus.value?.recetasEncontradas?.clear()
 
                                 val recetasEncontradas = JSONArray(response)
                                 for (i in 0 until recetasEncontradas.length()) {
@@ -166,7 +158,7 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
                                     }
 
                                     val receta = Receta(nombre, listaDePasos, false)
-                                    userInputViewModel.appStatus?.value?.recetasEncontradas?.add(receta)
+                                    userInputViewModel.appStatus.value?.recetasEncontradas?.add(receta)
                                 }
 
                                 navController.navigate(Routes.RECETAS_ENCONTRADAS_SCREEN)
