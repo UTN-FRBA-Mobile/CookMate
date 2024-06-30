@@ -82,5 +82,6 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.compose.runtime:runtime-livedata:1.0.5")
 
 }

@@ -49,7 +49,7 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
         var json = JsonObject()
         var array: JsonArray = JsonArray()
         System.out.println("Buscando recetas con ingredentes: ")
-        for (ingrediente in userInputViewModel.appStatus.value.ingredientesElegidos) {
+        for (ingrediente in userInputViewModel.appStatus?.value?.ingredientesElegidos!!) {
             array.add(ingrediente)
             System.out.println("Ingrediente "+ingrediente.toString())
         }
@@ -61,7 +61,7 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
     fun addRecipeToUser(nombreReceta: String) {
         var json = JsonObject()
         json.addProperty("action", "addRecipeToUser")
-        json.addProperty("email", userInputViewModel.appStatus.value.emailEntered)
+        json.addProperty("email", userInputViewModel.appStatus?.value?.emailEntered)
         json.addProperty("nombreReceta", nombreReceta)
         sendSocketRequest("addRecipeToUser", json)
     }
@@ -69,7 +69,7 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
     fun removeRecipeFromUser(nombreReceta: String) {
         var json = JsonObject()
         json.addProperty("action", "removeRecipeFromUser")
-        json.addProperty("email", userInputViewModel.appStatus.value.emailEntered)
+        json.addProperty("email", userInputViewModel.appStatus?.value?.emailEntered)
         json.addProperty("nombreReceta", nombreReceta)
         sendSocketRequest("removeRecipeFromUser", json)
     }
@@ -99,13 +99,13 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
 
                 // Actualizar el estado de la vista basado en la acción
                 when (action) {
-                    "login" -> userInputViewModel.appStatus.value.loginResponse.value = response
-                    "register" -> userInputViewModel.appStatus.value.registerResponse.value = response
-                    "addRecipeToUser" -> userInputViewModel.appStatus.value.addRecipeToUserResponse.value = response
-                    "removeRecipeFromUser" -> userInputViewModel.appStatus.value.removeRecipeFromUserResponse.value = response
-                    "searchRecipes" -> userInputViewModel.appStatus.value.searchRecipesResponse.value = response
-                    "getAllIngredients" -> userInputViewModel.appStatus.value.getAllIngredientsResponse.value = response
-                    "downloadResources" -> userInputViewModel.appStatus.value.downloadResourcesResponse.value = response
+                    "login" -> userInputViewModel.appStatus?.value?.loginResponse?.value = response
+                    "register" -> userInputViewModel.appStatus?.value?.registerResponse?.value = response
+                    "addRecipeToUser" -> userInputViewModel.appStatus?.value?.addRecipeToUserResponse?.value = response
+                    "removeRecipeFromUser" -> userInputViewModel.appStatus?.value?.removeRecipeFromUserResponse?.value = response
+                    "searchRecipes" -> userInputViewModel.appStatus?.value?.searchRecipesResponse?.value = response
+                    "getAllIngredients" -> userInputViewModel.appStatus?.value?.getAllIngredientsResponse?.value = response
+                    "downloadResources" -> userInputViewModel.appStatus?.value?.downloadResourcesResponse?.value = response
                 }
 
                 // Cerrar conexiones

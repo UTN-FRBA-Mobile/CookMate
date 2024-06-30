@@ -43,17 +43,17 @@
 //            TextComponent(textValue = "Elegir comida", textSize = 18.sp)
 //            Spacer(modifier = Modifier.size(10.dp))
 ////            Row(modifier = Modifier.fillMaxWidth()){
-////                FoodCard(image = R.drawable.burger,userInputViewModel.uiState.value.foodSelected == "hamburguesa", foodSelected = {
+////                FoodCard(image = R.drawable.burger,userInputViewModel.uiState?.value?.foodSelected == "hamburguesa", foodSelected = {
 ////                    userInputViewModel.onEvent(UserDataUiEvents.FoodSelected(it))
 ////                })
-////                FoodCard(image = R.drawable.pizza, foodSelected = {userInputViewModel.onEvent(UserDataUiEvents.FoodSelected(it))}, selected = userInputViewModel.uiState.value.foodSelected == "pizza")
+////                FoodCard(image = R.drawable.pizza, foodSelected = {userInputViewModel.onEvent(UserDataUiEvents.FoodSelected(it))}, selected = userInputViewModel.uiState?.value?.foodSelected == "pizza")
 ////            }
 ////            Spacer(modifier = Modifier.weight(1f))
 ////            if(userInputViewModel.isValidState()) {
 ////                ButtonComponent(
 ////                    goToDetailsScreen = {
 ////                        println("COMING HERE")
-////                        println("${userInputViewModel.uiState.value.nameEntered} and ${userInputViewModel.uiState.value.foodSelected}")
+////                        println("${userInputViewModel.uiState?.value?.nameEntered} and ${userInputViewModel.uiState?.value?.foodSelected}")
 ////                    }
 ////                )
 ////            }

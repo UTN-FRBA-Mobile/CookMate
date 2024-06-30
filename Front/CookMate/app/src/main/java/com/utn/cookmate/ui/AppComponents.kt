@@ -147,7 +147,7 @@ fun CheckboxRow(textValue: String,onClickCallback:()->Unit) {
         Checkbox(
             checked = checked.value,
             onCheckedChange = {
-                checked.value = it
+                checked?.value = it
                 onClickCallback()
             }
         )

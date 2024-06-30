@@ -35,12 +35,12 @@ import java.util.Base64
 
 @Composable
 fun CreateUserScreen(userInputViewModel: UserInputViewModel, navController: NavController) {
-    val appStatus = userInputViewModel.appStatus.value
+    val appStatus = userInputViewModel.appStatus?.value
     val registerSuccess = remember { mutableStateOf<Boolean?>(null) }
 
-    if (appStatus.downloadResourcesResponse.value.isEmpty()) {
+    if (appStatus?.downloadResourcesResponse?.value?.isEmpty() == true) {
         Server(userInputViewModel).downloadResources()
-    } else if (appStatus.imagenesDescargadas.isEmpty()) {
+    } else if (appStatus?.imagenesDescargadas?.isEmpty() == true) {
         Thread(Runnable {
             val imagenes: JSONArray = JSONArray(appStatus.downloadResourcesResponse)
             for (i in 0 until imagenes.length()) {
@@ -76,10 +76,10 @@ fun CreateUserScreen(userInputViewModel: UserInputViewModel, navController: NavC
                     onTextChanged = { userInputViewModel.onEvent(UserDataUiEvents.RegisterNameEntered(it)) })
                 Spacer(modifier = Modifier.size(40.dp))
 
-                when (registerSuccess.value) {
+                when (registerSuccess?.value) {
                     true -> {
                         TextComponent(textValue = "Registrado correctamente! Para activar la cuenta, vuelve e inicia sesión por primera vez.", textSize = 12.sp)
-                        LaunchedEffect(registerSuccess.value) {
+                        LaunchedEffect(registerSuccess?.value) {
                             navController.navigate(Routes.LOGIN_SCREEN) {
                                 popUpTo(Routes.CREATE_USER_SCREEN) { inclusive = true }
                             }
@@ -98,13 +98,19 @@ fun CreateUserScreen(userInputViewModel: UserInputViewModel, navController: NavC
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
                     onClick = {
                         if (userInputViewModel.isValidRegisterState()) {
-                            val success = Server(userInputViewModel)
+                            val success = appStatus?.registerEmailEntered?.let {
+                                appStatus?.registerPasswordEntered?.let { it1 ->
+                                    appStatus?.registerNameEntered?.let { it2 ->
+                                        Server(userInputViewModel)
                                             .register(
-                                                appStatus.registerEmailEntered,
-                                                appStatus.registerPasswordEntered,
-                                                appStatus.registerNameEntered
+                                                it,
+                                                it1,
+                                                it2
                                             )
-                            registerSuccess.value = success
+                                    }
+                                }
+                            }
+                            registerSuccess?.value = success
                         }
                     }
                 ) {

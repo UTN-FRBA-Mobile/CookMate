@@ -49,16 +49,16 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
         }
     }
 
-    if(userInputViewModel.appStatus.value.downloadResourcesResponse.value.isEmpty()){
+    if(userInputViewModel.appStatus?.value?.downloadResourcesResponse?.value?.isEmpty() == true){
         Server(userInputViewModel).downloadResources()
-    } else if(userInputViewModel.appStatus.value.imagenesDescargadas.isEmpty()){
+    } else if(userInputViewModel.appStatus?.value?.imagenesDescargadas?.isEmpty() == true){
         Thread(Runnable{
-            var imagenes : JSONArray = JSONArray(userInputViewModel.appStatus.value.downloadResourcesResponse.value)
+            var imagenes : JSONArray = JSONArray(userInputViewModel.appStatus?.value?.downloadResourcesResponse?.value)
             for (i in 0 until imagenes.length()) {
                 val item : JSONObject= imagenes.getJSONObject(i)
                 val nombre = item.getString("nombre")
                 val base64 = item.getString("base64")
-                userInputViewModel.appStatus.value.imagenesDescargadas.put(nombre,Base64.getDecoder().decode(base64))
+                userInputViewModel.appStatus?.value?.imagenesDescargadas!!.put(nombre,Base64.getDecoder().decode(base64))
             }
         }).start()
     }
@@ -72,7 +72,7 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                     .fillMaxSize()
                     .padding(18.dp)
             ) {
-                userInputViewModel.appStatus.value.registerResponse.value = ""
+                userInputViewModel.appStatus?.value?.registerResponse?.value = ""
                 Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     Image(
                         modifier = Modifier.size(150.dp),
@@ -91,18 +91,22 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                     onTextChanged = { userInputViewModel.onEvent(UserDataUiEvents.PasswordEntered(it)) })
                 Spacer(modifier = Modifier.size(20.dp))
 
-                if(userInputViewModel.appStatus.value.loginResponse.value == "{}") {
+                if(userInputViewModel.appStatus?.value?.loginResponse?.value == "{}") {
                     TextComponent(textValue = "Login fallido!", textSize = 12.sp)
-                } else if(userInputViewModel.appStatus.value.loginResponse.value != "") {
+                } else if(userInputViewModel.appStatus?.value?.loginResponse?.value != "") {
                     // Guardar las credenciales de inicio de sesión
-                    PreferencesHelper.saveLoginDetails(
-                        context,
-                        userInputViewModel.appStatus.value.emailEntered,
-                        userInputViewModel.appStatus.value.passwordEntered
-                    )
+                    userInputViewModel.appStatus?.value?.emailEntered?.let {
+                        userInputViewModel.appStatus?.value?.passwordEntered?.let { it1 ->
+                            PreferencesHelper.saveLoginDetails(
+                                context,
+                                it,
+                                it1
+                            )
+                        }
+                    }
 
-                    userInputViewModel.appStatus.value.recetasGuardadas.clear()
-                    var recetasGuardadas : JSONArray = JSONArray(userInputViewModel.appStatus.value.loginResponse.value)
+                    userInputViewModel.appStatus?.value?.recetasGuardadas?.clear()
+                    var recetasGuardadas : JSONArray = JSONArray(userInputViewModel.appStatus?.value?.loginResponse?.value)
                     for (i in 0 until recetasGuardadas.length()) {
                         var listaDePasos : MutableList<Paso> = mutableListOf<Paso>()
                         val item : JSONObject= recetasGuardadas.getJSONObject(i)
@@ -127,7 +131,7 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                             listaDePasos.add(pasoObjeto)
                         }
                         var receta : Receta = Receta(nombre, listaDePasos, true)
-                        userInputViewModel.appStatus.value.recetasGuardadas.add(receta)
+                        userInputViewModel.appStatus?.value?.recetasGuardadas?.add(receta)
                     }
 
                     navController.navigate(Routes.MIS_RECETAS_SCREEN)
@@ -137,8 +141,15 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
                     onClick = {
-                        if (userInputViewModel.isValidLoginState() && userInputViewModel.appStatus.value.imagenesDescargadas.isNotEmpty()) {
-                            Server(userInputViewModel).login(userInputViewModel.appStatus.value.emailEntered,userInputViewModel.appStatus.value.passwordEntered)
+                        if (userInputViewModel.isValidLoginState() && userInputViewModel.appStatus?.value?.imagenesDescargadas?.isNotEmpty() == true) {
+                            userInputViewModel.appStatus?.value?.passwordEntered?.let {
+                                userInputViewModel.appStatus?.value?.emailEntered?.let { it1 ->
+                                    Server(userInputViewModel).login(
+                                        it1,
+                                        it
+                                    )
+                                }
+                            }
                         }
                     }
                 ) {

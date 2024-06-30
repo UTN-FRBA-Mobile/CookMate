@@ -49,7 +49,7 @@ fun SeguroEliminarRecetaScreen(userInputViewModel: UserInputViewModel, navContro
             .fillMaxSize()
             .padding(18.dp)
         ) {
-            var recetaElegida = userInputViewModel.appStatus.value.recetaElegida;
+            var recetaElegida = userInputViewModel.appStatus?.value?.recetaElegida;
             if (recetaElegida != null) {
                 TopBar(value = recetaElegida.nombre)
                 Spacer(modifier = Modifier.size(30.dp))
@@ -58,7 +58,7 @@ fun SeguroEliminarRecetaScreen(userInputViewModel: UserInputViewModel, navContro
                     Button(
                         onClick = {
                             funBorrar(recetaElegida.nombre,userInputViewModel)
-                            userInputViewModel.appStatus.value.recetaElegida = null
+                            userInputViewModel.appStatus?.value?.recetaElegida = null
                             navController.navigate(Routes.MIS_RECETAS_SCREEN)
                         }
                     ) {
@@ -70,7 +70,7 @@ fun SeguroEliminarRecetaScreen(userInputViewModel: UserInputViewModel, navContro
                     }
                     Button(
                         onClick = {
-                            userInputViewModel.appStatus.value.recetaElegida = null
+                            userInputViewModel.appStatus?.value?.recetaElegida = null
                             navController.navigate(Routes.MIS_RECETAS_SCREEN)
                         }
                     ) {
@@ -88,10 +88,10 @@ fun SeguroEliminarRecetaScreen(userInputViewModel: UserInputViewModel, navContro
 
 fun funBorrar(nombreReceta:String,userInputViewModel: UserInputViewModel){
     Server(userInputViewModel).removeRecipeFromUser(nombreReceta)
-    for(receta in userInputViewModel.appStatus.value.recetasGuardadas){
+    for(receta in userInputViewModel.appStatus?.value?.recetasGuardadas!!){
         if(receta.nombre.equals(nombreReceta)){
             receta.guardada = false;
-            userInputViewModel.appStatus.value.recetasGuardadas.remove(receta);
+            userInputViewModel.appStatus?.value?.recetasGuardadas!!.remove(receta);
             return;
         }
     }

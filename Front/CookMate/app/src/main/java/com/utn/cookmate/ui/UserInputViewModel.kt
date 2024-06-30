@@ -1,50 +1,51 @@
-package com.utn.cookmate.ui;
+package com.utn.cookmate.ui
 
-import android.content.ContentValues.TAG
-import android.util.Log
-import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.utn.cookmate.data.AppStatus
 import com.utn.cookmate.data.UserDataUiEvents
 
-class UserInputViewModel : ViewModel(){
+class UserInputViewModel : ViewModel() {
 
-    var appStatus = mutableStateOf(AppStatus())
+    private val _appStatus = MutableLiveData(AppStatus()) // LiveData initialization
+    val appStatus: LiveData<AppStatus> = _appStatus // Exposing LiveData
+
+    // Propiedad para acceder a AppStatus de manera segura
+    val safeAppStatus: AppStatus
+        get() = _appStatus?.value ?: AppStatus()
 
     fun onEvent(event: UserDataUiEvents) {
-        when(event){
+        val currentStatus = _appStatus?.value ?: AppStatus()
+
+        when (event) {
             is UserDataUiEvents.EmailEntered -> {
-                appStatus.value = appStatus.value.copy(emailEntered = event.name)
+                _appStatus?.value = currentStatus.copy(emailEntered = event.name)
             }
-
             is UserDataUiEvents.PasswordEntered -> {
-                appStatus.value = appStatus.value.copy(passwordEntered = event.password)
+                _appStatus?.value = currentStatus.copy(passwordEntered = event.password)
             }
-
             is UserDataUiEvents.RegisterEmailEntered -> {
-                appStatus.value = appStatus.value.copy(registerEmailEntered = event.registerEmail)
+                _appStatus?.value = currentStatus.copy(registerEmailEntered = event.registerEmail)
             }
-
             is UserDataUiEvents.RegisterPasswordEntered -> {
-                appStatus.value = appStatus.value.copy(registerPasswordEntered = event.registerPassword)
+                _appStatus?.value = currentStatus.copy(registerPasswordEntered = event.registerPassword)
             }
-
             is UserDataUiEvents.RegisterNameEntered -> {
-                appStatus.value = appStatus.value.copy(registerNameEntered = event.registerName)
+                _appStatus?.value = currentStatus.copy(registerNameEntered = event.registerName)
             }
         }
     }
 
-    fun isValidLoginState() : Boolean {   //devuelve Boolean
-        return !appStatus.value.emailEntered.isNullOrEmpty() && !appStatus.value.passwordEntered.isNullOrEmpty()
+    fun isValidLoginState(): Boolean {
+        return !safeAppStatus.emailEntered.isNullOrEmpty() && !safeAppStatus.passwordEntered.isNullOrEmpty()
     }
 
-    fun isValidRegisterState() : Boolean {   //devuelve Boolean
-        return !appStatus.value.registerEmailEntered.isNullOrEmpty() && !appStatus.value.registerPasswordEntered.isNullOrEmpty() && !appStatus.value.registerNameEntered.isNullOrEmpty()
+    fun isValidRegisterState(): Boolean {
+        return !safeAppStatus.registerEmailEntered.isNullOrEmpty() && !safeAppStatus.registerPasswordEntered.isNullOrEmpty() && !safeAppStatus.registerNameEntered.isNullOrEmpty()
     }
 
-    fun isValidBusquedaRecetasState() : Boolean {   //devuelve Boolean
-        return appStatus.value.ingredientesElegidos.isNotEmpty()
+    fun isValidBusquedaRecetasState(): Boolean {
+        return !safeAppStatus.ingredientesElegidos.isNullOrEmpty()
     }
-
 }

@@ -40,8 +40,8 @@ import com.utn.cookmate.ui.UserInputViewModel
 
 @Composable
 fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navController : NavController){
-    userInputViewModel.appStatus.value.searchRecipesResponse.value = ""
-    userInputViewModel.appStatus.value.ingredientesElegidos.clear()
+    userInputViewModel.appStatus?.value?.searchRecipesResponse?.value = ""
+    userInputViewModel.appStatus?.value?.ingredientesElegidos?.clear()
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -55,7 +55,7 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
             TopBar(value = "Estas son las recetas encontradas con esos ingredientes")
             Spacer(modifier = Modifier.size(30.dp))
             Column(modifier = Modifier.verticalScroll(state).weight(1f, true)){
-                for (receta in userInputViewModel.appStatus.value.recetasEncontradas) {
+                for (receta in userInputViewModel.appStatus?.value?.recetasEncontradas!!) {
                     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = receta.nombre,
@@ -66,7 +66,7 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
                         )
                         Spacer(modifier = Modifier.weight(1f))
                         var yaEstaGuardada = false;
-                        for(recetaGuardada in userInputViewModel.appStatus.value.recetasGuardadas){
+                        for(recetaGuardada in userInputViewModel.appStatus?.value?.recetasGuardadas!!){
                             if(receta.nombre == recetaGuardada.nombre){
                                 yaEstaGuardada = true;
                                 break;
@@ -131,10 +131,10 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
 
 fun funGuardar(nombreReceta:String,userInputViewModel: UserInputViewModel){
     Server(userInputViewModel).addRecipeToUser(nombreReceta)
-    for(receta in userInputViewModel.appStatus.value.recetasEncontradas){
+    for(receta in userInputViewModel.appStatus?.value?.recetasEncontradas!!){
         if(receta.nombre.equals(nombreReceta)){
             receta.guardada = true;
-            userInputViewModel.appStatus.value.recetasGuardadas.add(receta)
+            userInputViewModel.appStatus?.value?.recetasGuardadas?.add(receta)
             return;
         }
     }

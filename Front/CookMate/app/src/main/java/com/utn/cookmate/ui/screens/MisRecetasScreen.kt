@@ -40,7 +40,7 @@ import com.utn.cookmate.R
 
 @Composable
 fun MisRecetasScreen (userInputViewModel: UserInputViewModel, navController : NavController){
-    userInputViewModel.appStatus.value.ingredientesElegidos.clear()
+    userInputViewModel.appStatus?.value?.ingredientesElegidos?.clear()
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -81,7 +81,7 @@ fun MisRecetasScreen (userInputViewModel: UserInputViewModel, navController : Na
             Column(modifier = Modifier
                 .verticalScroll(state)
                 .weight(1f, true)){
-                for (receta in userInputViewModel.appStatus.value.recetasGuardadas) {
+                for (receta in userInputViewModel.appStatus?.value?.recetasGuardadas!!) {
                     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = receta.nombre,
@@ -89,20 +89,20 @@ fun MisRecetasScreen (userInputViewModel: UserInputViewModel, navController : Na
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Medium,
                             modifier = Modifier.clickable {
-                                userInputViewModel.appStatus.value.recetaElegida = receta
+                                userInputViewModel.appStatus?.value?.recetaElegida = receta
                                 navController.navigate(Routes.PASO_A_PASO_SCREEN)
                             }
                         )
                         Spacer(modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                userInputViewModel.appStatus.value.recetaElegida = receta
+                                userInputViewModel.appStatus?.value?.recetaElegida = receta
                                 navController.navigate(Routes.PASO_A_PASO_SCREEN)
                             })
                         Text(
                             modifier = Modifier.clickable {
                                 //AlertDialogExample({ println("ok") },{ println("no") },"TITULO","Seguro?",Icons.Default.Info)
-                                userInputViewModel.appStatus.value.recetaElegida = receta
+                                userInputViewModel.appStatus?.value?.recetaElegida = receta
                                 navController.navigate(Routes.SEGURO_ELIMINAR_RECETA_SCREEN)
                               },
                             text = "\uD83D\uDDD1\uFE0F",
