@@ -195,6 +195,14 @@ fun Temporizador(
 
     val serviceIntent = remember { Intent(context, CronometroService::class.java) }
 
+    LaunchedEffect(duracion) {
+        if (isTimerRunning) {
+            context.stopService(serviceIntent)
+        }
+        timerSeconds = duracion * 60
+        isTimerRunning = false
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -204,10 +212,12 @@ fun Temporizador(
             onClick = {
                 isTimerRunning = !isTimerRunning
                 if (isTimerRunning) {
+                    serviceIntent.action = "START"
                     serviceIntent.putExtra("duration", timerSeconds)
                     ContextCompat.startForegroundService(context, serviceIntent)
                 } else {
-                    context.stopService(serviceIntent)
+                    serviceIntent.action = "PAUSE"
+                    context.startService(serviceIntent)
                 }
             },
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),

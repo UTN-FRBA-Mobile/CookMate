@@ -9,7 +9,6 @@ import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.CountDownTimer
 import android.os.IBinder
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.utn.cookmate.R
 
@@ -17,38 +16,82 @@ class CronometroService : Service() {
 
     private var timer: CountDownTimer? = null
     private val channelId = "timer_channel"
+    private var remainingTime: Long = 0
+    private var isPaused: Boolean = false
 
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
     }
 
-    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val duration = intent?.getIntExtra("duration", 0) ?: 0
+        when (intent?.action) {
+            "START" -> {
+                val duration = intent.getIntExtra("duration", 0)
+                startTimer(duration.toLong())
+            }
+            "PAUSE" -> {
+                pauseTimer()
+            }
+            "RESUME" -> {
+                resumeTimer()
+            }
+            "STOP" -> {
+                stopTimer()
+            }
+        }
+        return START_NOT_STICKY
+    }
 
+    private fun startTimer(duration: Long) {
+        remainingTime = duration * 1000
         timer?.cancel()
-        timer = object : CountDownTimer((duration * 1000).toLong(), 1000) {
+        timer = object : CountDownTimer(remainingTime, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                val secondsRemaining = millisUntilFinished / 1000
-                val notification = NotificationCompat.Builder(this@CronometroService, channelId)
-                    .setContentTitle("Paso de la receta")
-                    .setContentText("Tiempo restante: ${secondsRemaining / 60}:${secondsRemaining % 60}")
-                    .setSmallIcon(R.drawable.ic_timer)
-                    .setSilent(true)
-                    .build()
-                val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-                notificationManager.notify(1, notification)
+                remainingTime = millisUntilFinished
+                updateNotification(remainingTime)
             }
 
             override fun onFinish() {
                 stopSelf()
             }
         }.start()
-
         startForeground(1, createInitialNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+    }
 
-        return START_NOT_STICKY
+    private fun pauseTimer() {
+        timer?.cancel()
+        isPaused = true
+    }
+
+    private fun resumeTimer() {
+        isPaused = false
+        timer = object : CountDownTimer(remainingTime, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                remainingTime = millisUntilFinished
+                updateNotification(remainingTime)
+            }
+
+            override fun onFinish() {
+                stopSelf()
+            }
+        }.start()
+    }
+
+    private fun stopTimer() {
+        timer?.cancel()
+        stopSelf()
+    }
+
+    private fun updateNotification(remainingTime: Long) {
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setContentTitle("Paso de la receta")
+            .setContentText("Tiempo restante: ${remainingTime / 60000}:${(remainingTime / 1000) % 60}")
+            .setSmallIcon(R.drawable.ic_timer)
+            .setSilent(true)
+            .build()
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(1, notification)
     }
 
     private fun createInitialNotification(): Notification {
@@ -56,7 +99,7 @@ class CronometroService : Service() {
             .setContentTitle("Cronómetro")
             .setContentText("Tiempo restante")
             .setSmallIcon(R.drawable.ic_timer)
-            .setSilent(true) // Agrega esto para evitar ruidos
+            .setSilent(true)
             .build()
     }
 
@@ -64,7 +107,7 @@ class CronometroService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Timer Channel"
             val descriptionText = "Channel for Timer"
-            val importance = NotificationManager.IMPORTANCE_LOW // Cambia a IMPORTANCE_LOW para evitar ruidos
+            val importance = NotificationManager.IMPORTANCE_LOW
             val channel = NotificationChannel(channelId, name, importance).apply {
                 description = descriptionText
             }
