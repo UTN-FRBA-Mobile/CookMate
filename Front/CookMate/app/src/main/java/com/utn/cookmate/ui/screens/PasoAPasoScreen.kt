@@ -6,16 +6,20 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.utn.cookmate.R
 import com.utn.cookmate.data.Paso
 import com.utn.cookmate.ui.NormalBar
 import com.utn.cookmate.ui.TextComponent
@@ -44,6 +48,7 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                     Spacer(modifier = Modifier.size(20.dp))
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Button(
+                            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
                             enabled = pasoActual != 1,
                             onClick = {
                                 userInputViewModel.appStatus?.value?.pasoActual?.value = pasoActual - 1
@@ -52,11 +57,12 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                             TextComponent(
                                 textValue = "Paso anterior",
                                 textSize = 18.sp,
-                                colorValue = MaterialTheme.colorScheme.onSurface
+                                colorValue = if (pasoActual != 1) Color.White else Color.Black
                             )
                         }
                         Spacer(modifier = Modifier.width(16.dp))
                         Button(
+                            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
                             enabled = pasoActual != receta.listaPasos.size,
                             onClick = {
                                 userInputViewModel.appStatus?.value?.pasoActual?.value = pasoActual + 1
@@ -65,7 +71,7 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                             TextComponent(
                                 textValue = "Paso siguiente",
                                 textSize = 18.sp,
-                                colorValue = MaterialTheme.colorScheme.onSurface
+                                colorValue = Color.White
                             )
                         }
                     }
@@ -120,6 +126,7 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                             horizontalArrangement = Arrangement.Center
                         ) {
                             Button(
+                                colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
                                 onClick = {
                                     userInputViewModel.appStatus?.value?.pasoActual?.value = 1
                                     navController.navigate(Routes.MIS_RECETAS_SCREEN)
@@ -128,7 +135,7 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                                 TextComponent(
                                     textValue = "Volver",
                                     textSize = 18.sp,
-                                    colorValue = MaterialTheme.colorScheme.onSurface
+                                    colorValue = Color.White
                                 )
                             }
                         }

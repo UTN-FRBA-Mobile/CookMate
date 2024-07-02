@@ -2,7 +2,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxColors
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -11,9 +14,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.utn.cookmate.R
 import com.utn.cookmate.connection.Server
 import com.utn.cookmate.data.Ingrediente
 import com.utn.cookmate.data.Paso
@@ -48,7 +53,7 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
                 .padding(18.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            TopBar(value = "Buscar recetas con ingredientes dados \uD83D\uDCA1")
+            TopBar(value = "Elegí los ingredientes que quieras"/* \uD83D\uDCA1*/)
             Spacer(modifier = Modifier.size(30.dp))
 
             // Search Bar
@@ -63,11 +68,19 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
                     .padding(bottom = 16.dp)
             )
 
-            Column(modifier = Modifier.verticalScroll(state).weight(1f, true)) {
+            Column(modifier = Modifier
+                .verticalScroll(state)
+                .weight(1f, true)) {
                 if (ingredientesEnServidor.value.length() > 0) {
                     val ingredients = (0 until ingredientesEnServidor.value.length()).map { i ->
                         ingredientesEnServidor.value.getString(i)
                     }
+
+                    val checkboxColors = CheckboxDefaults.colors(
+                        checkedColor = colorResource(id = R.color.purple_700),
+                        uncheckedColor = Color.Gray,
+                        checkmarkColor = Color.White
+                    )
 
                     if (searchQuery.isEmpty()) {
                         // Mostrar todos los ingredientes, incluidos los seleccionados, cuando no hay búsqueda activa
@@ -81,7 +94,8 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
                                         ingredientesSeleccionados.remove(item)
                                     }
                                 },
-                                checked = ingredientesSeleccionados.contains(item)
+                                checked = ingredientesSeleccionados.contains(item),
+                                colors = checkboxColors
                             )
                         }
                     } else {
@@ -89,6 +103,12 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
                         val filteredIngredients = ingredients.filter {
                             it.contains(searchQuery, ignoreCase = true) && !ingredientesSeleccionados.contains(it)
                         }
+
+                        val checkboxColors = CheckboxDefaults.colors(
+                            checkedColor = colorResource(id = R.color.purple_700),
+                            uncheckedColor = Color.Gray,
+                            checkmarkColor = Color.White
+                        )
 
                         filteredIngredients.forEach { item ->
                             CheckboxRow(
@@ -101,7 +121,8 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
                                         ingredientesSeleccionados.remove(item)
                                     }
                                 },
-                                checked = ingredientesSeleccionados.contains(item)
+                                checked = ingredientesSeleccionados.contains(item),
+                                colors = checkboxColors
                             )
                         }
                     }
@@ -120,6 +141,7 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
                     // Dentro de tu función GenerarRecetaScreen
                     Button(
                         modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
                         onClick = {
                             userInputViewModel.appStatus.value?.ingredientesElegidos =
                                 ingredientesSeleccionados
@@ -166,7 +188,7 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
                         }
                     ) {
                         TextComponent(
-                            textValue = "Buscar recetas!",
+                            textValue = "Buscar recetas",
                             textSize = 18.sp,
                             colorValue = Color.White
                         )
@@ -184,6 +206,7 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
             ) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
                     onClick = {
                         navController.navigate(Routes.MIS_RECETAS_SCREEN)
                     }
@@ -203,7 +226,8 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
 fun CheckboxRow(
     text: String,
     onCheckedChange: (Boolean) -> Unit,
-    checked: Boolean = false
+    checked: Boolean = false,
+    colors: CheckboxColors = CheckboxDefaults.colors()
 ) {
     Row(
         modifier = Modifier
@@ -213,7 +237,8 @@ fun CheckboxRow(
     ) {
         Checkbox(
             checked = checked,
-            onCheckedChange = onCheckedChange
+            onCheckedChange = onCheckedChange,
+            colors = colors
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(text)

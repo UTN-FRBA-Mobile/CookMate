@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,7 +54,7 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
             .padding(18.dp),
             verticalArrangement= Arrangement.SpaceBetween
         ) {
-            TopBar(value = "Estas son las recetas encontradas con esos ingredientes")
+            TopBar(value = "Recetas encontradas")
             Spacer(modifier = Modifier.size(30.dp))
             Column(modifier = Modifier.verticalScroll(state).weight(1f, true)){
                 for (receta in userInputViewModel.appStatus?.value?.recetasEncontradas!!) {
@@ -103,6 +105,7 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
             ) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
                     onClick = {
                         navController.navigate(Routes.MIS_RECETAS_SCREEN)
                     }
@@ -118,6 +121,7 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
             ) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
                     onClick = {
                         navController.navigate(Routes.BUSCAR_RECETA_ONLINE_SCREEN)
                     }
