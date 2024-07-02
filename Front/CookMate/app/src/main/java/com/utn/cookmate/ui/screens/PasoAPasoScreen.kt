@@ -1,44 +1,74 @@
 package com.utn.cookmate.ui.screens
 
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.utn.cookmate.R
-import com.utn.cookmate.data.Paso
 import com.utn.cookmate.service.CronometroService
 import com.utn.cookmate.ui.NormalBar
 import com.utn.cookmate.ui.TextComponent
 import com.utn.cookmate.ui.TopBar
 import com.utn.cookmate.ui.UserInputViewModel
 import kotlinx.coroutines.delay
+import kotlin.math.roundToInt
 
 @Composable
 fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavController) {
     val appStatus by userInputViewModel.appStatus.observeAsState()
+    val context = LocalContext.current
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (!isGranted) {
+            // Manejar el caso en que el permiso no fue concedido
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                android.Manifest.permission.FOREGROUND_SERVICE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            permissionLauncher.launch(android.Manifest.permission.FOREGROUND_SERVICE)
+        }
+    }
 
     Surface(modifier = Modifier.fillMaxSize()) {
         val state = rememberScrollState()
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(18.dp)
-            .verticalScroll(state)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(18.dp)
+                .verticalScroll(state)
         ) {
             appStatus?.let { status ->
                 val pasoActual = status.pasoActual.value ?: 1
@@ -97,7 +127,11 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
 
                         Spacer(modifier = Modifier.size(20.dp))
                         NormalBar("Ingredientes requeridos")
-                        Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(20.dp)
+                        ) {
                             if (it.ingredientes.isNotEmpty()) {
                                 it.ingredientes.forEach { ingrediente ->
                                     ingrediente.imagen.let { imagen ->
@@ -151,25 +185,59 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
 @Composable
 fun Temporizador(
     duracion: Int,
-    onTimerFinished: () -> Unit
+    onTimerFinished: () -> Unit,
+    context: Context
 ) {
     var timerSeconds by remember { mutableStateOf(duracion * 60) }
     var isTimerRunning by remember { mutableStateOf(false) }
+    var offsetX by remember { mutableStateOf(0f) }
+    var offsetY by remember { mutableStateOf(0f) }
 
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+    val serviceIntent = remember { Intent(context, CronometroService::class.java) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
         Button(
-            onClick = { isTimerRunning = !isTimerRunning }
+            onClick = {
+                isTimerRunning = !isTimerRunning
+                if (isTimerRunning) {
+                    serviceIntent.putExtra("duration", timerSeconds)
+                    ContextCompat.startForegroundService(context, serviceIntent)
+                } else {
+                    context.stopService(serviceIntent)
+                }
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
+            modifier = Modifier
+                .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+                .pointerInput(Unit) {
+                    detectDragGestures { change, dragAmount ->
+                        change.consume()
+                        offsetX += dragAmount.x
+                        offsetY += dragAmount.y
+                    }
+                }
         ) {
-            TextComponent(
-                textValue = if (isTimerRunning) "Pausar" else "Iniciar temporizador",
-                textSize = 18.sp,
-                colorValue = MaterialTheme.colorScheme.onSurface
-            )
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = if (isTimerRunning) "Pausar" else "Iniciar paso",
+                    fontSize = 18.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = String.format("%02d:%02d", timerSeconds / 60, timerSeconds % 60),
+                    fontSize = 24.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
-        Spacer(modifier = Modifier.height(16.dp))
+
         LaunchedEffect(isTimerRunning) {
             while (isTimerRunning && timerSeconds > 0) {
                 delay(1000)
@@ -178,13 +246,8 @@ fun Temporizador(
             if (timerSeconds == 0) {
                 isTimerRunning = false
                 onTimerFinished()
+                context.stopService(serviceIntent)
             }
         }
-        TextComponent(
-            textValue = String.format("%02d:%02d", timerSeconds / 60, timerSeconds % 60),
-            textSize = 24.sp,
-            colorValue = MaterialTheme.colorScheme.onSurface
-        )
     }
 }
-
