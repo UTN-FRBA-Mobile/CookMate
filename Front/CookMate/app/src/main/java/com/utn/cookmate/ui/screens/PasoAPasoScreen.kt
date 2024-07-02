@@ -1,5 +1,7 @@
 package com.utn.cookmate.ui.screens
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -13,16 +15,17 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.utn.cookmate.data.Paso
+import com.utn.cookmate.service.CronometroService
 import com.utn.cookmate.ui.NormalBar
 import com.utn.cookmate.ui.TextComponent
 import com.utn.cookmate.ui.TopBar
 import com.utn.cookmate.ui.UserInputViewModel
 import kotlinx.coroutines.delay
-import java.util.*
 
 @Composable
 fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavController) {
@@ -36,7 +39,7 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
             .verticalScroll(state)
         ) {
             appStatus?.let { status ->
-                val pasoActual = status.pasoActual?.value ?: 1
+                val pasoActual = status.pasoActual.value ?: 1
                 val recetaElegida = status.recetaElegida
 
                 recetaElegida?.let { receta ->
@@ -46,7 +49,7 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                         Button(
                             enabled = pasoActual != 1,
                             onClick = {
-                                userInputViewModel.appStatus?.value?.pasoActual?.value = pasoActual - 1
+                                userInputViewModel.appStatus.value?.pasoActual?.value = pasoActual - 1
                             }
                         ) {
                             TextComponent(
@@ -79,8 +82,8 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                         TextComponent(it.descripcion, textSize = 20.sp)
                         Spacer(modifier = Modifier.size(20.dp))
 
-                        it.imagen?.let { imagen ->
-                            userInputViewModel.appStatus?.value?.imagenesDescargadas?.get(imagen)?.let { imageData ->
+                        it.imagen.let { imagen ->
+                            userInputViewModel.appStatus.value?.imagenesDescargadas?.get(imagen)?.let { imageData ->
                                 Image(
                                     bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.size).asImageBitmap(),
                                     contentDescription = "Descripción de contenido"
@@ -93,7 +96,7 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                         Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
                             if (it.ingredientes.isNotEmpty()) {
                                 it.ingredientes.forEach { ingrediente ->
-                                    ingrediente.imagen?.let { imagen ->
+                                    ingrediente.imagen.let { imagen ->
                                         NormalBar(ingrediente.nombre + " (" + ingrediente.cantidad + ")", userInputViewModel.appStatus?.value?.imagenesDescargadas?.get(imagen))
                                         Spacer(modifier = Modifier.size(20.dp))
                                     }
@@ -109,8 +112,9 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                             Temporizador(
                                 duracion = duracion,
                                 onTimerFinished = {
-                                    userInputViewModel.appStatus?.value?.pasoActual?.value = pasoActual + 1
-                                }
+                                    userInputViewModel.appStatus.value?.pasoActual?.value = pasoActual + 1
+                                },
+                                context = LocalContext.current
                             )
                         }
 
@@ -121,7 +125,7 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                         ) {
                             Button(
                                 onClick = {
-                                    userInputViewModel.appStatus?.value?.pasoActual?.value = 1
+                                    userInputViewModel.appStatus.value?.pasoActual?.value = 1
                                     navController.navigate(Routes.MIS_RECETAS_SCREEN)
                                 }
                             ) {
@@ -142,7 +146,8 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
 @Composable
 fun Temporizador(
     duracion: Int,
-    onTimerFinished: () -> Unit
+    onTimerFinished: () -> Unit,
+    context: Context
 ) {
     var timerSeconds by remember { mutableStateOf(duracion * 60) }
     var isTimerRunning by remember { mutableStateOf(false) }
@@ -152,7 +157,20 @@ fun Temporizador(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
-            onClick = { isTimerRunning = !isTimerRunning }
+            onClick = {
+                isTimerRunning = !isTimerRunning
+                if (isTimerRunning) {
+                    Intent(context, CronometroService::class.java).apply {
+                        putExtra("duration", timerSeconds)
+                    }.also {
+                        context.startForegroundService(it)
+                    }
+                } else {
+                    Intent(context, CronometroService::class.java).also {
+                        context.stopService(it)
+                    }
+                }
+            }
         ) {
             TextComponent(
                 textValue = if (isTimerRunning) "Pausar" else "Iniciar temporizador",
@@ -178,4 +196,3 @@ fun Temporizador(
         )
     }
 }
-

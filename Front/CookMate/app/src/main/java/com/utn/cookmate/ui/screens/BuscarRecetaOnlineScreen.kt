@@ -141,6 +141,7 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
                                         val numeroPaso = paso.getInt("numero")
                                         val descripcionPaso = paso.getString("descripcion")
                                         val imagen = paso.getString("imagen")
+                                        val duracionPaso = if (paso.has("duracion")) paso.getInt("duracion") else null
                                         val listaIngredientes = paso.getJSONArray("ingredientes")
                                         val listaDeIngredientes = mutableListOf<Ingrediente>()
 
@@ -153,7 +154,7 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
                                             listaDeIngredientes.add(ingredienteObjeto)
                                         }
 
-                                        val pasoObjeto = Paso(numeroPaso, descripcionPaso, imagen, listaDeIngredientes)
+                                        val pasoObjeto = Paso(numeroPaso, descripcionPaso, imagen, listaDeIngredientes, duracionPaso)
                                         listaDePasos.add(pasoObjeto)
                                     }
 
