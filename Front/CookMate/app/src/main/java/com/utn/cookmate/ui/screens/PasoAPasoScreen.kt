@@ -15,18 +15,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.utn.cookmate.R
 import com.utn.cookmate.data.Paso
+import com.utn.cookmate.service.CronometroService
 import com.utn.cookmate.ui.NormalBar
 import com.utn.cookmate.ui.TextComponent
 import com.utn.cookmate.ui.TopBar
 import com.utn.cookmate.ui.UserInputViewModel
 import kotlinx.coroutines.delay
-import java.util.*
 
 @Composable
 fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavController) {
@@ -40,7 +41,7 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
             .verticalScroll(state)
         ) {
             appStatus?.let { status ->
-                val pasoActual = status.pasoActual?.value ?: 1
+                val pasoActual = status.pasoActual.value ?: 1
                 val recetaElegida = status.recetaElegida
 
                 recetaElegida?.let { receta ->
@@ -51,7 +52,7 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                             colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
                             enabled = pasoActual != 1,
                             onClick = {
-                                userInputViewModel.appStatus?.value?.pasoActual?.value = pasoActual - 1
+                                userInputViewModel.appStatus.value?.pasoActual?.value = pasoActual - 1
                             }
                         ) {
                             TextComponent(
@@ -85,8 +86,8 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                         TextComponent(it.descripcion, textSize = 20.sp)
                         Spacer(modifier = Modifier.size(20.dp))
 
-                        it.imagen?.let { imagen ->
-                            userInputViewModel.appStatus?.value?.imagenesDescargadas?.get(imagen)?.let { imageData ->
+                        it.imagen.let { imagen ->
+                            userInputViewModel.appStatus.value?.imagenesDescargadas?.get(imagen)?.let { imageData ->
                                 Image(
                                     bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.size).asImageBitmap(),
                                     contentDescription = "Descripción de contenido"
@@ -99,7 +100,7 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                         Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
                             if (it.ingredientes.isNotEmpty()) {
                                 it.ingredientes.forEach { ingrediente ->
-                                    ingrediente.imagen?.let { imagen ->
+                                    ingrediente.imagen.let { imagen ->
                                         NormalBar(ingrediente.nombre + " (" + ingrediente.cantidad + ")", userInputViewModel.appStatus?.value?.imagenesDescargadas?.get(imagen))
                                         Spacer(modifier = Modifier.size(20.dp))
                                     }
@@ -115,8 +116,9 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                             Temporizador(
                                 duracion = duracion,
                                 onTimerFinished = {
-                                    userInputViewModel.appStatus?.value?.pasoActual?.value = pasoActual + 1
-                                }
+                                    userInputViewModel.appStatus.value?.pasoActual?.value = pasoActual + 1
+                                },
+                                context = LocalContext.current
                             )
                         }
 
@@ -128,7 +130,7 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                             Button(
                                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
                                 onClick = {
-                                    userInputViewModel.appStatus?.value?.pasoActual?.value = 1
+                                    userInputViewModel.appStatus.value?.pasoActual?.value = 1
                                     navController.navigate(Routes.MIS_RECETAS_SCREEN)
                                 }
                             ) {

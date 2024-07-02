@@ -106,8 +106,8 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                         }
                     }
 
-                    userInputViewModel.appStatus?.value?.recetasGuardadas?.clear()
-                    var recetasGuardadas : JSONArray = JSONArray(userInputViewModel.appStatus?.value?.loginResponse?.value)
+                    userInputViewModel.appStatus.value?.recetasGuardadas?.clear()
+                    var recetasGuardadas : JSONArray = JSONArray(userInputViewModel.appStatus.value?.loginResponse?.value)
                     for (i in 0 until recetasGuardadas.length()) {
                         var listaDePasos : MutableList<Paso> = mutableListOf<Paso>()
                         val item : JSONObject= recetasGuardadas.getJSONObject(i)
@@ -120,6 +120,7 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                             val imagen = paso.getString("imagen")
                             val listaIngredientes = paso.getJSONArray("ingredientes")
                             var listaDeIngredientes : MutableList<Ingrediente> = mutableListOf<Ingrediente>()
+                            val duracionPaso = if (paso.has("duracion")) paso.getInt("duracion") else null
                             for (k in 0 until listaIngredientes.length()) {
                                 val ingrediente : JSONObject= listaIngredientes.getJSONObject(k)
                                 val nombreIngrediente = ingrediente.getString("nombre")
@@ -128,7 +129,7 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                                 var ingredienteObjeto : Ingrediente = Ingrediente(nombreIngrediente,cantidad,imagenIngrediente)
                                 listaDeIngredientes.add(ingredienteObjeto)
                             }
-                            var pasoObjeto : Paso = Paso(numeroPaso,descripcionPaso,imagen,listaDeIngredientes)
+                            var pasoObjeto : Paso = Paso(numeroPaso,descripcionPaso,imagen,listaDeIngredientes,duracionPaso)
                             listaDePasos.add(pasoObjeto)
                         }
                         var receta : Receta = Receta(nombre, listaDePasos, true)
