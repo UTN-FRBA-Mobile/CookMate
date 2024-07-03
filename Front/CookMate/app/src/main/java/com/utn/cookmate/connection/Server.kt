@@ -58,6 +58,19 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
         sendSocketRequest("searchRecipes", json)
     }
 
+    fun searchRecipesNonStrict() {
+        var json = JsonObject()
+        var array: JsonArray = JsonArray()
+        System.out.println("Buscando recetas con ingredentes: ")
+        for (ingrediente in userInputViewModel.appStatus?.value?.ingredientesElegidos!!) {
+            array.add(ingrediente)
+            System.out.println("Ingrediente "+ingrediente.toString())
+        }
+        json.addProperty("action", "searchRecipesNonStrict")
+        json.add("ingredientes", array)
+        sendSocketRequest("searchRecipesNonStrict", json)
+    }
+
     fun addRecipeToUser(nombreReceta: String) {
         var json = JsonObject()
         json.addProperty("action", "addRecipeToUser")
@@ -104,6 +117,7 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
                     "addRecipeToUser" -> userInputViewModel.appStatus?.value?.addRecipeToUserResponse?.value = response
                     "removeRecipeFromUser" -> userInputViewModel.appStatus?.value?.removeRecipeFromUserResponse?.value = response
                     "searchRecipes" -> userInputViewModel.appStatus?.value?.searchRecipesResponse?.value = response
+                    "searchRecipesNonStrict" -> userInputViewModel.appStatus?.value?.searchRecipesNonStrictResponse?.value = response
                     "getAllIngredients" -> userInputViewModel.appStatus?.value?.getAllIngredientsResponse?.value = response
                     "downloadResources" -> userInputViewModel.appStatus?.value?.downloadResourcesResponse?.value = response
                 }

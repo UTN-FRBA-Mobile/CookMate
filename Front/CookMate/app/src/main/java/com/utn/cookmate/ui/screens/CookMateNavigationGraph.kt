@@ -61,6 +61,10 @@ fun CookMateNavigationGraph(userInputViewModel: UserInputViewModel = viewModel()
             RecetasEncontradasScreen(userInputViewModel,navController)
         }
 
+        composable(Routes.RECETAS_ENCONTRADAS_NOESTRICTO_SCREEN){
+            RecetasEncontradasNoEstrictoScreen(userInputViewModel,navController)
+        }
+
         composable(Routes.PASO_A_PASO_SCREEN){
             PasoAPasoScreen(userInputViewModel,navController)
         }

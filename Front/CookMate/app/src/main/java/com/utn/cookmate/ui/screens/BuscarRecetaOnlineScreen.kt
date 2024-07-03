@@ -183,7 +183,6 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
                                     val receta = Receta(nombre, listaDePasos, false)
                                     userInputViewModel.appStatus.value?.recetasEncontradas?.add(receta)
                                 }
-
                                 navController.navigate(Routes.RECETAS_ENCONTRADAS_SCREEN)
                             }
                         }

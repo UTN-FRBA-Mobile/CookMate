@@ -45,8 +45,9 @@ import com.utn.cookmate.ui.UserInputViewModel
 import org.json.JSONArray
 
 @Composable
-fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navController : NavController){
+fun RecetasEncontradasNoEstrictoScreen (userInputViewModel: UserInputViewModel, navController : NavController){
     userInputViewModel.appStatus?.value?.searchRecipesResponse?.value = ""
+    userInputViewModel.appStatus?.value?.ingredientesElegidos?.clear()
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -116,63 +117,6 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
                     onClick = {
-                        Server(userInputViewModel).searchRecipesNonStrict()
-                        val response = userInputViewModel.appStatus.value?.searchRecipesResponse?.value
-
-                        if (response?.isNotEmpty() == true) {
-                            userInputViewModel.appStatus.value?.recetasEncontradas?.clear()
-
-                            val recetasEncontradas = JSONArray(response)
-                            for (i in 0 until recetasEncontradas.length()) {
-                                val item = recetasEncontradas.getJSONObject(i)
-                                val nombre = item.getString("nombre")
-                                val listaPasos = item.getJSONArray("pasos")
-                                val listaDePasos = mutableListOf<Paso>()
-
-                                for (j in 0 until listaPasos.length()) {
-                                    val paso = listaPasos.getJSONObject(j)
-                                    val numeroPaso = paso.getInt("numero")
-                                    val descripcionPaso = paso.getString("descripcion")
-                                    val imagen = paso.getString("imagen")
-                                    val duracionPaso = if (paso.has("duracion")) paso.getInt("duracion") else null
-                                    val listaIngredientes = paso.getJSONArray("ingredientes")
-                                    val listaDeIngredientes = mutableListOf<Ingrediente>()
-
-                                    for (k in 0 until listaIngredientes.length()) {
-                                        val ingrediente = listaIngredientes.getJSONObject(k)
-                                        val nombreIngrediente = ingrediente.getString("nombre")
-                                        val cantidad = ingrediente.getInt("cantidad")
-                                        val imagenIngrediente = ingrediente.getString("imagen")
-                                        val ingredienteObjeto = Ingrediente(nombreIngrediente, cantidad, imagenIngrediente)
-                                        listaDeIngredientes.add(ingredienteObjeto)
-                                    }
-
-                                    val pasoObjeto = Paso(numeroPaso, descripcionPaso, imagen, listaDeIngredientes, duracionPaso)
-                                    listaDePasos.add(pasoObjeto)
-                                }
-
-                                val receta = Receta(nombre, listaDePasos, false)
-                                userInputViewModel.appStatus.value?.recetasEncontradas?.add(receta)
-                            }
-
-                            navController.navigate(Routes.RECETAS_ENCONTRADAS_NOESTRICTO_SCREEN)
-                        }
-                    }
-                ) {
-                    TextComponent(textValue = "Buscar recetas con ingredientes adicionales", textSize = 18.sp,colorValue = Color.White)
-                }
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.Bottom
-            ) {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
-                    onClick = {
                         navController.navigate(Routes.MIS_RECETAS_SCREEN)
                     }
                 ) {
@@ -196,17 +140,6 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
                     TextComponent(textValue = "Buscar otras recetas", textSize = 18.sp,colorValue = Color.White)
                 }
             }
-        }
-    }
-}
-
-fun funGuardar(nombreReceta:String,userInputViewModel: UserInputViewModel){
-    Server(userInputViewModel).addRecipeToUser(nombreReceta)
-    for(receta in userInputViewModel.appStatus?.value?.recetasEncontradas!!){
-        if(receta.nombre.equals(nombreReceta)){
-            receta.guardada = true;
-            userInputViewModel.appStatus?.value?.recetasGuardadas?.add(receta)
-            return;
         }
     }
 }

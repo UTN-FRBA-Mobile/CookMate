@@ -25,6 +25,7 @@ data class AppStatus(
     var addRecipeToUserResponse: MutableState<String> = mutableStateOf(""),
     var removeRecipeFromUserResponse: MutableState<String> = mutableStateOf(""),
     var searchRecipesResponse: MutableState<String> = mutableStateOf(""),
+    var searchRecipesNonStrictResponse: MutableState<String> = mutableStateOf(""),
     var getAllIngredientsResponse: MutableState<String> = mutableStateOf(""),
     var downloadResourcesResponse: MutableState<String> = mutableStateOf(""),
 
