@@ -1,0 +1,561 @@
+[
+  {
+    "nombre": "Tarta de Manzana",
+    "imagen": "tartaManzana",
+    "pasos": [
+      {
+        "numero": 1,
+        "descripcion": "Precalentar el horno a 180 grados Celsius.",
+        "imagen": "horno",
+        "ingredientes": [],
+        "duracion": 5
+      },
+      {
+        "numero": 2,
+        "descripcion": "Preparar la masa.",
+        "imagen": "preparadoMasa",
+        "ingredientes": [
+          {
+            "nombre": "Harina",
+            "cantidad": 200,
+            "imagen": "harina"
+          },
+          {
+            "nombre": "Mantequilla",
+            "cantidad": 100,
+            "imagen": "mantequilla"
+          },
+          {
+            "nombre": "Agua",
+            "cantidad": 50,
+            "imagen": "agua"
+          }
+        ],
+        "duracion": 10
+      },
+      {
+        "numero": 3,
+        "descripcion": "Cortar las manzanas y colocarlas sobre la masa.",
+        "imagen": "cortadoManzanas",
+        "ingredientes": [
+          {
+            "nombre": "Manzanas",
+            "cantidad": 3,
+            "imagen": "manzana"
+          },
+          {
+            "nombre": "Azúcar",
+            "cantidad": 50,
+            "imagen": "azucar"
+          },
+          {
+            "nombre": "Canela",
+            "cantidad": 5,
+            "imagen": "canela"
+          }
+        ],
+        "duracion": 15
+      },
+      {
+        "numero": 4,
+        "descripcion": "Hornear durante 30 minutos.",
+        "imagen": "horno",
+        "ingredientes": [],
+        "duracion": 30
+      }
+    ]
+  },
+  {
+    "nombre": "Pizza Margarita",
+    "imagen": "pizzaMargarita",
+    "pasos": [
+      {
+        "numero": 1,
+        "descripcion": "Precalentar el horno a 220 grados Celsius.",
+        "imagen": "horno",
+        "ingredientes": [],
+        "duracion": 5
+      },
+      {
+        "numero": 2,
+        "descripcion": "Preparar la masa de pizza.",
+        "imagen": "preparadoMasa",
+        "ingredientes": [
+          {
+            "nombre": "Harina",
+            "cantidad": 250,
+            "imagen": "harina"
+          },
+          {
+            "nombre": "Levadura",
+            "cantidad": 5,
+            "imagen": "levadura"
+          },
+          {
+            "nombre": "Agua",
+            "cantidad": 150,
+            "imagen": "agua"
+          },
+          {
+            "nombre": "Sal",
+            "cantidad": 5,
+            "imagen": "sal"
+          }
+        ],
+        "duracion": 15
+      },
+      {
+        "numero": 3,
+        "descripcion": "Añadir salsa de tomate y mozzarella.",
+        "imagen": "agregadoSalsa",
+        "ingredientes": [
+          {
+            "nombre": "Salsa de tomate",
+            "cantidad": 100,
+            "imagen": "salsaTomate"
+          },
+          {
+            "nombre": "Mozzarella",
+            "cantidad": 200,
+            "imagen": "mozzarella"
+          }
+        ],
+        "duracion": 10
+      },
+      {
+        "numero": 4,
+        "descripcion": "Hornear durante 15 minutos.",
+        "imagen": "horno",
+        "ingredientes": [],
+        "duracion": 15
+      }
+    ]
+  },
+  {
+    "nombre": "Salchichas",
+    "imagen": "salchichas",
+    "pasos": [
+      {
+        "numero": 1,
+        "descripcion": "Hervir agua en una olla.",
+        "imagen": "ollaAgua",
+        "ingredientes": [
+          {
+            "nombre": "Agua",
+            "cantidad": 5000,
+            "imagen": "agua"
+          }
+        ],
+        "duracion": 5
+      },
+      {
+        "numero": 2,
+        "descripcion": "Volcar dentro un paquete de salchichas.",
+        "imagen": "salchichasHirviendo",
+        "ingredientes": [
+          {
+            "nombre": "Salchichas",
+            "cantidad": 300,
+            "imagen": "paqueteSalchichas"
+          }
+        ],
+        "duracion": 15
+      },
+      {
+        "numero": 3,
+        "descripcion": "Hervir por 15 minutos.",
+        "imagen": "ollaAgua",
+        "ingredientes": [],
+        "duracion": 15
+      }
+    ]
+  },
+  {
+    "nombre": "Carne con papas",
+    "imagen": "carneConPapas",
+    "pasos": [
+      {
+        "numero": 1,
+        "descripcion": "Precalentar el horno a 220 grados Celsius.",
+        "imagen": "horno",
+        "ingredientes": [],
+        "duracion": 5
+      },
+      {
+        "numero": 2,
+        "descripcion": "Cortar la carne y salarla a gusto.",
+        "imagen": "cortadoCarne",
+        "ingredientes": [
+          {
+            "nombre": "Carne",
+            "cantidad": 200,
+            "imagen": "carne"
+          },
+          {
+            "nombre": "Sal",
+            "cantidad": 5,
+            "imagen": "sal"
+          }
+        ],
+        "duracion": 10
+      },
+      {
+        "numero": 3,
+        "descripcion": "Cortar las papas.",
+        "imagen": "cortadoPapas",
+        "ingredientes": [
+          {
+            "nombre": "Papas",
+            "cantidad": 3,
+            "imagen": "papas"
+          }
+        ],
+        "duracion": 5
+      },
+      {
+        "numero": 4,
+        "descripcion": "Hornear durante 45 minutos.",
+        "imagen": "horno",
+        "ingredientes": [],
+        "duracion": 45
+      }
+    ]
+  },
+  {
+    "nombre": "Filet de merluza",
+    "imagen": "filetDeMerluza",
+    "pasos": [
+      {
+        "numero": 1,
+        "descripcion": "Precalentar el horno a 220 grados Celsius.",
+        "imagen": "horno",
+        "ingredientes": [],
+        "duracion": 5
+      },
+      {
+        "numero": 2,
+        "descripcion": "Filetear el pescado y salarlo a gusto.",
+        "imagen": "cortadoPescado",
+        "ingredientes": [
+          {
+            "nombre": "Merluza",
+            "cantidad": 200,
+            "imagen": "merluza"
+          },
+          {
+            "nombre": "Sal",
+            "cantidad": 5,
+            "imagen": "sal"
+          }
+        ],
+        "duracion": 5
+      },
+      {
+        "numero": 3,
+        "descripcion": "Hornear durante 10 minutos.",
+        "imagen": "horno",
+        "ingredientes": [],
+        "duracion": 10
+      }
+    ]
+  },
+  {
+    "nombre": "Hamburguesa",
+    "imagen": "hamburguesa",
+    "pasos": [
+      {
+        "numero": 1,
+        "descripcion": "Precalentar el horno a 220 grados Celsius.",
+        "imagen": "horno",
+        "ingredientes": [],
+        "duracion": 5
+      },
+      {
+        "numero": 2,
+        "descripcion": "Cortar a la mitad el pan.",
+        "imagen": "cortadoPan",
+        "ingredientes": [
+          {
+            "nombre": "Pan",
+            "cantidad": 100,
+            "imagen": "pan"
+          }
+        ],
+        "duracion": 5
+      },
+      {
+        "numero": 3,
+        "descripcion": "Picar la carne y salarla a gusto.",
+        "imagen": "picadoCarne",
+        "ingredientes": [
+          {
+            "nombre": "Carne",
+            "cantidad": 200,
+            "imagen": "carne"
+          },
+          {
+            "nombre": "Sal",
+            "cantidad": 5,
+            "imagen": "sal"
+          }
+        ],
+        "duracion": 10
+      },
+      {
+        "numero": 4,
+        "descripcion": "Hornear la carne durante 20 minutos.",
+        "imagen": "horno",
+        "ingredientes": [],
+        "duracion": 20
+      },
+      {
+        "numero": 5,
+        "descripcion": "Colocar la carne cocinada dentro del pan.",
+        "imagen": "hamburguesa",
+        "ingredientes": [],
+        "duracion": 5
+      }
+    ]
+  },
+  {
+    "nombre": "Papas fritas",
+    "imagen": "papasFritas",
+    "pasos": [
+      {
+        "numero": 1,
+        "descripcion": "Precalentar aceite en una sartén a 220 grados Celsius.",
+        "imagen": "sartenAceite",
+        "ingredientes": [],
+        "duracion": 5
+      },
+      {
+        "numero": 2,
+        "descripcion": "Pelar las papas.",
+        "imagen": "peladoPapas",
+        "ingredientes": [
+          {
+            "nombre": "Papas",
+            "cantidad": 1000,
+            "imagen": "papas"
+          }
+        ],
+        "duracion": 10
+      },
+      {
+        "numero": 3,
+        "descripcion": "Cortar las papas en juliana.",
+        "imagen": "cortadoPapasJuliana",
+        "ingredientes": [
+          {
+            "nombre": "Papas",
+            "cantidad": 1000,
+            "imagen": "papas"
+          }
+        ],
+        "duracion": 10
+      },
+      {
+        "numero": 4,
+        "descripcion": "Freir las papas 5 minutos.",
+        "imagen": "sartenAceite",
+        "ingredientes": [],
+        "duracion": 5
+      }
+    ]
+  },
+  {
+    "nombre": "Fideos con manteca",
+    "imagen": "fideosConManteca",
+    "pasos": [
+      {
+        "numero": 1,
+        "descripcion": "Hervir agua en una olla.",
+        "imagen": "ollaAgua",
+        "ingredientes": [
+          {
+            "nombre": "Agua",
+            "cantidad": 5000,
+            "imagen": "agua"
+          }
+        ],
+        "duracion": 5
+      },
+      {
+        "numero": 2,
+        "descripcion": "Volcar dentro un paquete de fideos.",
+        "imagen": "fideosHirviendo",
+        "ingredientes": [
+          {
+            "nombre": "Fideos",
+            "cantidad": 500,
+            "imagen": "paqueteFideos"
+          }
+        ],
+        "duracion": 15
+      },
+      {
+        "numero": 3,
+        "descripcion": "Hervir por 15 minutos.",
+        "imagen": "ollaAgua",
+        "ingredientes": [],
+        "duracion": 15
+      }
+    ]
+  },
+  {
+    "nombre": "Ensalada de tomate y lechuga",
+    "imagen": "ensaladaTyL",
+    "pasos": [
+      {
+        "numero": 1,
+        "descripcion": "Lavar la lechuga.",
+        "imagen": "lavadoLechuga",
+        "ingredientes": [
+          {
+            "nombre": "Lechuga",
+            "cantidad": 500,
+            "imagen": "lechuga"
+          }
+        ],
+        "duracion": 5
+      },
+      {
+        "numero": 2,
+        "descripcion": "Lavar el tomate.",
+        "imagen": "lavadoTomate",
+        "ingredientes": [
+          {
+            "nombre": "Tomate",
+            "cantidad": 300,
+            "imagen": "tomate"
+          }
+        ],
+        "duracion": 5
+      },
+      {
+        "numero": 3,
+        "descripcion": "Cortar la lechuga.",
+        "imagen": "cortadoLechuga",
+        "ingredientes": [
+          {
+            "nombre": "Lechuga",
+            "cantidad": 500,
+            "imagen": "lechuga"
+          }
+        ],
+        "duracion": 5
+      },
+      {
+        "numero": 4,
+        "descripcion": "Cortar el tomate en rodajas.",
+        "imagen": "cortadoTomate",
+        "ingredientes": [
+          {
+            "nombre": "Tomate",
+            "cantidad": 300,
+            "imagen": "tomate"
+          }
+        ],
+        "duracion": 5
+      },
+      {
+        "numero": 5,
+        "descripcion": "Colocar la mezcla en una ensaladera.",
+        "imagen": "ensaladaTyL",
+        "ingredientes": [],
+        "duracion": 5
+      }
+    ]
+  },
+  {
+    "nombre": "Pollo frito",
+    "imagen": "polloFrito",
+    "pasos": [
+      {
+        "numero": 1,
+        "descripcion": "Precalentar aceite en una sartén a 220 grados Celsius.",
+        "imagen": "sartenAceite",
+        "ingredientes": [],
+        "duracion": 5
+      },
+      {
+        "numero": 2,
+        "descripcion": "Picar el pollo y salar a gusto.",
+        "imagen": "picadoPollo",
+        "ingredientes": [
+          {
+            "nombre": "Pollo",
+            "cantidad": 500,
+            "imagen": "pollo"
+          },
+          {
+            "nombre": "Sal",
+            "cantidad": 5,
+            "imagen": "sal"
+          }
+        ],
+        "duracion": 10
+      },
+      {
+        "numero": 3,
+        "descripcion": "Freir el pollo durante 15 minutos.",
+        "imagen": "sartenAceite",
+        "ingredientes": [],
+        "duracion": 15
+      }
+    ]
+  },
+  {
+    "nombre": "Pastel de chocolate",
+    "imagen": "pastelChocolate",
+    "pasos": [
+      {
+        "numero": 1,
+        "descripcion": "Precalentar el horno a 180 grados Celsius.",
+        "imagen": "horno",
+        "ingredientes": [],
+        "duracion": 5
+      },
+      {
+        "numero": 2,
+        "descripcion": "Preparar la masa de chocolate.",
+        "imagen": "preparadoMasa",
+        "ingredientes": [
+          {
+            "nombre": "Harina",
+            "cantidad": 200,
+            "imagen": "harina"
+          },
+          {
+            "nombre": "Chocolate",
+            "cantidad": 200,
+            "imagen": "chocolate"
+          },
+          {
+            "nombre": "Azúcar",
+            "cantidad": 50,
+            "imagen": "azucar"
+          },
+          {
+            "nombre": "Mantequilla",
+            "cantidad": 100,
+            "imagen": "mantequilla"
+          },
+          {
+            "nombre": "Agua",
+            "cantidad": 50,
+            "imagen": "agua"
+          }
+        ],
+        "duracion": 15
+      },
+      {
+        "numero": 3,
+        "descripcion": "Hornear durante 30 minutos.",
+        "imagen": "horno",
+        "ingredientes": [],
+        "duracion": 30
+      }
+    ]
+  }
+]

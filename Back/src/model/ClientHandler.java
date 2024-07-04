@@ -93,10 +93,18 @@ public class ClientHandler implements Runnable {
                     salidaObjetos.writeObject(new Gson().toJson(recetas));
                     System.out.println("respuesta: " + new Gson().toJson(recetas));
                     break;
+                case "searchRecipesNonStrict":
+                    // Lógica para obtener la lista de recetas del archivo JSON
+                    final JsonArray ingredientesPermitidos2 =  solicitud.get("ingredientes").getAsJsonArray();
+                    final List<String> ingredientesPermitidosList2 =  new Gson().fromJson(ingredientesPermitidos2, new TypeToken<List<String>>(){}.getType());
+                    final List<Recipe> recetas2 = ArchivoJson.cargarLasRecetasQuePuedanHacerseConNoEstricto(ingredientesPermitidosList2.stream().map(String::toLowerCase).collect(Collectors.toList()));
+                    salidaObjetos.writeObject(new Gson().toJson(recetas2));
+                    System.out.println("respuesta: " + new Gson().toJson(recetas2));
+                    break;
                 case "removeRecipeFromUser":
                     String emailRemove = solicitud.get("email").getAsString();
                     String nombreRecetaRemove = solicitud.get("nombreReceta").getAsString();
-                    
+
                     final Map<String, User> usuariosHoy = ArchivoJson.cargarUsuarios();
                     final User usuarioACambiar = usuariosHoy.remove(emailRemove);
                     if(usuarioACambiar != null){

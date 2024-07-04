@@ -77,19 +77,42 @@ public class ArchivoJson {
 
         for (Recipe receta : recetas) {
 
-            List<Ingredient> ingredienteReceta = new LinkedList<Ingredient>();
+            List<Ingredient> ingredienteReceta = new LinkedList<>();
             for (Step paso : receta.getPasos()) {
                 // Si el paso no tiene ingredientes, lo consideramos válido automáticamente
                 if (paso.getIngredientes() != null){
-                    ingredienteReceta.addAll((Arrays.stream(paso.getIngredientes()).collect(Collectors.toList())));
+                    ingredienteReceta.addAll((Arrays.stream(paso.getIngredientes()).toList()));
                 }
 
             }
-
-
-            // Si contiene al menos uno de los ingredientes permitidos, añadir la receta a la lista
-            if (ingredientesPermitidos.containsAll(ingredienteReceta.stream().map(ingredient -> ingredient.getNombre().toLowerCase()).collect(Collectors.toList()))) {
+            if (ingredientesPermitidos.containsAll(ingredienteReceta.stream().map(ingredient -> ingredient.getNombre().toLowerCase()).toList())) {
                 lista.add(receta);
+            }
+        }
+
+        return lista;
+    }
+
+    public static List<Recipe> cargarLasRecetasQuePuedanHacerseConNoEstricto(final List<String> ingredientesPermitidos) {
+        List<Recipe> lista = new ArrayList<>();
+        List<Recipe> recetas = cargarTodasLasRecetas(); // Obtener todas las recetas disponibles
+
+        for (Recipe receta : recetas) {
+
+            List<Ingredient> ingredienteReceta = new LinkedList<>();
+            for (Step paso : receta.getPasos()) {
+                // Si el paso no tiene ingredientes, lo consideramos válido automáticamente
+                if (paso.getIngredientes() != null){
+                    ingredienteReceta.addAll((Arrays.stream(paso.getIngredientes()).toList()));
+                }
+
+            }
+            //Agregar receta a la lista si tiene alguno de los ingredientes
+            for (Ingredient ingrediente : ingredienteReceta) {
+                if (ingredientesPermitidos.contains(ingrediente.getNombre().toLowerCase())) {
+                    lista.add(receta);
+                    break; // Salir del bucle si se encuentra al menos un ingrediente permitido
+                }
             }
         }
 
