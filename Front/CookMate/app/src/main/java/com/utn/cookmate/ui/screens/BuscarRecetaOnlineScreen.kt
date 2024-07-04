@@ -196,7 +196,6 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
 
                 }
             }
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

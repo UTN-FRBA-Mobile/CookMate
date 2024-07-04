@@ -44,6 +44,7 @@ import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -185,9 +186,10 @@ fun NormalBar(textValue: String, imageBytes:ByteArray?) {
 fun TextComponent(
     textValue: String,
     textSize: TextUnit,
-    colorValue: Color = Color.Black
+    colorValue: Color = Color.Black,
+    textAlign: TextAlign = TextAlign.Start
 ) { //por default usara color negro
-    Text(text = textValue, fontSize = textSize, color = colorValue, fontWeight = FontWeight.Light)
+    Text(text = textValue, fontSize = textSize, color = colorValue, fontWeight = FontWeight.Light, textAlign = textAlign)
 }
 
 @Preview(showBackground = true)

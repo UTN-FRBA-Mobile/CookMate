@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,25 +46,32 @@ import com.utn.cookmate.ui.UserInputViewModel
 import org.json.JSONArray
 
 @Composable
-fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navController : NavController){
+fun RecetasEncontradasScreen(userInputViewModel: UserInputViewModel, navController: NavController) {
     userInputViewModel.appStatus?.value?.searchRecipesResponse?.value = ""
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
         val state = rememberScrollState()
         LaunchedEffect(Unit) { state.animateScrollTo(0) }
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(18.dp),
-            verticalArrangement= Arrangement.SpaceBetween
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(18.dp),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             TopBar(value = "Recetas encontradas")
             Spacer(modifier = Modifier.size(30.dp))
-            Column(modifier = Modifier
-                .verticalScroll(state)
-                .weight(1f, true)){
+            Column(
+                modifier = Modifier
+                    .verticalScroll(state)
+                    .weight(1f, true)
+            )
+            {
                 for (receta in userInputViewModel.appStatus?.value?.recetasEncontradas!!) {
-                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
                             text = receta.nombre,
                             color = Color.Black,
@@ -73,13 +81,13 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
                         )
                         Spacer(modifier = Modifier.weight(1f))
                         var yaEstaGuardada = false;
-                        for(recetaGuardada in userInputViewModel.appStatus?.value?.recetasGuardadas!!){
-                            if(receta.nombre == recetaGuardada.nombre){
+                        for (recetaGuardada in userInputViewModel.appStatus?.value?.recetasGuardadas!!) {
+                            if (receta.nombre == recetaGuardada.nombre) {
                                 yaEstaGuardada = true;
                                 break;
                             }
                         }
-                        if(yaEstaGuardada){
+                        if (yaEstaGuardada) {
                             Text(
                                 //modifier = Modifier.clickable { funGuardar(receta.nombre,userInputViewModel) },
                                 text = "\u2714\uD83D\uDCBE",
@@ -88,12 +96,20 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
                                 fontWeight = FontWeight.Medium
                             )
                         } else {
-                            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
                                 Spacer(modifier = Modifier.weight(1f))
                                 Image(
                                     modifier = Modifier
                                         .size(30.dp)
-                                        .clickable { funGuardar(receta.nombre, userInputViewModel) },
+                                        .clickable {
+                                            funGuardar(
+                                                receta.nombre,
+                                                userInputViewModel
+                                            )
+                                        },
                                     painter = painterResource(id = R.drawable.download_button),
                                     contentDescription = "Boton de descarga"
                                 )
@@ -105,19 +121,20 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
                 }
             }
             Spacer(modifier = Modifier.size(10.dp))
-            Row(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(20.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.Bottom
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom
             ) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
                     onClick = {
                         Server(userInputViewModel).searchRecipesNonStrict()
-                        val response = userInputViewModel.appStatus.value?.searchRecipesResponse?.value
+                        val response =
+                            userInputViewModel.appStatus.value?.searchRecipesNonStrictResponse?.value
 
                         if (response?.isNotEmpty() == true) {
                             userInputViewModel.appStatus.value?.recetasEncontradas?.clear()
@@ -134,7 +151,8 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
                                     val numeroPaso = paso.getInt("numero")
                                     val descripcionPaso = paso.getString("descripcion")
                                     val imagen = paso.getString("imagen")
-                                    val duracionPaso = if (paso.has("duracion")) paso.getInt("duracion") else null
+                                    val duracionPaso =
+                                        if (paso.has("duracion")) paso.getInt("duracion") else null
                                     val listaIngredientes = paso.getJSONArray("ingredientes")
                                     val listaDeIngredientes = mutableListOf<Ingrediente>()
 
@@ -143,11 +161,21 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
                                         val nombreIngrediente = ingrediente.getString("nombre")
                                         val cantidad = ingrediente.getInt("cantidad")
                                         val imagenIngrediente = ingrediente.getString("imagen")
-                                        val ingredienteObjeto = Ingrediente(nombreIngrediente, cantidad, imagenIngrediente)
+                                        val ingredienteObjeto = Ingrediente(
+                                            nombreIngrediente,
+                                            cantidad,
+                                            imagenIngrediente
+                                        )
                                         listaDeIngredientes.add(ingredienteObjeto)
                                     }
 
-                                    val pasoObjeto = Paso(numeroPaso, descripcionPaso, imagen, listaDeIngredientes, duracionPaso)
+                                    val pasoObjeto = Paso(
+                                        numeroPaso,
+                                        descripcionPaso,
+                                        imagen,
+                                        listaDeIngredientes,
+                                        duracionPaso
+                                    )
                                     listaDePasos.add(pasoObjeto)
                                 }
 
@@ -159,16 +187,15 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
                         }
                     }
                 ) {
-                    TextComponent(textValue = "Buscar recetas con ingredientes adicionales", textSize = 18.sp,colorValue = Color.White)
+                    TextComponent(
+                        textValue = "Buscar recetas con ingredientes adicionales",
+                        textSize = 18.sp,
+                        colorValue = Color.White,
+                        textAlign = TextAlign.Center
+                    )
                 }
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.Bottom
-            ) {
+
+                Spacer(modifier = Modifier.size(10.dp))
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
@@ -176,16 +203,15 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
                         navController.navigate(Routes.MIS_RECETAS_SCREEN)
                     }
                 ) {
-                    TextComponent(textValue = "Volver a mis recetas", textSize = 18.sp,colorValue = Color.White)
+                    TextComponent(
+                        textValue = "Volver a mis recetas",
+                        textSize = 18.sp,
+                        colorValue = Color.White,
+                        textAlign = TextAlign.Center
+                    )
                 }
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.Bottom
-            ) {
+
+                Spacer(modifier = Modifier.size(10.dp))
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
@@ -193,17 +219,22 @@ fun RecetasEncontradasScreen (userInputViewModel: UserInputViewModel, navControl
                         navController.navigate(Routes.BUSCAR_RECETA_ONLINE_SCREEN)
                     }
                 ) {
-                    TextComponent(textValue = "Buscar otras recetas", textSize = 18.sp,colorValue = Color.White)
+                    TextComponent(
+                        textValue = "Buscar otras recetas",
+                        textSize = 18.sp,
+                        colorValue = Color.White
+                    )
                 }
             }
         }
     }
 }
 
-fun funGuardar(nombreReceta:String,userInputViewModel: UserInputViewModel){
+
+fun funGuardar(nombreReceta: String, userInputViewModel: UserInputViewModel) {
     Server(userInputViewModel).addRecipeToUser(nombreReceta)
-    for(receta in userInputViewModel.appStatus?.value?.recetasEncontradas!!){
-        if(receta.nombre.equals(nombreReceta)){
+    for (receta in userInputViewModel.appStatus?.value?.recetasEncontradas!!) {
+        if (receta.nombre.equals(nombreReceta)) {
             receta.guardada = true;
             userInputViewModel.appStatus?.value?.recetasGuardadas?.add(receta)
             return;
