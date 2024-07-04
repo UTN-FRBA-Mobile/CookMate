@@ -46,7 +46,7 @@ import org.json.JSONArray
 
 @Composable
 fun RecetasEncontradasNoEstrictoScreen (userInputViewModel: UserInputViewModel, navController : NavController){
-    userInputViewModel.appStatus?.value?.searchRecipesResponse?.value = ""
+    userInputViewModel.appStatus?.value?.searchRecipesNonStrictResponse?.value = ""
     userInputViewModel.appStatus?.value?.ingredientesElegidos?.clear()
     Surface(
         modifier = Modifier.fillMaxSize()

@@ -2,11 +2,16 @@ package com.utn.cookmate.connection
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import com.utn.cookmate.data.Ingrediente
+import com.utn.cookmate.data.Paso
+import com.utn.cookmate.data.Receta
 import com.utn.cookmate.ui.UserInputViewModel
+import com.utn.cookmate.ui.screens.Routes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.json.JSONArray
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.net.Socket
@@ -96,7 +101,7 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
     private fun sendSocketRequest(action: String, body: JsonObject) {
         launch(Dispatchers.IO) {
             try {
-                val host = "198.199.90.109"
+                val host = "10.0.1.232"
                 val port = 9090
                 val socket = Socket(host, port)
                 val outputStream = ObjectOutputStream(socket.getOutputStream())
@@ -112,14 +117,62 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
 
                 // Actualizar el estado de la vista basado en la acción
                 when (action) {
-                    "login" -> userInputViewModel.appStatus?.value?.loginResponse?.value = response
-                    "register" -> userInputViewModel.appStatus?.value?.registerResponse?.value = response
-                    "addRecipeToUser" -> userInputViewModel.appStatus?.value?.addRecipeToUserResponse?.value = response
-                    "removeRecipeFromUser" -> userInputViewModel.appStatus?.value?.removeRecipeFromUserResponse?.value = response
-                    "searchRecipes" -> userInputViewModel.appStatus?.value?.searchRecipesResponse?.value = response
-                    "searchRecipesNonStrict" -> userInputViewModel.appStatus?.value?.searchRecipesNonStrictResponse?.value = response
-                    "getAllIngredients" -> userInputViewModel.appStatus?.value?.getAllIngredientsResponse?.value = response
-                    "downloadResources" -> userInputViewModel.appStatus?.value?.downloadResourcesResponse?.value = response
+                    "login" -> {
+                        userInputViewModel.appStatus?.value?.loginResponse?.value = response
+                    }
+                    "register" -> {
+                        userInputViewModel.appStatus?.value?.registerResponse?.value = response
+                    }
+                    "addRecipeToUser" -> {
+                        userInputViewModel.appStatus?.value?.addRecipeToUserResponse?.value = response
+                    }
+                    "removeRecipeFromUser" -> {
+                        userInputViewModel.appStatus?.value?.removeRecipeFromUserResponse?.value = response
+                    }
+                    "searchRecipes" -> {
+                        userInputViewModel.appStatus.value?.recetasEncontradas?.clear()
+                        val recetasEncontradas = JSONArray(response)
+                        for (i in 0 until recetasEncontradas.length()) {
+                            val item = recetasEncontradas.getJSONObject(i)
+                            val nombre = item.getString("nombre")
+                            val listaPasos = item.getJSONArray("pasos")
+                            val listaDePasos = mutableListOf<Paso>()
+
+                            for (j in 0 until listaPasos.length()) {
+                                val paso = listaPasos.getJSONObject(j)
+                                val numeroPaso = paso.getInt("numero")
+                                val descripcionPaso = paso.getString("descripcion")
+                                val imagen = paso.getString("imagen")
+                                val duracionPaso = if (paso.has("duracion")) paso.getInt("duracion") else null
+                                val listaIngredientes = paso.getJSONArray("ingredientes")
+                                val listaDeIngredientes = mutableListOf<Ingrediente>()
+
+                                for (k in 0 until listaIngredientes.length()) {
+                                    val ingrediente = listaIngredientes.getJSONObject(k)
+                                    val nombreIngrediente = ingrediente.getString("nombre")
+                                    val cantidad = ingrediente.getInt("cantidad")
+                                    val imagenIngrediente = ingrediente.getString("imagen")
+                                    val ingredienteObjeto = Ingrediente(nombreIngrediente, cantidad, imagenIngrediente)
+                                    listaDeIngredientes.add(ingredienteObjeto)
+                                }
+
+                                val pasoObjeto = Paso(numeroPaso, descripcionPaso, imagen, listaDeIngredientes, duracionPaso)
+                                listaDePasos.add(pasoObjeto)
+                            }
+
+                            val receta = Receta(nombre, listaDePasos, false)
+                            userInputViewModel.appStatus.value?.recetasEncontradas?.add(receta)
+                        }
+                    }
+                    "searchRecipesNonStrict" -> {
+                        userInputViewModel.appStatus?.value?.searchRecipesNonStrictResponse?.value = response
+                    }
+                    "getAllIngredients" -> {
+                        userInputViewModel.appStatus?.value?.getAllIngredientsResponse?.value = response
+                    }
+                    "downloadResources" -> {
+                        userInputViewModel.appStatus?.value?.downloadResourcesResponse?.value = response
+                    }
                 }
 
                 // Cerrar conexiones

@@ -47,7 +47,7 @@ import org.json.JSONArray
 
 @Composable
 fun RecetasEncontradasScreen(userInputViewModel: UserInputViewModel, navController: NavController) {
-    userInputViewModel.appStatus?.value?.searchRecipesResponse?.value = ""
+    userInputViewModel.appStatus?.value?.recetasEncontradas?.clear()
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -133,8 +133,7 @@ fun RecetasEncontradasScreen(userInputViewModel: UserInputViewModel, navControll
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
                     onClick = {
                         Server(userInputViewModel).searchRecipesNonStrict()
-                        val response =
-                            userInputViewModel.appStatus.value?.searchRecipesNonStrictResponse?.value
+                        val response = userInputViewModel.appStatus.value?.searchRecipesNonStrictResponse?.value
 
                         if (response?.isNotEmpty() == true) {
                             userInputViewModel.appStatus.value?.recetasEncontradas?.clear()
