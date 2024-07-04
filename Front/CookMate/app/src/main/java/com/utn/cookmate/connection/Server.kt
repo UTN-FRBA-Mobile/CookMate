@@ -129,44 +129,8 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
                     "removeRecipeFromUser" -> {
                         userInputViewModel.appStatus?.value?.removeRecipeFromUserResponse?.value = response
                     }
-                    "searchRecipes" -> {
-                        userInputViewModel.appStatus.value?.recetasEncontradas?.clear()
-                        val recetasEncontradas = JSONArray(response)
-                        for (i in 0 until recetasEncontradas.length()) {
-                            val item = recetasEncontradas.getJSONObject(i)
-                            val nombre = item.getString("nombre")
-                            val listaPasos = item.getJSONArray("pasos")
-                            val listaDePasos = mutableListOf<Paso>()
-
-                            for (j in 0 until listaPasos.length()) {
-                                val paso = listaPasos.getJSONObject(j)
-                                val numeroPaso = paso.getInt("numero")
-                                val descripcionPaso = paso.getString("descripcion")
-                                val imagen = paso.getString("imagen")
-                                val duracionPaso = if (paso.has("duracion")) paso.getInt("duracion") else null
-                                val listaIngredientes = paso.getJSONArray("ingredientes")
-                                val listaDeIngredientes = mutableListOf<Ingrediente>()
-
-                                for (k in 0 until listaIngredientes.length()) {
-                                    val ingrediente = listaIngredientes.getJSONObject(k)
-                                    val nombreIngrediente = ingrediente.getString("nombre")
-                                    val cantidad = ingrediente.getInt("cantidad")
-                                    val imagenIngrediente = ingrediente.getString("imagen")
-                                    val ingredienteObjeto = Ingrediente(nombreIngrediente, cantidad, imagenIngrediente)
-                                    listaDeIngredientes.add(ingredienteObjeto)
-                                }
-
-                                val pasoObjeto = Paso(numeroPaso, descripcionPaso, imagen, listaDeIngredientes, duracionPaso)
-                                listaDePasos.add(pasoObjeto)
-                            }
-
-                            val receta = Receta(nombre, listaDePasos, false)
-                            userInputViewModel.appStatus.value?.recetasEncontradas?.add(receta)
-                        }
-                    }
-                    "searchRecipesNonStrict" -> {
-                        userInputViewModel.appStatus?.value?.searchRecipesNonStrictResponse?.value = response
-                    }
+                    "searchRecipes" -> processSearchRecipesResponse(response)
+                    "searchRecipesNonStrict" -> processSearchRecipesResponse(response)
                     "getAllIngredients" -> {
                         userInputViewModel.appStatus?.value?.getAllIngredientsResponse?.value = response
                     }
@@ -183,6 +147,43 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
                 e.printStackTrace()
             }
         }.start()
+    }
+
+    fun processSearchRecipesResponse(response:String){
+        userInputViewModel.appStatus.value?.recetasEncontradas?.clear()
+        val recetasEncontradas = JSONArray(response)
+        for (i in 0 until recetasEncontradas.length()) {
+            val item = recetasEncontradas.getJSONObject(i)
+            val nombre = item.getString("nombre")
+            val listaPasos = item.getJSONArray("pasos")
+            val listaDePasos = mutableListOf<Paso>()
+
+            for (j in 0 until listaPasos.length()) {
+                val paso = listaPasos.getJSONObject(j)
+                val numeroPaso = paso.getInt("numero")
+                val descripcionPaso = paso.getString("descripcion")
+                val imagen = paso.getString("imagen")
+                val duracionPaso = if (paso.has("duracion")) paso.getInt("duracion") else null
+                val listaIngredientes = paso.getJSONArray("ingredientes")
+                val listaDeIngredientes = mutableListOf<Ingrediente>()
+
+                for (k in 0 until listaIngredientes.length()) {
+                    val ingrediente = listaIngredientes.getJSONObject(k)
+                    val nombreIngrediente = ingrediente.getString("nombre")
+                    val cantidad = ingrediente.getInt("cantidad")
+                    val imagenIngrediente = ingrediente.getString("imagen")
+                    val ingredienteObjeto = Ingrediente(nombreIngrediente, cantidad, imagenIngrediente)
+                    listaDeIngredientes.add(ingredienteObjeto)
+                }
+
+                val pasoObjeto = Paso(numeroPaso, descripcionPaso, imagen, listaDeIngredientes, duracionPaso)
+                listaDePasos.add(pasoObjeto)
+            }
+
+            val receta = Receta(nombre, listaDePasos, false)
+            userInputViewModel.appStatus.value?.recetasEncontradas?.add(receta)
+        }
+        userInputViewModel.appStatus.value?.recipesSearchAnswered?.value = true
     }
 
 }

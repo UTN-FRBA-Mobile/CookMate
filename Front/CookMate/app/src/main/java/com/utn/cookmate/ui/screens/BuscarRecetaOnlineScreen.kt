@@ -37,9 +37,6 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
     val ingredientesEnServidor = remember { mutableStateOf(JSONArray()) }
     val ingredientesSeleccionados = remember { mutableStateListOf<String>() }
 
-    userInputViewModel.appStatus.value?.recetasEncontradas?.let { println("AAAAA" + it.size) }
-
-
     LaunchedEffect(userInputViewModel.appStatus.value?.getAllIngredientsResponse?.value) {
         val response = userInputViewModel.appStatus.value?.getAllIngredientsResponse?.value
         if (!response.isNullOrEmpty()) {
@@ -181,7 +178,7 @@ fun GenerarRecetaScreen(userInputViewModel: UserInputViewModel, navController: N
                 }
             }
 
-            if (userInputViewModel.appStatus.value?.recetasEncontradas?.isNotEmpty() == true) {
+            if (userInputViewModel.appStatus.value?.recipesSearchAnswered?.value == true) {
                 navController.navigate(Routes.RECETAS_ENCONTRADAS_SCREEN)
             }
         }
