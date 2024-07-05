@@ -70,7 +70,6 @@ public class ClientHandler implements Runnable {
                         final String registerNombre = solicitud.get("name").getAsString();
                         final Map<String, User> usuarios = ArchivoJson.cargarUsuarios();
                         if(usuarios.containsKey(registerEmail)){
-                            salidaObjetos.writeObject(registerOk);
                             throw new RuntimeException("El usuario ya se encuentra registrado");
                         }
                         final User registerUser = new User(registerNombre, registerEmail, registerPassword, new String[]{});
