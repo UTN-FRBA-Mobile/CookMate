@@ -81,6 +81,14 @@ fun MisRecetasScreen (userInputViewModel: UserInputViewModel, navController : Na
             Column(modifier = Modifier
                 .verticalScroll(state)
                 .weight(1f, true)){
+                if(userInputViewModel.appStatus?.value?.recetasGuardadas?.isEmpty() == true){
+                    Text(
+                        text = "No tenes recetas guardadas. ¿Y si buscas una usando el botón '+'?",
+                        color = Color.Black,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
                 for (receta in userInputViewModel.appStatus?.value?.recetasGuardadas!!) {
                     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         Text(
