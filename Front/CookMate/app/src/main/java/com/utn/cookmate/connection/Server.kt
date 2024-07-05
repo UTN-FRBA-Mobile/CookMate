@@ -103,7 +103,7 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
     private fun sendSocketRequest(action: String, body: JsonObject) {
         launch(Dispatchers.IO) {
             try {
-                val host = "10.0.1.232"
+                val host = "192.168.0.17"
                 val port = 9090
                 val socket = Socket(host, port)
                 val outputStream = ObjectOutputStream(socket.getOutputStream())

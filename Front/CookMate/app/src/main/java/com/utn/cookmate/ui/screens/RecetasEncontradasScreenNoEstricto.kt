@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -34,6 +35,8 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import com.utn.cookmate.R
 import com.utn.cookmate.connection.Server
+import com.utn.cookmate.core.entity.Ingredient
+import com.utn.cookmate.core.entity.Recipe
 import com.utn.cookmate.data.Ingrediente
 import com.utn.cookmate.data.Paso
 import com.utn.cookmate.data.Receta
@@ -43,6 +46,8 @@ import com.utn.cookmate.ui.TextComponent
 import com.utn.cookmate.ui.TopBar
 import com.utn.cookmate.ui.UserInputViewModel
 import org.json.JSONArray
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 
 @Composable
 fun RecetasEncontradasNoEstrictoScreen (userInputViewModel: UserInputViewModel, navController : NavController){
@@ -63,43 +68,68 @@ fun RecetasEncontradasNoEstrictoScreen (userInputViewModel: UserInputViewModel, 
                 .verticalScroll(state)
                 .weight(1f, true)){
                 for (receta in userInputViewModel.appStatus?.value?.recetasEncontradas!!) {
-                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = receta.nombre,
-                            color = Color.Black,
-                            fontSize = 22.sp,
-                            //modifier = Modifier.clickable { println("click en receta") },
-                            fontWeight = FontWeight.Medium
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
-                        var yaEstaGuardada = false;
-                        for(recetaGuardada in userInputViewModel.appStatus?.value?.recetasGuardadas!!){
-                            if(receta.nombre == recetaGuardada.nombre){
-                                yaEstaGuardada = true;
-                                break;
+                    val ingredientesFaltantes = obtenerIngredientesFaltantes(receta,userInputViewModel.appStatus.value?.ingredientesElegidos)
+                    ConstraintLayout(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        val (textColumn, downloadButton) = createRefs()
+
+                        Column(
+                            modifier = Modifier.constrainAs(textColumn) {
+                                start.linkTo(parent.start)
+                                top.linkTo(parent.top)
+                                end.linkTo(downloadButton.start)
+                                width = Dimension.fillToConstraints
                             }
-                        }
-                        if(yaEstaGuardada){
+                        ) {
                             Text(
-                                //modifier = Modifier.clickable { funGuardar(receta.nombre,userInputViewModel) },
-                                text = "\u2714\uD83D\uDCBE",
+                                text = receta.nombre,
                                 color = Color.Black,
-                                fontSize = 20.sp,
+                                fontSize = 22.sp,
                                 fontWeight = FontWeight.Medium
                             )
-                        } else {
-                            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                                Spacer(modifier = Modifier.weight(1f))
-                                Image(
-                                    modifier = Modifier
-                                        .size(30.dp)
-                                        .clickable { funGuardar(receta.nombre, userInputViewModel) },
-                                    painter = painterResource(id = R.drawable.download_button),
-                                    contentDescription = "Boton de descarga"
-                                )
+                            Text(
+                                text = "Falta: " + ingredientesFaltantes.joinToString(separator = ", "),
+                                color = Color.Red,
+                                fontSize = 14.sp
+                            )
+                        }
+
+                        var yaEstaGuardada = false
+                        for (recetaGuardada in userInputViewModel.appStatus?.value?.recetasGuardadas!!) {
+                            if (receta.nombre == recetaGuardada.nombre) {
+                                yaEstaGuardada = true
+                                break
                             }
                         }
 
+                        if (yaEstaGuardada) {
+                            Text(
+                                text = "\u2714\uD83D\uDCBE",
+                                color = Color.Black,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier.constrainAs(downloadButton) {
+                                    end.linkTo(parent.end)
+                                    top.linkTo(parent.top)
+                                    bottom.linkTo(parent.bottom)
+                                }
+                            )
+                        } else {
+                            Image(
+                                painter = painterResource(id = R.drawable.download_button),
+                                contentDescription = "Boton de descarga",
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .clickable { funGuardar(receta.nombre, userInputViewModel) }
+                                    .constrainAs(downloadButton) {
+                                        end.linkTo(parent.end)
+                                        top.linkTo(parent.top)
+                                        bottom.linkTo(parent.bottom)
+                                    },
+                                contentScale = ContentScale.Fit
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.size(30.dp))
                 }
@@ -141,4 +171,21 @@ fun RecetasEncontradasNoEstrictoScreen (userInputViewModel: UserInputViewModel, 
             }
         }
     }
+}
+
+fun obtenerIngredientesFaltantes(receta: Receta, ingredientesAExcluir : MutableList<String>?): List<String> {
+    val nombresIngredientes = mutableListOf<String>()
+    val nombresIngredientesAExcluir = ingredientesAExcluir?.map { i -> i.lowercase() }
+
+    for (step in receta.listaPasos) {
+        for (ingredient in step.ingredientes) {
+            if (nombresIngredientesAExcluir != null) {
+                if (!nombresIngredientesAExcluir.contains(ingredient.nombre.lowercase())) {
+                    nombresIngredientes.add(ingredient.nombre)
+                }
+            }
+        }
+    }
+
+    return nombresIngredientes
 }
