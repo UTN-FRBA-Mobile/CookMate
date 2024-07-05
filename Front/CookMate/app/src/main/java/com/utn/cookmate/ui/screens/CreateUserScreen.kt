@@ -38,20 +38,6 @@ fun CreateUserScreen(userInputViewModel: UserInputViewModel, navController: NavC
     val appStatus = userInputViewModel.appStatus?.value
     val registerSuccess = remember { mutableStateOf<Boolean?>(null) }
 
-    if (appStatus?.downloadResourcesResponse?.value?.isEmpty() == true) {
-        Server(userInputViewModel).downloadResources()
-    } else if (appStatus?.imagenesDescargadas?.isEmpty() == true) {
-        Thread(Runnable {
-            val imagenes: JSONArray = JSONArray(appStatus.downloadResourcesResponse)
-            for (i in 0 until imagenes.length()) {
-                val item: JSONObject = imagenes.getJSONObject(i)
-                val nombre = item.getString("nombre")
-                val base64 = item.getString("base64")
-                appStatus.imagenesDescargadas.put(nombre, Base64.getDecoder().decode(base64))
-            }
-        }).start()
-    }
-
     Surface(modifier = Modifier.fillMaxSize()) {
         Row {
             Column(

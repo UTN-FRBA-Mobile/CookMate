@@ -50,18 +50,8 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
         }
     }
 
-    if(userInputViewModel.appStatus?.value?.downloadResourcesResponse?.value?.isEmpty() == true){
+    if(userInputViewModel.appStatus?.value?.imagenesDescargadas?.isEmpty() == true){
         Server(userInputViewModel).downloadResources()
-    } else if(userInputViewModel.appStatus?.value?.imagenesDescargadas?.isEmpty() == true){
-        Thread(Runnable{
-            var imagenes : JSONArray = JSONArray(userInputViewModel.appStatus?.value?.downloadResourcesResponse?.value)
-            for (i in 0 until imagenes.length()) {
-                val item : JSONObject= imagenes.getJSONObject(i)
-                val nombre = item.getString("nombre")
-                val base64 = item.getString("base64")
-                userInputViewModel.appStatus?.value?.imagenesDescargadas!!.put(nombre,Base64.getDecoder().decode(base64))
-            }
-        }).start()
     }
 
     Surface(

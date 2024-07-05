@@ -12,9 +12,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.json.JSONArray
+import org.json.JSONObject
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.net.Socket
+import java.util.Base64
 import kotlin.coroutines.CoroutineContext
 
 class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
@@ -134,9 +136,7 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
                     "getAllIngredients" -> {
                         userInputViewModel.appStatus?.value?.getAllIngredientsResponse?.value = response
                     }
-                    "downloadResources" -> {
-                        userInputViewModel.appStatus?.value?.downloadResourcesResponse?.value = response
-                    }
+                    "downloadResources" -> processDownloadResourcesResponse(response)
                 }
 
                 // Cerrar conexiones
@@ -184,6 +184,19 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
             userInputViewModel.appStatus.value?.recetasEncontradas?.add(receta)
         }
         userInputViewModel.appStatus.value?.recipesSearchAnswered?.value = true
+    }
+
+    fun processDownloadResourcesResponse(response: String){
+        Thread(Runnable{
+            var imagenes : JSONArray = JSONArray(response)
+            for (i in 0 until imagenes.length()) {
+                val item : JSONObject = imagenes.getJSONObject(i)
+                val nombre = item.getString("nombre")
+                val base64 = item.getString("base64")
+                userInputViewModel.appStatus?.value?.imagenesDescargadas!!.put(nombre,
+                    Base64.getDecoder().decode(base64))
+            }
+        }).start()
     }
 
 }
