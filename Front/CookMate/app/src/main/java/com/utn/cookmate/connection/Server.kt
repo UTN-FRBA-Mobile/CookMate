@@ -122,9 +122,7 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
                     "login" -> {
                         userInputViewModel.appStatus?.value?.loginResponse?.value = response
                     }
-                    "register" -> {
-                        userInputViewModel.appStatus?.value?.registerResponse?.value = response
-                    }
+                    "register" -> processRegisterNewUserResponse(response)
                     "addRecipeToUser" -> {
                         userInputViewModel.appStatus?.value?.addRecipeToUserResponse?.value = response
                     }
@@ -147,6 +145,14 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
                 e.printStackTrace()
             }
         }.start()
+    }
+
+    fun processRegisterNewUserResponse(response:String){
+        if(response == "true"){
+            userInputViewModel.appStatus.value?.registerResult?.value = "OK"
+        } else {
+            userInputViewModel.appStatus.value?.registerResult?.value = "ERROR"
+        }
     }
 
     fun processSearchRecipesResponse(response:String){

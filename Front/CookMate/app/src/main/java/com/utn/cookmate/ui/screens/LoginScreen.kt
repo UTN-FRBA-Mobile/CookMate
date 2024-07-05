@@ -41,6 +41,7 @@ import java.util.Base64
 fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavController) {
     val context = LocalContext.current
 
+    userInputViewModel.appStatus.value?.registerResult?.value = "" //para que si hice un registro, pueda hacer otro mas, sino el boton de ir a registrarse me trae de vuelta a esta pantalla
     // Revisar si hay datos de inicio de sesión guardados
     LaunchedEffect(Unit) {
         val (savedEmail, savedPassword) = PreferencesHelper.getLoginDetails(context)
@@ -63,7 +64,6 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                     .fillMaxSize()
                     .padding(18.dp)
             ) {
-                userInputViewModel.appStatus?.value?.registerResponse?.value = ""
                 Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     Image(
                         modifier = Modifier.size(150.dp),

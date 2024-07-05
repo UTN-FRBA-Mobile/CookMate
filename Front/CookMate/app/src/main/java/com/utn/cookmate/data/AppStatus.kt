@@ -21,11 +21,11 @@ data class AppStatus(
     var imagenesDescargadas: MutableMap<String,ByteArray> = mutableMapOf<String,ByteArray>(),
 
     var loginResponse: MutableState<String> = mutableStateOf(""),
-    var registerResponse: MutableState<String> = mutableStateOf(""),
     var addRecipeToUserResponse: MutableState<String> = mutableStateOf(""),
     var removeRecipeFromUserResponse: MutableState<String> = mutableStateOf(""),
     var getAllIngredientsResponse: MutableState<String> = mutableStateOf(""),
 
+    var registerResult : MutableState<String> = mutableStateOf(""),
     var recipesSearchAnswered : MutableState<Boolean> = mutableStateOf(false),
     var recetasGuardadas: MutableList<Receta> = mutableStateListOf<Receta>(),
     var recetasEncontradas: MutableList<Receta> = mutableStateListOf<Receta>()

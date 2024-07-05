@@ -35,9 +35,6 @@ import java.util.Base64
 
 @Composable
 fun CreateUserScreen(userInputViewModel: UserInputViewModel, navController: NavController) {
-    val appStatus = userInputViewModel.appStatus?.value
-    val registerSuccess = remember { mutableStateOf<Boolean?>(null) }
-
     Surface(modifier = Modifier.fillMaxSize()) {
         Row {
             Column(
@@ -62,17 +59,17 @@ fun CreateUserScreen(userInputViewModel: UserInputViewModel, navController: NavC
                     onTextChanged = { userInputViewModel.onEvent(UserDataUiEvents.RegisterNameEntered(it)) })
                 Spacer(modifier = Modifier.size(40.dp))
 
-                when (registerSuccess?.value) {
-                    true -> {
+                when (userInputViewModel.appStatus.value?.registerResult?.value) {
+                    "OK" -> {
                         TextComponent(textValue = "Registrado correctamente! Para activar la cuenta, vuelve e inicia sesión por primera vez.", textSize = 12.sp)
-                        LaunchedEffect(registerSuccess?.value) {
+                        LaunchedEffect(true) {
                             navController.navigate(Routes.LOGIN_SCREEN) {
                                 popUpTo(Routes.CREATE_USER_SCREEN) { inclusive = true }
                             }
                         }
                     }
-                    false -> {
-                        TextComponent(textValue = "El correo elegido ya está registrado o ocurrió un error.", textSize = 12.sp)
+                    "ERROR" -> {
+                        TextComponent(textValue = "El correo elegido ya está registrado u ocurrió un error.", textSize = 12.sp)
                     }
                     null -> {
                         // No mostrar nada hasta que se haga un intento de registro
@@ -84,9 +81,9 @@ fun CreateUserScreen(userInputViewModel: UserInputViewModel, navController: NavC
                     colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
                     onClick = {
                         if (userInputViewModel.isValidRegisterState()) {
-                            val success = appStatus?.registerEmailEntered?.let {
-                                appStatus?.registerPasswordEntered?.let { it1 ->
-                                    appStatus?.registerNameEntered?.let { it2 ->
+                            val success = userInputViewModel.appStatus?.value?.registerEmailEntered?.let {
+                                userInputViewModel.appStatus?.value?.registerPasswordEntered?.let { it1 ->
+                                    userInputViewModel.appStatus?.value?.registerNameEntered?.let { it2 ->
                                         Server(userInputViewModel)
                                             .register(
                                                 it,
@@ -96,7 +93,7 @@ fun CreateUserScreen(userInputViewModel: UserInputViewModel, navController: NavC
                                     }
                                 }
                             }
-                            registerSuccess?.value = success
+                            //registerSuccess?.value = userInputViewModel.appStatus.value?.registerResult?.value
                         }
                     }
                 ) {
