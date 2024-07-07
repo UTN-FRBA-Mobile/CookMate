@@ -85,7 +85,7 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.compose.runtime:runtime-livedata:1.0.5")
-
+    implementation("com.google.accompanist:accompanist-permissions:0.31.1-alpha")
     implementation("androidx.compose.material:material-icons-extended:1.4.0")
 
 

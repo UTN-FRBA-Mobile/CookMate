@@ -1,5 +1,6 @@
 package com.utn.cookmate.ui.screens
 
+import android.Manifest
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -27,7 +29,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.utn.cookmate.R
+import com.utn.cookmate.NotificationService
 import com.utn.cookmate.connection.Server
 import com.utn.cookmate.data.Ingrediente
 import com.utn.cookmate.data.Paso
@@ -42,6 +48,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.util.Base64
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavController) {
     val context = LocalContext.current
@@ -90,6 +97,46 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                 )
                 Spacer(modifier = Modifier.size(20.dp))
 
+
+
+
+                val postNotificationPermission= rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+                val notificationService= NotificationService(context)
+                LaunchedEffect(key1 = true ){
+                    if(!postNotificationPermission.status.isGranted){
+                        postNotificationPermission.launchPermissionRequest()
+                    }
+                }
+                Column {
+                    Button(
+                        onClick = {
+                            notificationService.showBasicNotification()
+                        }
+                    ) {
+                        Text(text = "Show basic notifications")
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Button(
+                        onClick = {
+                            notificationService.showExpandableNotification()
+                        }
+                    ) {
+                        Text(text = "Show Expandable notifications")
+                    }
+                }
+//
+//                //val isConnectedValue = remember { mutableStateOf(false) }
+//                if(userInputViewModel.appStatus?.value?.estadoConexion?.value == false){
+//                    notificationService.showExpandableNotification()
+//                }
+
+
+
+
+
+
+
                 val shouldShowLoginFailedDialog = remember { mutableStateOf(false) }
                 if (shouldShowLoginFailedDialog.value) {
                     CustomAlertDialog({userInputViewModel.appStatus?.value?.loginResponse?.value = ""},"Aviso","Credenciales invalidas","OK",userInputViewModel,shouldShowDialog = shouldShowLoginFailedDialog)
@@ -99,15 +146,15 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                     shouldShowLoginFailedDialog.value = true
                 } else if(userInputViewModel.appStatus?.value?.loginResponse?.value != "") {
                     // Guardar las credenciales de inicio de sesión
-                    userInputViewModel.appStatus?.value?.emailEntered?.let {
-                        userInputViewModel.appStatus?.value?.passwordEntered?.let { it1 ->
-                            PreferencesHelper.saveLoginDetails(
-                                context,
-                                it,
-                                it1
-                            )
-                        }
-                    }
+//                    userInputViewModel.appStatus?.value?.emailEntered?.let {
+//                        userInputViewModel.appStatus?.value?.passwordEntered?.let { it1 ->
+//                            PreferencesHelper.saveLoginDetails(
+//                                context,
+//                                it,
+//                                it1
+//                            )
+//                        }
+//                    }
 
                     userInputViewModel.appStatus.value?.recetasGuardadas?.clear()
                     var recetasGuardadas : JSONArray = JSONArray(userInputViewModel.appStatus.value?.loginResponse?.value)

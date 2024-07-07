@@ -1,5 +1,6 @@
 package com.utn.cookmate.ui.screens
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -31,7 +32,11 @@ import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.utn.cookmate.R
+import com.utn.cookmate.NotificationService
 import com.utn.cookmate.service.CronometroService
 import com.utn.cookmate.ui.NormalBar
 import com.utn.cookmate.ui.TextComponent
@@ -40,6 +45,7 @@ import com.utn.cookmate.ui.UserInputViewModel
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavController) {
     val appStatus by userInputViewModel.appStatus.observeAsState()
@@ -145,12 +151,21 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                             }
                         }
 
+                        val postNotificationPermission= rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+                        val notificationService= NotificationService(context)
+                        LaunchedEffect(key1 = true ){
+                            if(!postNotificationPermission.status.isGranted){
+                                postNotificationPermission.launchPermissionRequest()
+                            }
+                        }
+
                         // Temporizador
                         it.duracion?.let { duracion ->
                             Temporizador(
                                 duracion = duracion,
                                 onTimerFinished = {
-                                    userInputViewModel.appStatus.value?.pasoActual?.value = pasoActual + 1
+                                    notificationService.showBasicNotification()
+                                    //userInputViewModel.appStatus.value?.pasoActual?.value = pasoActual + 1
                                 },
                                 context = LocalContext.current
                             )
