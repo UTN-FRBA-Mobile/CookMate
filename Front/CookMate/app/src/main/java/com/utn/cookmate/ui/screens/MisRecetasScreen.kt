@@ -23,11 +23,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,6 +40,8 @@ import com.utn.cookmate.ui.TextComponent
 import com.utn.cookmate.ui.TopBar
 import com.utn.cookmate.ui.UserInputViewModel
 import com.utn.cookmate.R
+import com.utn.cookmate.ui.CustomAlertDialog
+import com.utn.cookmate.ui.CustomQuestionDialog
 
 @Composable
 fun MisRecetasScreen (userInputViewModel: UserInputViewModel, navController : NavController){
@@ -89,6 +94,31 @@ fun MisRecetasScreen (userInputViewModel: UserInputViewModel, navController : Na
                         fontWeight = FontWeight.Medium
                     )
                 }
+
+                val shouldShowSureDeleteRecipeDialog = remember { mutableStateOf(false) }
+                if (shouldShowSureDeleteRecipeDialog.value) {
+                    CustomQuestionDialog(
+
+                        onClickNoFunction = {},
+                        onClickSiFunction = { userInputViewModel.appStatus?.value?.recetaElegida?.let {
+                                Server(userInputViewModel).removeRecipeFromUser(userInputViewModel.appStatus?.value?.recetaElegida!!.nombre)
+                                for(receta in userInputViewModel.appStatus?.value?.recetasGuardadas!!){
+                                    if(receta.nombre.equals(userInputViewModel.appStatus?.value?.recetaElegida!!.nombre)){
+                                        receta.guardada = false;
+                                        userInputViewModel.appStatus?.value?.recetasGuardadas!!.remove(receta);
+                                        break;
+                                    }
+                                }
+
+                        } },
+                        titulo = "Confirmar",
+                        texto = "Seguro de borrar la receta?",
+                        textoBotonNo = "Cancelar",
+                        textoBotonSi = "Borrar!",
+                        userInputViewModel,
+                        shouldShowSureDeleteRecipeDialog)
+                }
+
                 for (receta in userInputViewModel.appStatus?.value?.recetasGuardadas!!) {
                     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         Text(
@@ -109,9 +139,12 @@ fun MisRecetasScreen (userInputViewModel: UserInputViewModel, navController : Na
                             })
                         Text(
                             modifier = Modifier.clickable {
+                                shouldShowSureDeleteRecipeDialog.value = true
+
+
                                 //AlertDialogExample({ println("ok") },{ println("no") },"TITULO","Seguro?",Icons.Default.Info)
                                 userInputViewModel.appStatus?.value?.recetaElegida = receta
-                                navController.navigate(Routes.SEGURO_ELIMINAR_RECETA_SCREEN)
+                               // navController.navigate(Routes.SEGURO_ELIMINAR_RECETA_SCREEN)
                               },
                             text = "\uD83D\uDDD1\uFE0F",
                             color = Color.Black,

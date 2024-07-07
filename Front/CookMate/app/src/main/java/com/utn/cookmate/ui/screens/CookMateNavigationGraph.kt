@@ -49,10 +49,6 @@ fun CookMateNavigationGraph(userInputViewModel: UserInputViewModel = viewModel()
             MisRecetasScreen(userInputViewModel,navController)
         }
 
-        composable(Routes.SEGURO_ELIMINAR_RECETA_SCREEN){
-            SeguroEliminarRecetaScreen(userInputViewModel,navController)
-        }
-
         composable(Routes.BUSCAR_RECETA_ONLINE_SCREEN){
             GenerarRecetaScreen(userInputViewModel,navController)
         }
