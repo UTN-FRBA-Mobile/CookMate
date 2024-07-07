@@ -49,6 +49,9 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
     userInputViewModel.appStatus.value?.registerResult?.value = "" //para que si hice un registro, pueda hacer otro mas, sino el boton de ir a registrarse me trae de vuelta a esta pantalla
     // Revisar si hay datos de inicio de sesión guardados
     LaunchedEffect(Unit) {
+        if(userInputViewModel.appStatus.value?.imagenesDescargadas?.isEmpty() == true){
+            Server(userInputViewModel).downloadResources()
+        }
         val (savedEmail, savedPassword) = PreferencesHelper.getLoginDetails(context)
         if (!savedEmail.isNullOrEmpty() && !savedPassword.isNullOrEmpty()) {
             // Intentar iniciar sesión con los datos guardados
@@ -56,9 +59,7 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
         }
     }
 
-    if(userInputViewModel.appStatus?.value?.imagenesDescargadas?.isEmpty() == true){
-        Server(userInputViewModel).downloadResources()
-    }
+
 
     Surface(
         modifier = Modifier.fillMaxSize()

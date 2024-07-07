@@ -1,10 +1,12 @@
 package com.utn.cookmate.service
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
@@ -88,14 +90,21 @@ class CronometroService : Service() {
         stopSelf()
     }
 
+    @SuppressLint("DefaultLocale")
     private fun updateNotification(remainingTime: Long) {
+        val minutes = remainingTime / 60000
+        val seconds = (remainingTime / 1000) % 60
+
+        val formattedTime = String.format("%02d:%02d", minutes, seconds)
+
         val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle("Paso de la receta")
-            .setContentText("Tiempo restante: ${remainingTime / 60000}:${(remainingTime / 1000) % 60}")
+            .setContentText("Tiempo restante: $formattedTime")
             .setSmallIcon(R.drawable.ic_timer)
             .setSilent(true)
             .build()
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(1, notification)
     }
 
