@@ -6,11 +6,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.utn.cookmate.connection.Server
 import com.utn.cookmate.ui.UserInputViewModel
 
 @Composable
 fun CookMateNavigationGraph(userInputViewModel: UserInputViewModel = viewModel()){
     val navController = rememberNavController();
+    Server(userInputViewModel).checker()
     NavHost(navController = navController, startDestination = Routes.LOGIN_SCREEN) {
 //        composable(Routes.USER_INPUT_SCREEN){
 //            UserInputScreen(userInputViewModel,

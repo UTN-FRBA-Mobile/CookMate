@@ -1,20 +1,29 @@
 package com.utn.cookmate.connection
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.NetworkInfo
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.core.content.ContextCompat.getSystemService
+import com.google.firebase.Firebase
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.utn.cookmate.data.Ingrediente
 import com.utn.cookmate.data.Paso
 import com.utn.cookmate.data.Receta
 import com.utn.cookmate.ui.UserInputViewModel
-import com.utn.cookmate.ui.screens.Routes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.net.InetAddress
 import java.net.Socket
 import java.util.Base64
 import kotlin.coroutines.CoroutineContext
@@ -98,6 +107,29 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
         var json = JsonObject()
         json.addProperty("action", "getAllIngredients")
         sendSocketRequest("getAllIngredients", json)
+    }
+
+    var isConnectedValue = false
+    fun checker(){
+        launch(Dispatchers.IO) {
+            while(true) {
+                isConnected()
+                delay(5000)
+            }
+        }.start()
+    }
+
+    fun isConnected(): Boolean {
+        val host = "www.google.com"
+        val port = 80
+        try{
+            val socket = Socket(host, port)
+            isConnectedValue = socket.isConnected
+            socket.close()
+        } catch (e: Exception) {
+            // e.printStackTrace()
+        }
+        return isConnectedValue
     }
 
     private fun sendSocketRequest(action: String, body: JsonObject) {
