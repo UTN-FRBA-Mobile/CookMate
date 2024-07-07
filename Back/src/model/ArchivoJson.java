@@ -81,11 +81,11 @@ public class ArchivoJson {
             for (Step paso : receta.getPasos()) {
                 // Si el paso no tiene ingredientes, lo consideramos válido automáticamente
                 if (paso.getIngredientes() != null){
-                    ingredienteReceta.addAll((Arrays.stream(paso.getIngredientes()).toList()));
+                    ingredienteReceta.addAll((Arrays.stream(paso.getIngredientes()).collect(Collectors.toList())));
                 }
 
             }
-            if (ingredientesPermitidos.containsAll(ingredienteReceta.stream().map(ingredient -> ingredient.getNombre().toLowerCase()).toList())) {
+            if (ingredientesPermitidos.containsAll(ingredienteReceta.stream().map(ingredient -> ingredient.getNombre().toLowerCase()).collect(Collectors.toList()))) {
                 lista.add(receta);
             }
         }
@@ -103,7 +103,7 @@ public class ArchivoJson {
             for (Step paso : receta.getPasos()) {
                 // Si el paso no tiene ingredientes, lo consideramos válido automáticamente
                 if (paso.getIngredientes() != null){
-                    ingredienteReceta.addAll((Arrays.stream(paso.getIngredientes()).toList()));
+                    ingredienteReceta.addAll((Arrays.stream(paso.getIngredientes()).collect(Collectors.toList())));
                 }
 
             }

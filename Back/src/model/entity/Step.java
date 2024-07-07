@@ -9,7 +9,11 @@ public class Step implements Serializable {
     Ingredient[] ingredientes;
     Integer duracion;
 
-    public Step(int numero, String descripcion, String imagen, Ingredient[] ingredientes, int duracion) {
+    public Step(int numero, String descripcion, String imagen, Ingredient[] ingredientes) {
+        this(numero,descripcion,imagen,ingredientes,null);
+    }
+    
+    public Step(int numero, String descripcion, String imagen, Ingredient[] ingredientes, Integer duracion) {
         this.numero = numero;
         this.descripcion = descripcion;
         this.imagen = imagen;
