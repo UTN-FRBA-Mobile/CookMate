@@ -168,6 +168,7 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
                             userInputViewModel.appStatus?.value?.getAllIngredientsResponse?.value = response
                         }
                         "downloadResources" -> processDownloadResourcesResponse(response)
+                        "downloadImage" -> processDownloadImageResponse(response)
                     }
 
                     // Cerrar conexiones
@@ -232,12 +233,25 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
             for (i in 0 until imagenes.length()) {
                 val item : JSONObject = imagenes.getJSONObject(i)
                 val nombre = item.getString("nombre")
-                val base64 = item.getString("base64")
-                userInputViewModel.appStatus?.value?.imagenesDescargadas!!.put(nombre,
-                    Base64.getDecoder().decode(base64))
+               // val base64 = item.getString("base64")
+
+                var json = JsonObject()
+                json.addProperty("action", "downloadImage")
+                json.addProperty("imagen", nombre)
+                sendSocketRequest("downloadImage", json)
+
+//                userInputViewModel.appStatus?.value?.imagenesDescargadas!!.put(nombre,
+//                    Base64.getDecoder().decode(base64))
             }
         }).start()
-        //TODO Arreglar, si es mucha info desde el server se rompe. Cambiarlo para que vengan de a una.
+    }
+
+    fun processDownloadImageResponse(response: String){
+            var imagen : JSONObject = JSONObject(response)
+                val nombre = imagen.getString("nombre")
+                val base64 = imagen.getString("base64")
+                userInputViewModel.appStatus?.value?.imagenesDescargadas!!.put(nombre,
+                    Base64.getDecoder().decode(base64))
     }
 
 }

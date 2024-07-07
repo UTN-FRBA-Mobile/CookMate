@@ -140,10 +140,19 @@ public class ClientHandler implements Runnable {
                     for(final Map.Entry<String, String> elem : imagenes.entrySet()){
                         final JsonObject jo = new JsonObject();
                         jo.addProperty("nombre", elem.getKey());
-                        jo.addProperty("base64", elem.getValue());
+                        if("blank".equals(elem.getKey())){
+                            jo.addProperty("base64", elem.getValue());
+                        }
                         recursos.add(jo);
                     }
                     salidaObjetos.writeObject(new Gson().toJson(recursos));
+                    break;
+                case "downloadImage":
+                    String imagenSolicitada = solicitud.get("imagen").getAsString();
+                    final JsonObject jo = new JsonObject();
+                        jo.addProperty("nombre", imagenSolicitada);
+                        jo.addProperty("base64", imagenes.containsKey(imagenSolicitada) ? imagenes.get(imagenSolicitada) : imagenes.get("blank"));
+                    salidaObjetos.writeObject(new Gson().toJson(jo));
                     break;
                 case "getAllIngredients":
                     salidaObjetos.writeObject(new Gson().toJson(obtenerTodosLosNombresDeIngredientes()));
