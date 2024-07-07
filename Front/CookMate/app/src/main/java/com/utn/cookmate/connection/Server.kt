@@ -109,7 +109,7 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
         sendSocketRequest("getAllIngredients", json)
     }
 
-    var isConnectedValue = false
+    var isConnectedValue = false //TODO Cuando esta variable este en false, mostrar una notificacion de que no hay internet
     fun checker(){
         launch(Dispatchers.IO) {
             while(true) {
@@ -134,47 +134,49 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
 
     private fun sendSocketRequest(action: String, body: JsonObject) {
         launch(Dispatchers.IO) {
-            try {
-                val host = "192.168.0.17"
-                val port = 9090
-                val socket = Socket(host, port)
-                val outputStream = ObjectOutputStream(socket.getOutputStream())
-                val inputStream = ObjectInputStream(socket.getInputStream())
+            if(isConnected()){
+                try {
+                    val host = "192.168.0.17"
+                    val port = 9090
+                    val socket = Socket(host, port)
+                    val outputStream = ObjectOutputStream(socket.getOutputStream())
+                    val inputStream = ObjectInputStream(socket.getInputStream())
 
-                // Enviar solicitud al servidor
-                outputStream.writeObject(body.toString())
-                outputStream.flush()
+                    // Enviar solicitud al servidor
+                    outputStream.writeObject(body.toString())
+                    outputStream.flush()
 
-                // Leer respuesta del servidor
-                val response = inputStream.readObject().toString()
-                println("RESPONSE: $response" + "\nAccion "+action)
+                    // Leer respuesta del servidor
+                    val response = inputStream.readObject().toString()
+                    println("RESPONSE: $response" + "\nAccion "+action)
 
-                // Actualizar el estado de la vista basado en la acción
-                when (action) {
-                    "login" -> {
-                        userInputViewModel.appStatus?.value?.loginResponse?.value = response
+                    // Actualizar el estado de la vista basado en la acción
+                    when (action) {
+                        "login" -> {
+                            userInputViewModel.appStatus?.value?.loginResponse?.value = response
+                        }
+                        "register" -> processRegisterNewUserResponse(response)
+                        "addRecipeToUser" -> {
+                            userInputViewModel.appStatus?.value?.addRecipeToUserResponse?.value = response
+                        }
+                        "removeRecipeFromUser" -> {
+                            userInputViewModel.appStatus?.value?.removeRecipeFromUserResponse?.value = response
+                        }
+                        "searchRecipes" -> processSearchRecipesResponse(response)
+                        "searchRecipesNonStrict" -> processSearchRecipesResponse(response)
+                        "getAllIngredients" -> {
+                            userInputViewModel.appStatus?.value?.getAllIngredientsResponse?.value = response
+                        }
+                        "downloadResources" -> processDownloadResourcesResponse(response)
                     }
-                    "register" -> processRegisterNewUserResponse(response)
-                    "addRecipeToUser" -> {
-                        userInputViewModel.appStatus?.value?.addRecipeToUserResponse?.value = response
-                    }
-                    "removeRecipeFromUser" -> {
-                        userInputViewModel.appStatus?.value?.removeRecipeFromUserResponse?.value = response
-                    }
-                    "searchRecipes" -> processSearchRecipesResponse(response)
-                    "searchRecipesNonStrict" -> processSearchRecipesResponse(response)
-                    "getAllIngredients" -> {
-                        userInputViewModel.appStatus?.value?.getAllIngredientsResponse?.value = response
-                    }
-                    "downloadResources" -> processDownloadResourcesResponse(response)
+
+                    // Cerrar conexiones
+                    inputStream.close()
+                    outputStream.close()
+                    socket.close()
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-
-                // Cerrar conexiones
-                inputStream.close()
-                outputStream.close()
-                socket.close()
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
         }.start()
     }
@@ -235,6 +237,7 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
                     Base64.getDecoder().decode(base64))
             }
         }).start()
+        //TODO Arreglar, si es mucha info desde el server se rompe. Cambiarlo para que vengan de a una.
     }
 
 }
