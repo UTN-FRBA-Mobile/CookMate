@@ -72,7 +72,7 @@ public class DataInitializer {
                                 new Ingredient("Agua", 5000, "agua")
                         }, 5),
                         new Step(2, "Volcar dentro un paquete de salchichas.", "salchichasHirviendo", new Ingredient[]{
-                                new Ingredient("Salchichas", 300, "paqueteSalchichas")
+                                new Ingredient("Salchichas", 300, "salchichas")
                         }, 15),
                         new Step(3, "Hervir por 15 minutos.", "ollaAgua", new Ingredient[]{}, 15)
                 }),
@@ -82,7 +82,7 @@ public class DataInitializer {
                                 new Ingredient("Carne", 200, "carne"),
                                 new Ingredient("Sal", 5, "sal")
                         }, 10),
-                        new Step(3, "Cortar las papas.", "cortadoPapas", new Ingredient[]{
+                        new Step(3, "Cortar las papas.", "cortadoPapasJuliana", new Ingredient[]{
                                 new Ingredient("Papas", 3, "papas")
                         }, 5),
                         new Step(4, "Hornear durante 45 minutos.", "horno", new Ingredient[]{}, 45)
