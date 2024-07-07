@@ -71,15 +71,17 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                         contentDescription = "Logo de CookMate"
                     )
                 }
-                TextComponent(textValue = "Email", textSize = 12.sp)
+                //TextComponent(textValue = "Email", textSize = 12.sp)
                 TextFieldComponent(
-                    "Email",
+                    label = "Email",
                     onTextChanged = { userInputViewModel.onEvent(UserDataUiEvents.EmailEntered(it)) })
                 Spacer(modifier = Modifier.size(20.dp))
-                TextComponent(textValue = "Clave", textSize = 12.sp)
+                //TextComponent(textValue = "Clave", textSize = 12.sp)
                 TextFieldComponent(
-                    "Clave",
-                    onTextChanged = { userInputViewModel.onEvent(UserDataUiEvents.PasswordEntered(it)) })
+                    label = "Clave",
+                    onTextChanged = { userInputViewModel.onEvent(UserDataUiEvents.PasswordEntered(it)) },
+                    isPassword = true // Agregar esta línea para habilitar la funcionalidad de contraseña
+                )
                 Spacer(modifier = Modifier.size(20.dp))
 
                 if(userInputViewModel.appStatus?.value?.loginResponse?.value == "{}") {

@@ -43,19 +43,18 @@ fun CreateUserScreen(userInputViewModel: UserInputViewModel, navController: NavC
                     .padding(18.dp)
             ) {
                 TopBar("Registrarse en CookMate")
-                TextComponent(textValue = "Email", textSize = 12.sp)
                 TextFieldComponent(
-                    "Email",
+                    label = "Email",
                     onTextChanged = { userInputViewModel.onEvent(UserDataUiEvents.RegisterEmailEntered(it)) })
                 Spacer(modifier = Modifier.size(20.dp))
-                TextComponent(textValue = "Clave", textSize = 12.sp)
                 TextFieldComponent(
-                    "Clave",
-                    onTextChanged = { userInputViewModel.onEvent(UserDataUiEvents.RegisterPasswordEntered(it)) })
+                    label = "Clave",
+                    onTextChanged = { userInputViewModel.onEvent(UserDataUiEvents.PasswordEntered(it)) },
+                    isPassword = true
+                )
                 Spacer(modifier = Modifier.size(20.dp))
-                TextComponent(textValue = "Nombre", textSize = 12.sp)
                 TextFieldComponent(
-                    "Nombre",
+                    label = "Nombre",
                     onTextChanged = { userInputViewModel.onEvent(UserDataUiEvents.RegisterNameEntered(it)) })
                 Spacer(modifier = Modifier.size(40.dp))
 
