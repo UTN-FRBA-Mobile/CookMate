@@ -9,11 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -34,12 +32,12 @@ import com.utn.cookmate.data.Paso
 import com.utn.cookmate.data.Receta
 import com.utn.cookmate.data.UserDataUiEvents
 import com.utn.cookmate.ui.CustomAlertDialog
+import com.utn.cookmate.ui.PreferencesHelper
 import com.utn.cookmate.ui.TextComponent
 import com.utn.cookmate.ui.TextFieldComponent
 import com.utn.cookmate.ui.UserInputViewModel
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.Base64
 
 @Composable
 fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavController) {
@@ -48,6 +46,12 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
     userInputViewModel.appStatus.value?.registerResult?.value = "" //para que si hice un registro, pueda hacer otro mas, sino el boton de ir a registrarse me trae de vuelta a esta pantalla
     // Revisar si hay datos de inicio de sesión guardados
     LaunchedEffect(Unit) {
+        if(userInputViewModel.appStatus.value?.imagenesDescargadas?.isEmpty() == true){
+            Server(userInputViewModel).downloadResources()
+            PreferencesHelper.imageLocal(context,
+                userInputViewModel.appStatus.value?.imagenesDescargadas!!
+            )
+        }
         val (savedEmail, savedPassword) = PreferencesHelper.getLoginDetails(context)
         if (!savedEmail.isNullOrEmpty() && !savedPassword.isNullOrEmpty()) {
             // Intentar iniciar sesión con los datos guardados
@@ -55,9 +59,6 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
         }
     }
 
-    if(userInputViewModel.appStatus?.value?.imagenesDescargadas?.isEmpty() == true){
-        Server(userInputViewModel).downloadResources()
-    }
 
     Surface(
         modifier = Modifier.fillMaxSize()

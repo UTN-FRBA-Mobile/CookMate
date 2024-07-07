@@ -136,7 +136,7 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
         launch(Dispatchers.IO) {
             if(isConnected()){
                 try {
-                    val host = "192.168.0.17"
+                    val host = "198.199.90.109"
                     val port = 9090
                     val socket = Socket(host, port)
                     val outputStream = ObjectOutputStream(socket.getOutputStream())

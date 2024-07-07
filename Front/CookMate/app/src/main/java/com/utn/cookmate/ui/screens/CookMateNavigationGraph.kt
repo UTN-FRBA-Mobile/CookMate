@@ -1,8 +1,21 @@
 package com.utn.cookmate.ui.screens
 
 import GenerarRecetaScreen
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -64,9 +77,50 @@ fun CookMateNavigationGraph(userInputViewModel: UserInputViewModel = viewModel()
         }
 
         composable(Routes.PASO_A_PASO_SCREEN){
-            PasoAPasoScreen(userInputViewModel,navController)
+            PasoAPasoScreenWithPermissionCheck(userInputViewModel,navController)
         }
 
     }
 
+}
+@Composable
+fun PasoAPasoScreenWithPermissionCheck(
+    userInputViewModel: UserInputViewModel,
+    navController: NavController
+) {
+    val context = LocalContext.current
+
+    // Función para manejar el inicio de la pantalla paso a paso
+    val startPasoAPaso = {
+        navController.navigate(Routes.PASO_A_PASO_SCREEN)
+    }
+
+    // Función para manejar la lógica cuando se conceden los permisos
+    val onPermissionGranted = {
+        startPasoAPaso()
+    }
+
+    // Función para mostrar el diálogo de solicitud de permisos si no están concedidos
+    val showPermissionDialog = remember { mutableStateOf(false) }
+
+    // Lanzar efecto para verificar y solicitar permisos
+    LaunchedEffect(Unit) {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.FOREGROUND_SERVICE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            showPermissionDialog.value = true
+        } else {
+            startPasoAPaso()
+        }
+    }
+
+    // Mostrar el diálogo de solicitud de permisos
+    if (showPermissionDialog.value) {
+        PermissionRequestDialog(
+            permission = Manifest.permission.FOREGROUND_SERVICE,
+            onPermissionGranted = onPermissionGranted
+        )
+    }
 }

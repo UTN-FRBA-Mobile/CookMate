@@ -8,6 +8,7 @@ object PreferencesHelper {
     private const val KEY_EMAIL = "email"
     private const val KEY_PASSWORD = "password"
     private val FIREBASE_TOKEN = "FIREBASE_TOKEN"
+    private const val IMAGE_SAVE = "image_save"
 
     fun getFirebaseToken(context: Context): String? {
         return getPreferences(context).getString(FIREBASE_TOKEN, null)
@@ -34,11 +35,25 @@ object PreferencesHelper {
         editor.apply()
     }
 
+    fun imageLocal(context: Context, imageDownload : MutableMap<String,ByteArray>) {
+        val editor = getPreferences(context).edit()
+        editor.putString(IMAGE_SAVE, imageDownload.toString())
+        editor.apply()
+    }
+
     fun getLoginDetails(context: Context): Pair<String?, String?> {
         val prefs = getPreferences(context)
         val email = prefs.getString(KEY_EMAIL, null)
         val password = prefs.getString(KEY_PASSWORD, null)
         return Pair(email, password)
+    }
+
+    fun getLoginDetails(context: Context, userInputViewModel: UserInputViewModel){
+        val prefs = getPreferences(context)
+        val mutableState : MutableMap<String,ByteArray>
+
+        //userInputViewModel.appStatus.value.imagenesDescargadas.putAll(prefs.getString(IMAGE_SAVE,null))
+        val password = prefs.getString(KEY_PASSWORD, null)
     }
 
     fun clearLoginDetails(context: Context) {
