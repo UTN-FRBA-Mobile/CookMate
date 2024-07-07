@@ -160,15 +160,20 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                         }
 
                         // Temporizador
-                        it.duracion?.let { duracion ->
-                            Temporizador(
-                                duracion = duracion,
-                                onTimerFinished = {
-                                    notificationService.showBasicNotification()
-                                    //userInputViewModel.appStatus.value?.pasoActual?.value = pasoActual + 1
-                                },
-                                context = LocalContext.current
-                            )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            it.duracion?.let { duracion ->
+                                Temporizador(
+                                    duracion = duracion,
+                                    onTimerFinished = {
+                                        notificationService.showBasicNotification()
+                                        //userInputViewModel.appStatus.value?.pasoActual?.value = pasoActual + 1
+                                    },
+                                    context = LocalContext.current
+                                )
+                            }
                         }
 
                         Spacer(modifier = Modifier.size(20.dp))
@@ -218,10 +223,9 @@ fun Temporizador(
         isTimerRunning = false
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
     ) {
         Button(
             onClick = {
