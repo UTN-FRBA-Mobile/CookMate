@@ -98,15 +98,10 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                     shouldShowLoginFailedDialog.value = true
                 } else if(userInputViewModel.appStatus.value?.loginResponse?.value != "") {
                     // Guardar las credenciales de inicio de sesión
-                    userInputViewModel.appStatus.value?.emailEntered?.let {
-                        userInputViewModel.appStatus.value?.passwordEntered?.let { it1 ->
-                            PreferencesHelper.saveLoginDetails(
-                                context,
-                                it,
-                                it1
-                            )
-                        }
-                   }
+                    PreferencesHelper.saveLoginDetails(context,
+                        userInputViewModel.appStatus.value?.emailEntered,
+                        userInputViewModel.appStatus.value?.passwordEntered )
+
 
                     userInputViewModel.appStatus.value?.recetasGuardadas?.clear()
                     var recetasGuardadas : JSONArray = JSONArray(userInputViewModel.appStatus.value?.loginResponse?.value)

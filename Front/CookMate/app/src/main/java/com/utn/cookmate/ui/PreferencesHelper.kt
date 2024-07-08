@@ -27,7 +27,7 @@ object PreferencesHelper {
         return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     }
 
-    fun saveLoginDetails(context: Context, email: String, password: String) {
+    fun saveLoginDetails(context: Context, email: String?, password: String?) {
         val editor = getPreferences(context).edit()
         editor.putString(KEY_EMAIL, email)
         editor.putString(KEY_PASSWORD, password)

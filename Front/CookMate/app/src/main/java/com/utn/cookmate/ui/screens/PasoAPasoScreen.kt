@@ -168,8 +168,11 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                                 Temporizador(
                                     duracion = duracion,
                                     onTimerFinished = {
-                                        userInputViewModel.appStatus.value?.pasoActual?.value = pasoActual + 1
-                                    },
+                                        val totalPasos = receta.listaPasos.size ?: 0
+                                        if (pasoActual < totalPasos - 1) {
+                                            userInputViewModel.appStatus.value?.pasoActual?.value = pasoActual + 1
+                                        }
+                                                      },
                                     context = LocalContext.current,
                                     paso = it.descripcion,
                                     imagen = userInputViewModel.appStatus.value?.imagenesDescargadas?.get(it.imagen)
