@@ -49,7 +49,7 @@ fun CreateUserScreen(userInputViewModel: UserInputViewModel, navController: NavC
                 Spacer(modifier = Modifier.size(20.dp))
                 TextFieldComponent(
                     label = "Clave",
-                    onTextChanged = { userInputViewModel.onEvent(UserDataUiEvents.PasswordEntered(it)) },
+                    onTextChanged = { userInputViewModel.onEvent(UserDataUiEvents.RegisterPasswordEntered(it)) },
                     isPassword = true
                 )
                 Spacer(modifier = Modifier.size(20.dp))
