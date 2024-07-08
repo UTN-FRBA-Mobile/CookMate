@@ -55,7 +55,7 @@ class CronometroService : Service() {
     private fun startTimer(duration: Long, paso: String?, imagen: ByteArray?) {
         remainingTime = duration * 1000
         timer?.cancel()
-        startForeground(1, createInitialNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST)
+        startForeground(1, createInitialNotification(paso, imagen), ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST)
 
         timer = object : CountDownTimer(remainingTime, 1000) {
             override fun onTick(millisUntilFinished: Long) {
@@ -105,7 +105,7 @@ class CronometroService : Service() {
         val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle("Paso de la receta")
             .setContentText("Tiempo restante: $formattedTime")
-            .setSmallIcon(R.drawable.ic_timer)
+            .setSmallIcon(R.drawable.logo)
             .setPriority(NotificationManager.IMPORTANCE_HIGH)
             .build()
 
@@ -113,11 +113,29 @@ class CronometroService : Service() {
         notificationManager.notify(1, notification)
     }
 
-    private fun createInitialNotification(): Notification {
+    private fun createInitialNotification(paso: String?, imagen: ByteArray?): Notification {
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        val bitmap = imagen?.let { BitmapFactory.decodeByteArray(it, 0, it.size) }
+        val notification = NotificationCompat.Builder(this, "NotificacionTimer")
+            .setContentTitle("Cookmate")
+            .setContentText("Comenzaste el paso: "+ paso)
+            .setSmallIcon(R.drawable.logo)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+            .setStyle(
+                NotificationCompat
+                    .BigPictureStyle()
+                    .bigPicture(
+                        bitmap
+                    )
+            )
+            .build()
+        notificationManager.notify(Random.nextInt(), notification)
+
         return NotificationCompat.Builder(this, channelId)
             .setContentTitle("Cronómetro")
             .setContentText("Tiempo restante")
-            .setSmallIcon(R.drawable.ic_timer)
+            .setSmallIcon(R.drawable.logo)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .build()
@@ -130,7 +148,7 @@ class CronometroService : Service() {
         val notification = NotificationCompat.Builder(this, "NotificacionTimer")
             .setContentTitle("Aviso Cookmate")
             .setContentText("Paso finalizado: "+ paso)
-            .setSmallIcon(R.drawable.ic_timer)
+            .setSmallIcon(R.drawable.logo)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .setStyle(
