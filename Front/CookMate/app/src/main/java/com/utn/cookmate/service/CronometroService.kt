@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -13,9 +12,9 @@ import android.os.Build
 import android.os.CountDownTimer
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.utn.cookmate.MainActivity
+import com.utn.cookmate.NotificationService
 import com.utn.cookmate.R
-import com.utn.cookmate.ui.screens.PasoAPasoScreen
+import kotlin.random.Random
 
 class CronometroService : Service() {
 
@@ -51,6 +50,8 @@ class CronometroService : Service() {
     private fun startTimer(duration: Long) {
         remainingTime = duration * 1000
         timer?.cancel()
+        startForeground(1, createInitialNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST)
+
         timer = object : CountDownTimer(remainingTime, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 remainingTime = millisUntilFinished
@@ -62,7 +63,6 @@ class CronometroService : Service() {
                 stopSelf()
             }
         }.start()
-        startForeground(1, createInitialNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
     }
 
     private fun pauseTimer() {
@@ -101,7 +101,7 @@ class CronometroService : Service() {
             .setContentTitle("Paso de la receta")
             .setContentText("Tiempo restante: $formattedTime")
             .setSmallIcon(R.drawable.ic_timer)
-            .setSilent(true)
+            .setPriority(NotificationManager.IMPORTANCE_HIGH)
             .build()
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -113,28 +113,24 @@ class CronometroService : Service() {
             .setContentTitle("Cronómetro")
             .setContentText("Tiempo restante")
             .setSmallIcon(R.drawable.ic_timer)
-            .setSilent(true)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
             .build()
     }
 
     private fun sendFinalNotification() {
-        val intent = Intent(this, MainActivity::class.java).apply {
-            putExtra("destination", "PasoAPasoScreen")
-            //putExtra("userInputData", someUserInputData) // Asegúrate de pasar los datos necesarios
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val notificationManager = getSystemService(NotificationManager::class.java)
 
-        val notification = NotificationCompat.Builder(this, channelId)
-            .setContentTitle("Paso de la receta")
-            .setContentText("Tu paso está listo, abre la aplicación para más información")
+        val notificationService = NotificationService(this)
+        notificationService.showExpandableNotification()
+        val notification = NotificationCompat.Builder(this, "NotificacionTimer")
+            .setContentTitle("Aviso Cookmate")
+            .setContentText("Se ha terminado el tiempo de tu paso")
             .setSmallIcon(R.drawable.ic_timer)
-            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .build()
-
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(2, notification)
+        notificationManager.notify(Random.nextInt(), notification)
     }
 
 

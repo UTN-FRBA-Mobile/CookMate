@@ -1,6 +1,7 @@
 package com.utn.cookmate.ui.screens
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -45,28 +46,12 @@ import com.utn.cookmate.ui.UserInputViewModel
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
+@SuppressLint("PermissionLaunchedDuringComposition")
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavController) {
     val appStatus by userInputViewModel.appStatus.observeAsState()
     val context = LocalContext.current
-    val permissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (!isGranted) {
-            // Manejar el caso en que el permiso no fue concedido
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        if (ContextCompat.checkSelfPermission(
-                context,
-                android.Manifest.permission.FOREGROUND_SERVICE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            permissionLauncher.launch(android.Manifest.permission.FOREGROUND_SERVICE)
-        }
-    }
 
     Surface(modifier = Modifier.fillMaxSize()) {
         val state = rememberScrollState()
@@ -152,7 +137,6 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                         }
 
                         val postNotificationPermission= rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
-                        val notificationService= NotificationService(context)
                         LaunchedEffect(key1 = true ){
                             if(!postNotificationPermission.status.isGranted){
                                 postNotificationPermission.launchPermissionRequest()
@@ -164,8 +148,7 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                             Temporizador(
                                 duracion = duracion,
                                 onTimerFinished = {
-                                    notificationService.showBasicNotification()
-                                    //userInputViewModel.appStatus.value?.pasoActual?.value = pasoActual + 1
+                                    userInputViewModel.appStatus.value?.pasoActual?.value = pasoActual + 1
                                 },
                                 context = LocalContext.current
                             )

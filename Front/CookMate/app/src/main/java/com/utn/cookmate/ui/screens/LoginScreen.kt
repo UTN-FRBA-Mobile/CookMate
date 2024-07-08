@@ -97,64 +97,24 @@ fun LoginScreen(userInputViewModel: UserInputViewModel, navController: NavContro
                 )
                 Spacer(modifier = Modifier.size(20.dp))
 
-
-
-
-                val postNotificationPermission= rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
-                val notificationService= NotificationService(context)
-                LaunchedEffect(key1 = true ){
-                    if(!postNotificationPermission.status.isGranted){
-                        postNotificationPermission.launchPermissionRequest()
-                    }
-                }
-                Column {
-                    Button(
-                        onClick = {
-                            notificationService.showBasicNotification()
-                        }
-                    ) {
-                        Text(text = "Show basic notifications")
-                    }
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    Button(
-                        onClick = {
-                            notificationService.showExpandableNotification()
-                        }
-                    ) {
-                        Text(text = "Show Expandable notifications")
-                    }
-                }
-//
-//                //val isConnectedValue = remember { mutableStateOf(false) }
-//                if(userInputViewModel.appStatus?.value?.estadoConexion?.value == false){
-//                    notificationService.showExpandableNotification()
-//                }
-
-
-
-
-
-
-
                 val shouldShowLoginFailedDialog = remember { mutableStateOf(false) }
                 if (shouldShowLoginFailedDialog.value) {
                     CustomAlertDialog({userInputViewModel.appStatus?.value?.loginResponse?.value = ""},"Aviso","Credenciales invalidas","OK",userInputViewModel,shouldShowDialog = shouldShowLoginFailedDialog)
                 }
 
-                if(userInputViewModel.appStatus?.value?.loginResponse?.value == "{}") {
+                if(userInputViewModel.appStatus.value?.loginResponse?.value == "{}") {
                     shouldShowLoginFailedDialog.value = true
-                } else if(userInputViewModel.appStatus?.value?.loginResponse?.value != "") {
+                } else if(userInputViewModel.appStatus.value?.loginResponse?.value != "") {
                     // Guardar las credenciales de inicio de sesión
-//                    userInputViewModel.appStatus?.value?.emailEntered?.let {
-//                        userInputViewModel.appStatus?.value?.passwordEntered?.let { it1 ->
-//                            PreferencesHelper.saveLoginDetails(
-//                                context,
-//                                it,
-//                                it1
-//                            )
-//                        }
-//                    }
+                    userInputViewModel.appStatus.value?.emailEntered?.let {
+                        userInputViewModel.appStatus.value?.passwordEntered?.let { it1 ->
+                            PreferencesHelper.saveLoginDetails(
+                                context,
+                                it,
+                                it1
+                            )
+                        }
+                   }
 
                     userInputViewModel.appStatus.value?.recetasGuardadas?.clear()
                     var recetasGuardadas : JSONArray = JSONArray(userInputViewModel.appStatus.value?.loginResponse?.value)

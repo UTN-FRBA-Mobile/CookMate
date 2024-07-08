@@ -33,15 +33,6 @@ class NotificationService(
             .setSmallIcon(R.drawable.pizza)
             .setPriority(NotificationManager.IMPORTANCE_HIGH)
             .setAutoCancel(true)
-            .setStyle(
-                NotificationCompat
-                    .BigPictureStyle()
-                    .bigPicture(
-                        context.bitmapFromResource(
-                            R.drawable.burger
-                        )
-                    )
-            )
             .build()
         notificationManager.notify(Random.nextInt(),notification)
     }
