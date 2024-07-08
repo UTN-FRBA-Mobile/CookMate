@@ -88,11 +88,14 @@ fun RecetasEncontradasNoEstrictoScreen (userInputViewModel: UserInputViewModel, 
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Medium
                             )
-                            Text(
-                                text = "Falta: " + ingredientesFaltantes.joinToString(separator = ", "),
-                                color = Color.Red,
-                                fontSize = 14.sp
-                            )
+                            if(ingredientesFaltantes.isNotEmpty()){
+                                Text(
+                                    text = "Falta: " + ingredientesFaltantes.joinToString(separator = ", "),
+                                    color = Color.Red,
+                                    fontSize = 14.sp
+                                )
+                            }
+
                         }
 
                         var yaEstaGuardada = false

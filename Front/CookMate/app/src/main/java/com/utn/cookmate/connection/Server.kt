@@ -145,7 +145,6 @@ class Server(userInputViewModel: UserInputViewModel) : CoroutineScope {
 
                     // Enviar solicitud al servidor
                     outputStream.writeObject(body.toString())
-                    if(action.equals("downloadImage")) Thread.sleep(1000)
                     outputStream.flush()
 
                     // Leer respuesta del servidor

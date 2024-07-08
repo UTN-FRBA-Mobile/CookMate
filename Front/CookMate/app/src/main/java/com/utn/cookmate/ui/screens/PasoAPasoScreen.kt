@@ -164,7 +164,8 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.Center
                         ) {
-                            it.duracion?.let { duracion ->
+                            val duracion = it.duracion
+                            if(duracion != null){
                                 Temporizador(
                                     duracion = duracion,
                                     onTimerFinished = {
@@ -172,12 +173,23 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                                         if (pasoActual < totalPasos - 1) {
                                             userInputViewModel.appStatus.value?.pasoActual?.value = pasoActual + 1
                                         }
-                                                      },
+                                    },
                                     context = LocalContext.current,
                                     paso = it.descripcion,
                                     imagen = userInputViewModel.appStatus.value?.imagenesDescargadas?.get(it.imagen)
                                 )
+                            }else{
+                                Temporizador(
+                                    duracion = 0,
+                                    onTimerFinished = {
+                                    },
+                                    context = LocalContext.current,
+                                    paso = "",
+                                    imagen = null
+                                )
                             }
+
+
                         }
 
                         Spacer(modifier = Modifier.size(20.dp))
@@ -228,64 +240,70 @@ fun Temporizador(
         timerSeconds = duracion * 60
         isTimerRunning = false
     }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Button(
-            onClick = {
-                isTimerRunning = !isTimerRunning
-                if (isTimerRunning) {
-                    serviceIntent.action = "START"
-                    serviceIntent.putExtra("duration", timerSeconds)
-                    serviceIntent.putExtra("paso",paso)
-                    serviceIntent.putExtra("imagen",imagen)
-                    ContextCompat.startForegroundService(context, serviceIntent)
-                } else {
-                    serviceIntent.action = "PAUSE"
-                    context.startService(serviceIntent)
-                }
-            },
-            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
+    if(duracion != 0) {
+        Box(
             modifier = Modifier
-                .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
-                .pointerInput(Unit) {
-                    detectDragGestures { change, dragAmount ->
-                        change.consume()
-                        offsetX += dragAmount.x
-                        offsetY += dragAmount.y
-                    }
-                }
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = if (isTimerRunning) "Pausar" else "Iniciar paso",
-                    fontSize = 18.sp,
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = String.format("%02d:%02d", timerSeconds / 60, timerSeconds % 60),
-                    fontSize = 24.sp,
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
+            Button(
+                onClick = {
+                    isTimerRunning = !isTimerRunning
+                    if (isTimerRunning) {
+                        serviceIntent.action = "START"
+                        serviceIntent.putExtra("duration", timerSeconds)
+                        serviceIntent.putExtra("paso", paso)
+                        serviceIntent.putExtra("imagen", imagen)
+                        ContextCompat.startForegroundService(context, serviceIntent)
+                    } else {
+                        serviceIntent.action = "PAUSE"
+                        context.startService(serviceIntent)
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.purple_700)),
+                modifier = Modifier
+                    .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+                    .pointerInput(Unit) {
+                        detectDragGestures { change, dragAmount ->
+                            change.consume()
+                            offsetX += dragAmount.x
+                            offsetY += dragAmount.y
+                        }
+                    }
+            ) {
 
-        LaunchedEffect(isTimerRunning) {
-            while (isTimerRunning && timerSeconds > 0) {
-                delay(1000)
-                timerSeconds--
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = if (isTimerRunning) "Pausar" else "Iniciar paso",
+                        fontSize = 18.sp,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = String.format("%02d:%02d", timerSeconds / 60, timerSeconds % 60),
+                        fontSize = 24.sp,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+
             }
-            if (timerSeconds == 0) {
-                isTimerRunning = false
-                onTimerFinished()
-                context.stopService(serviceIntent)
+
+            LaunchedEffect(isTimerRunning) {
+                while (isTimerRunning && timerSeconds > 0) {
+                    delay(1000)
+                    timerSeconds--
+                }
+                if (timerSeconds == 0) {
+                    isTimerRunning = false
+                    onTimerFinished()
+                    context.stopService(serviceIntent)
+                }
             }
         }
+    }else{
+        context.stopService(serviceIntent)
     }
 }

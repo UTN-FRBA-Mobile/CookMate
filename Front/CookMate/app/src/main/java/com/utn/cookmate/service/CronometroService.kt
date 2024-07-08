@@ -107,6 +107,7 @@ class CronometroService : Service() {
             .setContentText("Tiempo restante: $formattedTime")
             .setSmallIcon(R.drawable.logo)
             .setPriority(NotificationManager.IMPORTANCE_HIGH)
+            .setSilent(true)
             .build()
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
