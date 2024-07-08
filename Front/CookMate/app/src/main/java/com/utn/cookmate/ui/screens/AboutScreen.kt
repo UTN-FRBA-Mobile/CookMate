@@ -1,6 +1,5 @@
 package com.utn.cookmate.ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,14 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.utn.cookmate.R
 import com.utn.cookmate.ui.TextComponent
 
-var integrantes : List<String> = listOf("Integrante 1","Integrante 2","Integrante 3","Integrante 4")
+
+var integrantes : List<String> = listOf("Pablo Matías Pardo","Agustin De Cesare","Federico Hedderwick","Iván De Luca")
 
 @Composable
 fun AboutScreen(navController: NavController){
@@ -40,7 +39,7 @@ fun AboutScreen(navController: NavController){
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "CookMate v1.0")
+                Text(text = "CookMate v2.0")
             }
             Row(
                 modifier = Modifier.fillMaxWidth().weight(0.75F),
