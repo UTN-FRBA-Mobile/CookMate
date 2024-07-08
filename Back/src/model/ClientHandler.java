@@ -9,16 +9,11 @@ import com.google.gson.reflect.TypeToken;
 import model.entity.Recipe;
 import model.entity.User;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClientHandler implements Runnable {
@@ -80,7 +75,7 @@ public class ClientHandler implements Runnable {
                         System.out.println("Error al registrarse");
                         e.printStackTrace();
                     }
-                    salidaObjetos.writeObject(registerOk);
+                                        salidaObjetos.writeObject(registerOk);
                     System.out.println("respuesta: " + registerOk);
                     break;
 
@@ -146,6 +141,7 @@ public class ClientHandler implements Runnable {
                         recursos.add(jo);
                     }
                     salidaObjetos.writeObject(new Gson().toJson(recursos));
+                    Thread.sleep(1000);
                     break;
                 case "downloadImage":
                     String imagenSolicitada = solicitud.get("imagen").getAsString();
@@ -153,6 +149,7 @@ public class ClientHandler implements Runnable {
                         jo.addProperty("nombre", imagenSolicitada);
                         jo.addProperty("base64", imagenes.containsKey(imagenSolicitada) ? imagenes.get(imagenSolicitada) : imagenes.get("blank"));
                     salidaObjetos.writeObject(new Gson().toJson(jo));
+                    Thread.sleep(1000);
                     break;
                 case "getAllIngredients":
                     salidaObjetos.writeObject(new Gson().toJson(obtenerTodosLosNombresDeIngredientes()));
@@ -168,6 +165,8 @@ public class ClientHandler implements Runnable {
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
