@@ -8,9 +8,11 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.CountDownTimer
 import android.os.IBinder
+import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
 import com.utn.cookmate.R
 import kotlin.random.Random
@@ -31,13 +33,17 @@ class CronometroService : Service() {
         when (intent?.action) {
             "START" -> {
                 val duration = intent.getIntExtra("duration", 0)
-                startTimer(duration.toLong())
+                val paso = intent.getStringExtra("paso")
+                val imagen = intent.getByteArrayExtra("imagen")
+                startTimer(duration.toLong(), paso, imagen)
             }
             "PAUSE" -> {
                 pauseTimer()
             }
             "RESUME" -> {
-                resumeTimer()
+                val paso = intent.getStringExtra("paso")
+                val imagen = intent.getByteArrayExtra("imagen")
+                resumeTimer(paso, imagen)
             }
             "STOP" -> {
                 stopTimer()
@@ -46,7 +52,7 @@ class CronometroService : Service() {
         return START_NOT_STICKY
     }
 
-    private fun startTimer(duration: Long) {
+    private fun startTimer(duration: Long, paso: String?, imagen: ByteArray?) {
         remainingTime = duration * 1000
         timer?.cancel()
         startForeground(1, createInitialNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST)
@@ -58,7 +64,7 @@ class CronometroService : Service() {
             }
 
             override fun onFinish() {
-                sendFinalNotification()
+                sendFinalNotification(paso,imagen)
                 stopSelf()
             }
         }.start()
@@ -69,7 +75,7 @@ class CronometroService : Service() {
         isPaused = true
     }
 
-    private fun resumeTimer() {
+    private fun resumeTimer(paso: String?, imagen: ByteArray?) {
         isPaused = false
         timer = object : CountDownTimer(remainingTime, 1000) {
             override fun onTick(millisUntilFinished: Long) {
@@ -78,7 +84,7 @@ class CronometroService : Service() {
             }
 
             override fun onFinish() {
-                sendFinalNotification()
+                sendFinalNotification(paso, imagen)
                 stopSelf()
             }
         }.start()
@@ -117,15 +123,23 @@ class CronometroService : Service() {
             .build()
     }
 
-    private fun sendFinalNotification() {
+    private fun sendFinalNotification(paso: String?, imagen: ByteArray?) {
         val notificationManager = getSystemService(NotificationManager::class.java)
+        val bitmap = imagen?.let { BitmapFactory.decodeByteArray(it, 0, it.size) }
 
         val notification = NotificationCompat.Builder(this, "NotificacionTimer")
             .setContentTitle("Aviso Cookmate")
-            .setContentText("Se ha terminado el tiempo de tu paso")
+            .setContentText("Paso finalizado: "+ paso)
             .setSmallIcon(R.drawable.ic_timer)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
+            .setStyle(
+                NotificationCompat
+                    .BigPictureStyle()
+                    .bigPicture(
+                        bitmap
+                    )
+            )
             .build()
         notificationManager.notify(Random.nextInt(), notification)
     }
@@ -153,4 +167,5 @@ class CronometroService : Service() {
         super.onDestroy()
         timer?.cancel()
     }
+
 }

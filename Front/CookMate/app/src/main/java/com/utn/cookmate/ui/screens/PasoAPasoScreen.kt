@@ -170,7 +170,9 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                                     onTimerFinished = {
                                         userInputViewModel.appStatus.value?.pasoActual?.value = pasoActual + 1
                                     },
-                                    context = LocalContext.current
+                                    context = LocalContext.current,
+                                    paso = it.descripcion,
+                                    imagen = userInputViewModel.appStatus.value?.imagenesDescargadas?.get(it.imagen)
                                 )
                             }
                         }
@@ -205,7 +207,9 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
 fun Temporizador(
     duracion: Int,
     onTimerFinished: () -> Unit,
-    context: Context
+    context: Context,
+    paso: String,
+    imagen: ByteArray?
 ) {
     var timerSeconds by remember { mutableStateOf(duracion * 60) }
     var isTimerRunning by remember { mutableStateOf(false) }
@@ -233,6 +237,8 @@ fun Temporizador(
                 if (isTimerRunning) {
                     serviceIntent.action = "START"
                     serviceIntent.putExtra("duration", timerSeconds)
+                    serviceIntent.putExtra("paso",paso)
+                    serviceIntent.putExtra("imagen",imagen)
                     ContextCompat.startForegroundService(context, serviceIntent)
                 } else {
                     serviceIntent.action = "PAUSE"
