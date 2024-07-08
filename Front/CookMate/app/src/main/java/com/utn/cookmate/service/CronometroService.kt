@@ -12,7 +12,6 @@ import android.os.Build
 import android.os.CountDownTimer
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.utn.cookmate.NotificationService
 import com.utn.cookmate.R
 import kotlin.random.Random
 
@@ -121,8 +120,6 @@ class CronometroService : Service() {
     private fun sendFinalNotification() {
         val notificationManager = getSystemService(NotificationManager::class.java)
 
-        val notificationService = NotificationService(this)
-        notificationService.showExpandableNotification()
         val notification = NotificationCompat.Builder(this, "NotificacionTimer")
             .setContentTitle("Aviso Cookmate")
             .setContentText("Se ha terminado el tiempo de tu paso")

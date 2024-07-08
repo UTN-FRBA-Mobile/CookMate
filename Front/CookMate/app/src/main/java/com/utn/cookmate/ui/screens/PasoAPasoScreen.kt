@@ -5,8 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
@@ -29,14 +31,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.utn.cookmate.R
-import com.utn.cookmate.NotificationService
 import com.utn.cookmate.service.CronometroService
 import com.utn.cookmate.ui.NormalBar
 import com.utn.cookmate.ui.TextComponent
@@ -45,6 +45,7 @@ import com.utn.cookmate.ui.UserInputViewModel
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavController) {
@@ -152,7 +153,6 @@ fun PasoAPasoScreen(userInputViewModel: UserInputViewModel, navController: NavCo
                         }
 
                         val postNotificationPermission= rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
-                        val notificationService= NotificationService(context)
                         LaunchedEffect(key1 = true ){
                             if(!postNotificationPermission.status.isGranted){
                                 postNotificationPermission.launchPermissionRequest()
